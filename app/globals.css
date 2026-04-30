@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #1e46e8;
+  --brand-light: #eef4ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+/* Tool page container */
+.tool-container {
+  @apply max-w-4xl mx-auto px-4 py-8;
+}
+
+/* Upload drop zone */
+.drop-zone {
+  @apply border-2 border-dashed border-brand-300 rounded-xl p-10 text-center
+         hover:border-brand-500 hover:bg-brand-50 transition-all cursor-pointer;
+}
+
+.drop-zone.active {
+  @apply border-brand-600 bg-brand-50;
+}
+
+/* Calculator result card */
+.result-card {
+  @apply bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-2xl p-6;
+}
+
+/* Ad slot placeholder */
+.ad-slot {
+  @apply bg-gray-100 border border-dashed border-gray-300 rounded-lg flex items-center
+         justify-center text-gray-400 text-sm font-medium;
+}
+
+/* Range slider */
+input[type='range'] {
+  @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+  accent-color: var(--brand);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* FAQ accordion */
+.faq-item summary {
+  @apply cursor-pointer list-none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
