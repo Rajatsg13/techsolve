@@ -1,23 +1,24 @@
 export const metadata = {
+  alternates: { canonical: '/privacy-policy/' },
   title: 'Privacy Policy — TechSolve44',
-  description: 'Privacy policy for TechSolve44 — how we handle your data (spoiler: we don\'t collect any).',
+  description: 'Privacy policy for TechSolve44, a division of GDB Advisories LLP — how we handle your data (spoiler: we don\'t collect any).',
 };
 
 export default function PrivacyPolicy() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Privacy Policy</h1>
-      <p className="text-slate-400 text-sm mb-8">Last updated: April 2026</p>
+      <p className="text-slate-400 text-sm mb-8">Last updated: June 2026</p>
 
       <div className="space-y-8 text-slate-700 leading-relaxed text-sm">
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">1. Overview</h2>
-          <p>TechSolve44 ("we", "us", "our") operates the website techsolve44.com. This Privacy Policy explains how we collect, use, and protect any information you provide when using our tools.</p>
+          <p>TechSolve44 is a division of <strong>GDB Advisories LLP</strong> ("GDB Advisories", "we", "us", "our"), which owns and operates the website techsolve44.com. This Privacy Policy explains how TechSolve44 and GDB Advisories LLP collect, use, and protect any information you provide when using our tools.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">2. Files and Data</h2>
-          <p>All tools on TechSolve44 run entirely in your browser. <strong>We do not upload, store, or process your files on any server.</strong> Your documents, images, and data never leave your device. Processing happens locally using JavaScript.</p>
+          <p>All tools on TechSolve44 run entirely in your browser. <strong>TechSolve44 and GDB Advisories LLP do not upload, store, or process your files on any server.</strong> Your documents, images, and data never leave your device. Processing happens locally using JavaScript.</p>
         </section>
 
         <section>
@@ -47,7 +48,7 @@ export default function PrivacyPolicy() {
 
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">8. Contact</h2>
-          <p>If you have questions about this Privacy Policy, please <a href="/contact" className="text-brand-700 underline">contact us</a>.</p>
+          <p>If you have questions about this Privacy Policy, please <a href="/contact" className="text-brand-700 underline">contact us</a>. TechSolve44 is a division of GDB Advisories LLP.</p>
         </section>
       </div>
     </div>

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback } from 'react';
+import CrossBrandCard from '../components/CrossBrandCard';
 
 export default function ImageToPDF() {
   const [images, setImages]   = useState([]);
@@ -50,7 +51,6 @@ export default function ImageToPDF() {
       <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-1">Image to PDF Converter</h1>
       <p className="text-slate-500 mb-8 text-sm">Convert JPG, PNG, WebP images into a single PDF file. Free, fast, browser-based — your files never leave your device.</p>
 
-      <div className="ad-slot h-20 mb-8">[ AdSense — Leaderboard ]</div>
 
       {/* Drop zone */}
       <div
@@ -113,6 +113,7 @@ export default function ImageToPDF() {
         </ol>
       </div>
 
+      <CrossBrandCard pageSlug="image-to-pdf" />
       <section className="mt-10">
         <h2 className="text-xl font-bold text-slate-800 mb-4">Frequently Asked Questions</h2>
         <div className="space-y-3">
@@ -124,14 +125,13 @@ export default function ImageToPDF() {
           ].map(([q, a]) => (
             <details key={q} className="faq-item bg-white border border-slate-100 rounded-xl overflow-hidden">
               <summary className="px-5 py-4 font-semibold text-slate-700 text-sm flex justify-between items-center">
-                {q}<span className="text-brand-600 text-lg">+</span>
+                {q}<span className="text-brand-600 text-lg faq-icon"></span>
               </summary>
               <div className="px-5 pb-4 text-sm text-slate-600">{a}</div>
             </details>
           ))}
         </div>
       </section>
-      <div className="ad-slot h-24 mt-10">[ AdSense — Rectangle ]</div>
     </div>
   );
 }

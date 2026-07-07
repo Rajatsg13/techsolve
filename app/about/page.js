@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: '/about/' },
   title: 'About Us — TechSolve44',
   description: 'Learn about TechSolve44 — a free online tools platform for PDF conversion, financial calculators, image tools and more.',
 };

@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import CrossBrandCard from '../components/CrossBrandCard';
 
 export default function WordToPDF() {
   const [file, setFile]       = useState(null);
@@ -103,7 +104,6 @@ export default function WordToPDF() {
         ⚠️ Supports .docx files. Basic text & paragraph formatting is preserved.
       </div>
 
-      <div className="ad-slot h-20 mb-8">[ AdSense — Leaderboard ]</div>
 
       {!file ? (
         <div className="drop-zone mb-6"
@@ -132,6 +132,7 @@ export default function WordToPDF() {
         {loading ? '⏳ Converting...' : '📄 Convert to PDF & Download'}
       </button>
 
+      <CrossBrandCard pageSlug="word-to-pdf" />
       <section className="mt-10">
         <h2 className="text-xl font-bold text-slate-800 mb-4">Frequently Asked Questions</h2>
         <div className="space-y-3">
@@ -142,14 +143,13 @@ export default function WordToPDF() {
           ].map(([q, a]) => (
             <details key={q} className="faq-item bg-white border border-slate-100 rounded-xl overflow-hidden">
               <summary className="px-5 py-4 font-semibold text-slate-700 text-sm flex justify-between items-center">
-                {q}<span className="text-brand-600 text-lg">+</span>
+                {q}<span className="text-brand-600 text-lg faq-icon"></span>
               </summary>
               <div className="px-5 pb-4 text-sm text-slate-600">{a}</div>
             </details>
           ))}
         </div>
       </section>
-      <div className="ad-slot h-24 mt-10">[ AdSense — Rectangle ]</div>
     </div>
   );
 }

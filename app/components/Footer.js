@@ -7,7 +7,11 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-black">T</div>
+            <svg width="32" height="32" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="0" y="0" width="72" height="72" rx="16" fill="#1e3a8a"/>
+              <path d="M17 22 L31 36 L17 50" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="37" y1="50" x2="51" y2="50" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+            </svg>
             <span className="font-bold text-lg text-white">TechSolve<span className="text-brand-400">44</span></span>
           </div>
           <p className="text-sm text-slate-400 leading-relaxed">
@@ -36,6 +40,9 @@ export default function Footer() {
             <li><Link href="/lumpsum-calculator" className="hover:text-white transition-colors">Lumpsum Calculator</Link></li>
             <li><Link href="/ppf-calculator" className="hover:text-white transition-colors">PPF Calculator</Link></li>
             <li><Link href="/income-tax-calculator" className="hover:text-white transition-colors">Income Tax Calculator</Link></li>
+            <li><Link href="/graham-number-calculator" className="hover:text-white transition-colors">Graham Number Calculator</Link></li>
+            <li><Link href="/fire-calculator" className="hover:text-white transition-colors">FIRE Calculator</Link></li>
+            <li><Link href="/sharpe-ratio-calculator" className="hover:text-white transition-colors">Sharpe Ratio Calculator</Link></li>
           </ul>
         </div>
 
@@ -46,11 +53,12 @@ export default function Footer() {
             <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
             <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
             <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+            <li><Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-slate-800 py-4 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} TechSolve44. All rights reserved. All tools are free and run locally in your browser.
+      <div className="border-t border-slate-800 py-4 text-center text-xs text-slate-400">
+        © {new Date().getFullYear()} TechSolve44, a division of GDB Advisories LLP. All rights reserved. All tools are free and run locally in your browser.
       </div>
     </footer>
   );

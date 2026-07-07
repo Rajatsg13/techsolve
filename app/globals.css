@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -39,11 +37,6 @@ body {
   @apply bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-2xl p-6;
 }
 
-/* Ad slot placeholder */
-.ad-slot {
-  @apply bg-gray-100 border border-dashed border-gray-300 rounded-lg flex items-center
-         justify-center text-gray-400 text-sm font-medium;
-}
 
 /* Range slider */
 input[type='range'] {
@@ -61,3 +54,7 @@ html {
   @apply cursor-pointer list-none;
 }
 .faq-item summary::-webkit-details-marker { display: none; }
+
+/* FAQ toggle icon: + when closed, − when open */
+.faq-item .faq-icon::after { content: '+'; }
+.faq-item[open] .faq-icon::after { content: '−'; }

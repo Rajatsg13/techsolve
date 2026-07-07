@@ -1,0 +1,18 @@
+{
+  "name": "techsolve44-tests",
+  "version": "1.0.0",
+  "description": "Functional tests for TechSolve44 website tools",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:pdf": "npx playwright test --grep @pdf",
+    "test:calc": "npx playwright test --grep @calc",
+    "test:pages": "npx playwright test --grep @pages",
+    "test:compress": "npx playwright test --grep @compress",
+    "setup": "npx playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  }
+}
