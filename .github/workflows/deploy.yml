@@ -3,7 +3,8 @@ name: Build & Deploy to Hostinger
 on:
   push:
     branches:
-      - main   # Runs every time you push to main
+      - main            # Runs every time you push to main
+  workflow_dispatch:     # ...and lets you trigger it manually from the Actions tab
 
 jobs:
   deploy:
@@ -24,14 +25,18 @@ jobs:
 
       - name: Build static site
         run: npm run build
-        # This generates the ./out folder with all static HTML/CSS/JS
+        # Generates ./out (static HTML/CSS/JS) and copies public/.htaccess into it.
 
+      # Skipped until the three FTP secrets exist, so runs stay green until then.
       - name: Deploy to Hostinger via FTP
+        if: ${{ env.FTP_HOST != '' }}
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./out/          # Upload the static build
-          server-dir: /public_html/  # Your Hostinger web root
-          dangerous-clean-slate: false
+          server-dir: /public_html/  # Hostinger web root (change to ./ if your FTP account lands inside public_html)
+          dangerous-clean-slate: false  # never delete files not in the build (Search Console, ads.txt, etc.)
