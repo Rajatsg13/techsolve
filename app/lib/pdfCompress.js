@@ -61,7 +61,10 @@ export async function compressImages(bytes, { dpi = 150, quality = 75, onProgres
       try {
         ref = doc.newIndirect(num);
         obj = ref.resolve();
-        if (!obj || !obj.isStream()) continue;
+        // NB: in this MuPDF build isStream() returns false even for real streams,
+        // and stream ops (loadImage/readRawStream/writeRawStream) must be called on
+        // the indirect `ref`, not the resolved `obj`. Detect images by dict + Subtype.
+        if (!obj || !obj.isDictionary()) continue;
 
         const subtype = obj.get('Subtype');
         if (!subtype || !subtype.isName() || subtype.asName() !== 'Image') continue;
@@ -73,7 +76,7 @@ export async function compressImages(bytes, { dpi = 150, quality = 75, onProgres
         const smask = obj.get('SMask');
         if (smask && !smask.isNull()) continue;
 
-        img = doc.loadImage(obj);
+        img = doc.loadImage(ref);
         const w = img.getWidth();
         const h = img.getHeight();
         if (!w || !h) continue;
@@ -109,7 +112,7 @@ export async function compressImages(bytes, { dpi = 150, quality = 75, onProgres
         const jpeg = outPix.asJPEG(quality, false);
 
         // Only commit if it actually shrinks the stored (already-encoded) stream.
-        const rawBuf = obj.readRawStream();
+        const rawBuf = ref.readRawStream();
         const originalLen = typeof rawBuf.getLength === 'function'
           ? rawBuf.getLength()
           : rawBuf.asUint8Array().length;
@@ -124,7 +127,7 @@ export async function compressImages(bytes, { dpi = 150, quality = 75, onProgres
         obj.put('Filter', doc.newName('DCTDecode'));
         obj.delete('DecodeParms');
         obj.delete('SMask');
-        obj.writeRawStream(jpeg);
+        ref.writeRawStream(jpeg);
 
         processed++;
         if (onProgress) onProgress(`Recompressing images… (${processed} optimized)`);
@@ -198,8 +201,13 @@ export const MODES = {
 
 export async function compressPdf(bytes, mode = 'lossless', onProgress) {
   const cfg = MODES[mode] || MODES.lossless;
-  if (cfg.engine === 'lossless') return compressLossless(bytes);
-  if (cfg.engine === 'images') return compressImages(bytes, { dpi: cfg.dpi, quality: cfg.quality, onProgress });
-  if (cfg.engine === 'flatten') return compressFlatten(bytes, { dpi: cfg.dpi, quality: cfg.quality, onProgress });
-  return compressLossless(bytes);
+  let out;
+  if (cfg.engine === 'images') out = await compressImages(bytes, { dpi: cfg.dpi, quality: cfg.quality, onProgress });
+  else if (cfg.engine === 'flatten') out = await compressFlatten(bytes, { dpi: cfg.dpi, quality: cfg.quality, onProgress });
+  else out = await compressLossless(bytes);
+
+  // Never hand back a file larger than the original — some PDFs (already optimized,
+  // linearized, or text-only) can grow slightly on re-save. Return the input instead.
+  const original = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  return out.byteLength >= original.byteLength ? original : out;
 }
