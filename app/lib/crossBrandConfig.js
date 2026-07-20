@@ -58,6 +58,8 @@ export const PAGE_BRAND_MAP = {
   'graham-number-calculator': 'growbiz',
   'fire-calculator':          'growbiz',
   'sharpe-ratio-calculator':  'growbiz',
+  'stock-profit-calculator':  'growbiz',
+  'mf-profit-calculator':     'growbiz',
 
   // PDF & image tools → Dhyai Studio
   'pdf-merge':        'dhyai',

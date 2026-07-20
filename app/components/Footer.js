@@ -43,6 +43,8 @@ export default function Footer() {
             <li><Link href="/graham-number-calculator" className="hover:text-white transition-colors">Graham Number Calculator</Link></li>
             <li><Link href="/fire-calculator" className="hover:text-white transition-colors">FIRE Calculator</Link></li>
             <li><Link href="/sharpe-ratio-calculator" className="hover:text-white transition-colors">Sharpe Ratio Calculator</Link></li>
+            <li><Link href="/stock-profit-calculator" className="hover:text-white transition-colors">Stock Profit Calculator</Link></li>
+            <li><Link href="/mf-profit-calculator" className="hover:text-white transition-colors">MF Profit Calculator</Link></li>
           </ul>
         </div>
 

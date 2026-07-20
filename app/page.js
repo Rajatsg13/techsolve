@@ -36,10 +36,12 @@ const calculators = [
   { icon: '📐', title: 'Graham Number Calculator',    description: "Find a stock's intrinsic value using Benjamin Graham's formula.", href: '/graham-number-calculator', badge: 'New' },
   { icon: '🔥', title: 'FIRE Calculator',             description: 'Calculate your Financial Independence number and years to early retirement.', href: '/fire-calculator', badge: 'New' },
   { icon: '📊', title: 'Sharpe Ratio Calculator',     description: "Measure your portfolio's risk-adjusted return quality.", href: '/sharpe-ratio-calculator', badge: 'New' },
+  { icon: '📉', title: 'Stock Profit Calculator',     description: 'Net share trading profit after brokerage, STT, GST and capital gains tax.', href: '/stock-profit-calculator', badge: 'New' },
+  { icon: '💹', title: 'MF Profit Calculator',        description: 'Search any Indian mutual fund and see real profit, XIRR and tax on gains.', href: '/mf-profit-calculator', badge: 'New' },
 ];
 
 const stats = [
-  { value: '22+', label: 'Free Tools' },
+  { value: '25+', label: 'Free Tools' },
   { value: '0',   label: 'Signup Required' },
   { value: '100%', label: 'Browser-Based' },
   { value: '∞',   label: 'Free Forever' },

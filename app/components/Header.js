@@ -39,6 +39,8 @@ const navGroups = [
       { label: '📐 Graham Number Calculator', href: '/graham-number-calculator' },
       { label: '🔥 FIRE Calculator',           href: '/fire-calculator' },
       { label: '📊 Sharpe Ratio Calculator',   href: '/sharpe-ratio-calculator' },
+      { label: '📉 Stock Profit Calculator',   href: '/stock-profit-calculator' },
+      { label: '💹 MF Profit Calculator',      href: '/mf-profit-calculator' },
     ],
   },
 ];
