@@ -11,6 +11,7 @@
     "test:pages": "npx playwright test --grep @pages",
     "test:compress": "npx playwright test --grep @compress",
     "test:feedback": "npx playwright test --grep @feedback",
+    "test:contact": "npx playwright test --grep @contact",
     "setup": "npx playwright install chromium"
   },
   "devDependencies": {

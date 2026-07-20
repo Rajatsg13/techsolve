@@ -1,7 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-
-const WEB3FORMS_KEY = '66f215ff-88b8-4266-b38a-e6aac88a5caa';
+import { submitToWeb3Forms, friendlyError } from '../lib/web3forms';
 
 // Distinguishes these from the contact form in the inbox.
 const SUBJECT = 'TechSolve44 Feedback Widget';
@@ -31,24 +30,14 @@ export default function FeedbackWidget() {
     setErrorMsg('');
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: SUBJECT,
-          from_name: 'TechSolve44 Feedback Widget',
-          message: message.trim(),
-          email: email.trim() || undefined,
-          page: typeof window !== 'undefined' ? window.location.pathname : '',
-          botcheck: botcheck.current?.value || '',
-        }),
+      await submitToWeb3Forms({
+        subject: SUBJECT,
+        from_name: 'TechSolve44 Feedback Widget',
+        message: message.trim(),
+        email: email.trim() || undefined,
+        page: typeof window !== 'undefined' ? window.location.pathname : '',
+        botcheck: botcheck.current?.value || '',
       });
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok || data.success === false) {
-        throw new Error(data.message || 'Submission failed');
-      }
 
       setStatus('sent');
       setMessage('');
@@ -65,11 +54,7 @@ export default function FeedbackWidget() {
       }, 4000);
     } catch (err) {
       setStatus('error');
-      setErrorMsg(
-        err instanceof TypeError
-          ? 'Could not reach the server. Check your connection and try again.'
-          : 'Something went wrong sending that. Please try again in a moment.'
-      );
+      setErrorMsg(friendlyError(err));
     }
   }
 
