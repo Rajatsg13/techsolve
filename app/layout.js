@@ -1,6 +1,7 @@
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import FeedbackWidget from './components/FeedbackWidget';
 
 export const metadata = {
   metadataBase: new URL('https://techsolve44.com'),
@@ -54,6 +55,9 @@ export default function RootLayout({ children }) {
       <body className="flex flex-col min-h-screen bg-slate-50">
         <Header />
         <main className="flex-1">{children}</main>
+        {/* Mounted here so it renders on every route exactly once — never add it
+            inside a page, which would double it up. */}
+        <FeedbackWidget />
         <Footer />
         {/* Google Analytics — deferred until after page content */}
         <script defer src="https://www.googletagmanager.com/gtag/js?id=G-FFVH7DK4LD"></script>

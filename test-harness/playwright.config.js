@@ -8,7 +8,11 @@ module.exports = defineConfig({
   reporter: [['html', { open: 'never' }], ['list']],
 
   use: {
-    baseURL: 'https://techsolve44.com',
+    // Defaults to production. Point at a local static build to check a change
+    // before it ships:
+    //   (cd .. && npm run build && npx serve out -p 5055)
+    //   BASE_URL=http://localhost:5055 npm test
+    baseURL: process.env.BASE_URL || 'https://techsolve44.com',
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
