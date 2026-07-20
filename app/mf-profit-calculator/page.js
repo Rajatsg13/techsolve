@@ -22,6 +22,13 @@ function parseInputDate(s) {
 function toISO(ts) {
   return new Date(ts).toISOString().slice(0, 10);
 }
+// Local calendar date, not UTC — the date input works in the user's timezone,
+// and toISOString() would roll back a day for anyone east of Greenwich.
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 function displayDate(ts) {
   const dt = new Date(ts);
   return `${String(dt.getUTCDate()).padStart(2, '0')}-${String(dt.getUTCMonth() + 1).padStart(2, '0')}-${dt.getUTCFullYear()}`;
@@ -69,6 +76,38 @@ function guessAssetClass(category = '') {
   return 'equity';
 }
 
+// MFapi's /search endpoint caps at 15 unranked rows, so "HDFC" comes back as
+// Balanced Fund and a wall of FMPs while HDFC Flexi Cap never surfaces. The full
+// /mf list (~37k schemes, ~470 KB gzipped) is fetched once in the background and
+// searched locally instead; /search is only the stopgap until it arrives.
+const squash = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+function rankSchemes(list, query) {
+  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return [];
+  // The catalogue spells the same thing both ways — 25 schemes say "bluechip",
+  // 8 say "blue chip" — so match on the punctuation-stripped form too.
+  const squashedTokens = tokens.map(squash).filter(Boolean);
+  const scored = [];
+  for (const s of list) {
+    const name = s.schemeName.toLowerCase();
+    const flat = squash(s.schemeName);
+    if (!tokens.every((t, i) => name.includes(t) || flat.includes(squashedTokens[i]))) continue;
+    // Prefer whole-phrase hits, then early matches, then shorter names — which
+    // favours "HDFC Flexi Cap Fund - Growth" over a dated FMP with the same words.
+    let score = 0;
+    const phrase = tokens.join(' ');
+    if (name.includes(phrase)) score -= 1000;
+    score += name.indexOf(tokens[0]);
+    score += name.length / 100;
+    if (/direct plan/.test(name)) score -= 5;
+    if (/growth/.test(name)) score -= 3;
+    scored.push({ s, score });
+  }
+  scored.sort((a, b) => a.score - b.score);
+  return scored.slice(0, 40).map(x => x.s);
+}
+
 function monthsBetween(a, b) {
   const d1 = new Date(a), d2 = new Date(b);
   let m = (d2.getUTCFullYear() - d1.getUTCFullYear()) * 12 + (d2.getUTCMonth() - d1.getUTCMonth());
@@ -113,22 +152,64 @@ export default function MFProfitCalculator() {
   const [calcError, setCalcError] = useState('');
 
   const boxRef = useRef(null);
+  const allSchemes = useRef(null);      // full catalogue once loaded
+  const catalogueReq = useRef(null);    // in-flight catalogue promise
+  const searchSeq = useRef(0);          // guards against out-of-order responses
+  const [searchedFor, setSearchedFor] = useState('');
+  const [catalogueLoaded, setCatalogueLoaded] = useState(false);
+
+  // Kicked off on first interaction, not page load — no reason to pull 470 KB
+  // for a visitor who never touches the search box.
+  function loadCatalogue() {
+    if (catalogueReq.current) return catalogueReq.current;
+    catalogueReq.current = fetch('https://api.mfapi.in/mf')
+      .then(r => { if (!r.ok) throw new Error('catalogue failed'); return r.json(); })
+      .then(d => { if (Array.isArray(d)) { allSchemes.current = d; setCatalogueLoaded(true); } return d; })
+      .catch(() => { catalogueReq.current = null; });  // allow a retry
+    return catalogueReq.current;
+  }
 
   const runSearch = useRef(debounce(async (q) => {
-    if (q.trim().length < 3) { setResults([]); setSearching(false); return; }
+    const query = q.trim();
+    const seq = ++searchSeq.current;
+    if (query.length < 3) { setResults([]); setSearching(false); setSearchedFor(''); return; }
+
+    // Local search once the catalogue is in — instant, and actually complete.
+    if (allSchemes.current) {
+      setResults(rankSchemes(allSchemes.current, query));
+      setSearchedFor(query);
+      setSearching(false);
+      setApiError('');
+      return;
+    }
+
     try {
-      const r = await fetch(`https://api.mfapi.in/mf/search?q=${encodeURIComponent(q.trim())}`);
+      const r = await fetch(`https://api.mfapi.in/mf/search?q=${encodeURIComponent(query)}`);
       if (!r.ok) throw new Error('search failed');
       const data = await r.json();
-      setResults(Array.isArray(data) ? data.slice(0, 40) : []);
+      if (seq !== searchSeq.current) return;   // a newer keystroke superseded this
+      // Re-rank even the API's 15 rows so the closest match is not buried.
+      setResults(Array.isArray(data) ? rankSchemes(data, query) : []);
+      setSearchedFor(query);
       setApiError('');
     } catch {
+      if (seq !== searchSeq.current) return;
       setResults([]);
+      setSearchedFor(query);
       setApiError('Could not reach the mutual fund database. Check your connection and try again.');
     } finally {
-      setSearching(false);
+      if (seq === searchSeq.current) setSearching(false);
     }
-  }, 350)).current;
+  }, 300)).current;
+
+  // Re-run the search against the full catalogue the moment it lands, so results
+  // upgrade underneath the user without them having to type anything again.
+  useEffect(() => {
+    if (!catalogueLoaded || query.trim().length < 3) return;
+    setResults(rankSchemes(allSchemes.current || [], query.trim()));
+    setSearchedFor(query.trim());
+    setSearching(false);
+  }, [catalogueLoaded, query]);
 
   // Close the suggestion dropdown on any outside click.
   useEffect(() => {
@@ -158,9 +239,11 @@ export default function MFProfitCalculator() {
       setNavs(series);
       setMeta(data.meta || null);
       setAssetClass(guessAssetClass(data.meta && data.meta.scheme_category));
-      // Seed the date range: earliest available NAV → latest available NAV.
+      // Seed the range: earliest available NAV → today. Where today has no NAV
+      // yet (weekend, holiday, or before the evening publish), the calculation
+      // falls back to the most recent one and says so in the results.
       setBuyDate(toISO(series[0].t));
-      setSellDate(toISO(series[series.length - 1].t));
+      setSellDate(todayISO());
     } catch {
       setNavs([]);
       setMeta(null);
@@ -312,12 +395,16 @@ export default function MFProfitCalculator() {
               onChange={e => {
                 const v = e.target.value;
                 setQuery(v); setShowList(true);
-                if (v.trim().length >= 3) setSearching(true); else setSearching(false);
+                loadCatalogue();
+                if (v.trim().length >= 3) setSearching(true); else { setSearching(false); setSearchedFor(''); }
                 runSearch(v);
               }}
-              onFocus={() => setShowList(true)}
+              onFocus={() => { setShowList(true); loadCatalogue(); }}
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             {searching && <p className="text-xs text-slate-400 mt-1">Searching…</p>}
+            {!searching && !catalogueLoaded && query.trim().length >= 3 && (
+              <p className="text-xs text-slate-400 mt-1">Showing partial matches — loading the full scheme list for better results…</p>
+            )}
 
             {showList && results.length > 0 && (
               <div className="absolute z-40 mt-1 w-full max-h-72 overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-lg">
@@ -329,8 +416,13 @@ export default function MFProfitCalculator() {
                 ))}
               </div>
             )}
-            {showList && !searching && query.trim().length >= 3 && results.length === 0 && !apiError && (
-              <p className="text-xs text-slate-400 mt-1">No schemes matched that name.</p>
+            {/* Only after a search for *this exact query* has finished — otherwise
+                this flashes "no schemes" while the first request is still in flight. */}
+            {showList && !searching && results.length === 0 && !apiError &&
+             searchedFor && searchedFor === query.trim() && (
+              <p className="text-xs text-slate-400 mt-1">
+                No schemes matched that name{!catalogueLoaded && ' yet — still loading the full list'}.
+              </p>
             )}
           </div>
 
@@ -352,16 +444,42 @@ export default function MFProfitCalculator() {
 
           {mode === 'lumpsum' ? (
             <div>
-              <label htmlFor="invest-amount" className="block text-sm font-semibold text-slate-700 mb-1">Investment Amount (₹)</label>
-              <input id="invest-amount" type="number" min="1" value={amount} onChange={e => setAmount(e.target.value)}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
+              <div className="flex justify-between mb-2">
+                <label htmlFor="invest-amount" className="text-sm font-semibold text-slate-700">Investment Amount</label>
+                <span className="text-sm font-bold text-brand-700">{fmt(Math.max(0, parseFloat(amount) || 0))}</span>
+              </div>
+              <input type="range" min="1000" max="10000000" step="1000" aria-label="Investment amount slider"
+                value={Math.min(10000000, Math.max(1000, parseFloat(amount) || 1000))}
+                onChange={e => setAmount(e.target.value)} />
+              <div className="flex justify-between text-xs text-slate-400 mt-1">
+                <span>₹1K</span><span>₹1Cr</span>
+              </div>
+              <input id="invest-amount" type="text" inputMode="numeric" value={amount}
+                onChange={e => {
+                  const parsed = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
+                  setAmount(isNaN(parsed) ? '' : String(Math.min(10000000, parsed)));
+                }}
+                className="mt-2 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
               <p className="text-xs text-slate-400 mt-1">One-time amount invested on the buy date</p>
             </div>
           ) : (
             <div>
-              <label htmlFor="sip-amount" className="block text-sm font-semibold text-slate-700 mb-1">Monthly SIP Amount (₹)</label>
-              <input id="sip-amount" type="number" min="1" value={sipAmount} onChange={e => setSipAmount(e.target.value)}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
+              <div className="flex justify-between mb-2">
+                <label htmlFor="sip-amount" className="text-sm font-semibold text-slate-700">Monthly SIP Amount</label>
+                <span className="text-sm font-bold text-brand-700">{fmt(Math.max(0, parseFloat(sipAmount) || 0))}</span>
+              </div>
+              <input type="range" min="500" max="200000" step="500" aria-label="Monthly SIP amount slider"
+                value={Math.min(200000, Math.max(500, parseFloat(sipAmount) || 500))}
+                onChange={e => setSipAmount(e.target.value)} />
+              <div className="flex justify-between text-xs text-slate-400 mt-1">
+                <span>₹500</span><span>₹2L</span>
+              </div>
+              <input id="sip-amount" type="text" inputMode="numeric" value={sipAmount}
+                onChange={e => {
+                  const parsed = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
+                  setSipAmount(isNaN(parsed) ? '' : String(Math.min(200000, parsed)));
+                }}
+                className="mt-2 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
               <p className="text-xs text-slate-400 mt-1">Invested every month on the same date as the start date</p>
             </div>
           )}
@@ -371,14 +489,14 @@ export default function MFProfitCalculator() {
               <label htmlFor="buy-date" className="block text-sm font-semibold text-slate-700 mb-1">
                 {mode === 'lumpsum' ? 'Buy Date' : 'SIP Start Date'}
               </label>
-              <input id="buy-date" type="date" value={buyDate} onChange={e => setBuyDate(e.target.value)}
+              <input id="buy-date" type="date" max={todayISO()} value={buyDate} onChange={e => setBuyDate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
             <div>
               <label htmlFor="sell-date" className="block text-sm font-semibold text-slate-700 mb-1">
                 {mode === 'lumpsum' ? 'Sell Date' : 'SIP End / Redeem Date'}
               </label>
-              <input id="sell-date" type="date" value={sellDate} onChange={e => setSellDate(e.target.value)}
+              <input id="sell-date" type="date" max={todayISO()} value={sellDate} onChange={e => setSellDate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
           </div>
