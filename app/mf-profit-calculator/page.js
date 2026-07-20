@@ -151,6 +151,14 @@ export default function MFProfitCalculator() {
   const [result, setResult] = useState(null);
   const [calcError, setCalcError] = useState('');
 
+  // Resolved after mount, never during render. These pages are statically
+  // pre-rendered, so calling todayISO() inline bakes the *build* date into the
+  // HTML — React does not patch the attribute on hydration, so from the day
+  // after a deploy the date inputs cap at a date already in the past and the
+  // browser marks them invalid ("Value must be 20/07/2026 or earlier").
+  const [today, setToday] = useState('');
+  useEffect(() => { setToday(todayISO()); }, []);
+
   const boxRef = useRef(null);
   const allSchemes = useRef(null);      // full catalogue once loaded
   const catalogueReq = useRef(null);    // in-flight catalogue promise
@@ -489,14 +497,14 @@ export default function MFProfitCalculator() {
               <label htmlFor="buy-date" className="block text-sm font-semibold text-slate-700 mb-1">
                 {mode === 'lumpsum' ? 'Buy Date' : 'SIP Start Date'}
               </label>
-              <input id="buy-date" type="date" max={todayISO()} value={buyDate} onChange={e => setBuyDate(e.target.value)}
+              <input id="buy-date" type="date" max={today || undefined} value={buyDate} onChange={e => setBuyDate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
             <div>
               <label htmlFor="sell-date" className="block text-sm font-semibold text-slate-700 mb-1">
                 {mode === 'lumpsum' ? 'Sell Date' : 'SIP End / Redeem Date'}
               </label>
-              <input id="sell-date" type="date" max={todayISO()} value={sellDate} onChange={e => setSellDate(e.target.value)}
+              <input id="sell-date" type="date" max={today || undefined} value={sellDate} onChange={e => setSellDate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
           </div>

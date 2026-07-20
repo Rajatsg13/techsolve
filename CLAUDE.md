@@ -106,4 +106,25 @@ The calculators encode tax rules that change with each Budget. Current basis (FY
 - **Debt / non-equity funds** — long-term threshold is **24 months** (cut from 36 by the Finance Act 2024 for transfers on or after 23 July 2024), LTCG at 12.5% with no indexation; short-term added to income and taxed at slab.
 - Surcharge and the 4% health & education cess are **not** modelled anywhere.
 
-`/mf-profit-calculator` is the only page that calls a third-party API: **MFapi.in** (`api.mfapi.in`, no auth, permissive CORS) for scheme search and NAV history. It returns dates as `DD-MM-YYYY`, which `Date.parse` cannot read — parse manually. NAV lookups resolve to the most recent value **on or before** the requested date, since funds publish nothing on weekends and holidays. Asset class is guessed from `meta.scheme_category` and is user-overridable.
+`/mf-profit-calculator` calls **MFapi.in** (`api.mfapi.in`, no auth, permissive CORS) for scheme search and NAV history. It returns dates as `DD-MM-YYYY`, which `Date.parse` cannot read — parse manually. NAV lookups resolve to the most recent value **on or before** the requested date, since funds publish nothing on weekends and holidays. Asset class is guessed from `meta.scheme_category` and is user-overridable.
+
+MFapi's `/mf/search` endpoint caps at **15 unranked rows**, which buries obvious matches — `?q=HDFC` never returns HDFC Flexi Cap. The page therefore fetches the full `/mf` catalogue once (~37k schemes, ~470 KB gzipped) on first interaction and ranks locally. Do not "simplify" this back to the search endpoint.
+
+## Runtime network dependencies
+
+Tool logic runs in the browser, but **six pages fetch from the network at runtime** — worth knowing before claiming the site is fully offline-capable:
+
+| Page | Host | What |
+|---|---|---|
+| `mf-profit-calculator` | `api.mfapi.in` | Scheme catalogue + NAV history |
+| `pdf-compress` | `cdn.jsdelivr.net` | `mupdf@1.26.4` |
+| `pdf-to-word` | `cdnjs.cloudflare.com` | `pdf.js@3.11.174` + worker |
+| `pdf-ocr` | `unpkg.com` | pdf.js worker (version from bundled `pdfjs-dist`) |
+| `pdf-to-jpg` | `unpkg.com` | pdf.js worker (same) |
+| `html-to-pdf` | `cdnjs.cloudflare.com` | `html2pdf@0.10.1` |
+
+The unpkg URLs interpolate `pdfjsLib.version`, so they track whatever `pdfjs-dist` is installed (currently 3.11.174) — bumping that package silently changes the fetched worker URL. All other tools are genuinely local-only.
+
+## Static export and time
+
+Pages are pre-rendered at build time, so **anything derived from the current date must be resolved after mount**, not during render. Calling a `today()` helper inline bakes the build date into the HTML, and React does not patch the attribute on hydration — a `max` on a date input then caps at a date in the past and the browser marks the field invalid. Use `useState('')` + `useEffect`, and treat the empty first-render value as "no constraint yet".
