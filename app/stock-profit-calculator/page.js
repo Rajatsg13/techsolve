@@ -125,18 +125,18 @@ export default function StockProfitCalculator() {
         <div className="space-y-4">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Buy Price per Share (₹)</label>
-              <input type="number" min="0" step="0.01" value={buyPrice} onChange={e => setBuyPrice(e.target.value)}
+              <label htmlFor="buy-price" className="block text-sm font-semibold text-slate-700 mb-1">Buy Price per Share (₹)</label>
+              <input id="buy-price" type="number" min="0" step="0.01" value={buyPrice} onChange={e => setBuyPrice(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Sell Price per Share (₹)</label>
-              <input type="number" min="0" step="0.01" value={sellPrice} onChange={e => setSellPrice(e.target.value)}
+              <label htmlFor="sell-price" className="block text-sm font-semibold text-slate-700 mb-1">Sell Price per Share (₹)</label>
+              <input id="sell-price" type="number" min="0" step="0.01" value={sellPrice} onChange={e => setSellPrice(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Quantity (shares)</label>
-              <input type="number" min="1" step="1" value={qty} onChange={e => setQty(e.target.value)}
+              <label htmlFor="quantity" className="block text-sm font-semibold text-slate-700 mb-1">Quantity (shares)</label>
+              <input id="quantity" type="number" min="1" step="1" value={qty} onChange={e => setQty(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
             {!valid && (
@@ -167,8 +167,8 @@ export default function StockProfitCalculator() {
 
                 {chargeFields.map(({ k, label, hint, step }) => (
                   <div key={k}>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">{label}</label>
-                    <input type="number" min="0" step={step} value={charges[k]} onChange={setCharge(k)}
+                    <label htmlFor={`charge-${k}`} className="block text-xs font-semibold text-slate-600 mb-1">{label}</label>
+                    <input id={`charge-${k}`} type="number" min="0" step={step} value={charges[k]} onChange={setCharge(k)}
                       className={inputCls} />
                     <p className="text-xs text-slate-400 mt-0.5">{hint}</p>
                   </div>
@@ -212,22 +212,22 @@ export default function StockProfitCalculator() {
                 </div>
                 {term === 'short' ? (
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">STCG Tax Rate (%)</label>
-                    <input type="number" min="0" step="0.1" value={stcgRate} onChange={e => setStcgRate(e.target.value)}
+                    <label htmlFor="stcg-rate" className="block text-xs font-semibold text-slate-600 mb-1">STCG Tax Rate (%)</label>
+                    <input id="stcg-rate" type="number" min="0" step="0.1" value={stcgRate} onChange={e => setStcgRate(e.target.value)}
                       className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
                     <p className="text-xs text-slate-400 mt-0.5">20% on listed equity since 23 July 2024</p>
                   </div>
                 ) : (
                   <>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">LTCG Tax Rate (%)</label>
-                      <input type="number" min="0" step="0.1" value={ltcgRate} onChange={e => setLtcgRate(e.target.value)}
+                      <label htmlFor="ltcg-rate" className="block text-xs font-semibold text-slate-600 mb-1">LTCG Tax Rate (%)</label>
+                      <input id="ltcg-rate" type="number" min="0" step="0.1" value={ltcgRate} onChange={e => setLtcgRate(e.target.value)}
                         className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
                       <p className="text-xs text-slate-400 mt-0.5">12.5% without indexation since 23 July 2024</p>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">LTCG Exemption (₹ per year)</label>
-                      <input type="number" min="0" step="1000" value={exemption} onChange={e => setExemption(e.target.value)}
+                      <label htmlFor="ltcg-exemption" className="block text-xs font-semibold text-slate-600 mb-1">LTCG Exemption (₹ per year)</label>
+                      <input id="ltcg-exemption" type="number" min="0" step="1000" value={exemption} onChange={e => setExemption(e.target.value)}
                         className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
                       <p className="text-xs text-slate-400 mt-0.5">
                         ₹1.25 lakh per financial year, shared across all your equity LTCG

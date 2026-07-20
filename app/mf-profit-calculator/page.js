@@ -305,9 +305,9 @@ export default function MFProfitCalculator() {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-5">
           {/* Scheme search */}
           <div ref={boxRef} className="relative">
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Mutual Fund Scheme</label>
+            <label htmlFor="scheme-search" className="block text-sm font-semibold text-slate-700 mb-1">Mutual Fund Scheme</label>
             <input
-              type="text" value={query} autoComplete="off"
+              id="scheme-search" type="text" value={query} autoComplete="off"
               placeholder="Type at least 3 letters, e.g. Parag Parikh Flexi Cap"
               onChange={e => {
                 const v = e.target.value;
@@ -352,15 +352,15 @@ export default function MFProfitCalculator() {
 
           {mode === 'lumpsum' ? (
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Investment Amount (₹)</label>
-              <input type="number" min="1" value={amount} onChange={e => setAmount(e.target.value)}
+              <label htmlFor="invest-amount" className="block text-sm font-semibold text-slate-700 mb-1">Investment Amount (₹)</label>
+              <input id="invest-amount" type="number" min="1" value={amount} onChange={e => setAmount(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
               <p className="text-xs text-slate-400 mt-1">One-time amount invested on the buy date</p>
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Monthly SIP Amount (₹)</label>
-              <input type="number" min="1" value={sipAmount} onChange={e => setSipAmount(e.target.value)}
+              <label htmlFor="sip-amount" className="block text-sm font-semibold text-slate-700 mb-1">Monthly SIP Amount (₹)</label>
+              <input id="sip-amount" type="number" min="1" value={sipAmount} onChange={e => setSipAmount(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
               <p className="text-xs text-slate-400 mt-1">Invested every month on the same date as the start date</p>
             </div>
@@ -368,17 +368,17 @@ export default function MFProfitCalculator() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label htmlFor="buy-date" className="block text-sm font-semibold text-slate-700 mb-1">
                 {mode === 'lumpsum' ? 'Buy Date' : 'SIP Start Date'}
               </label>
-              <input type="date" value={buyDate} onChange={e => setBuyDate(e.target.value)}
+              <input id="buy-date" type="date" value={buyDate} onChange={e => setBuyDate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label htmlFor="sell-date" className="block text-sm font-semibold text-slate-700 mb-1">
                 {mode === 'lumpsum' ? 'Sell Date' : 'SIP End / Redeem Date'}
               </label>
-              <input type="date" value={sellDate} onChange={e => setSellDate(e.target.value)}
+              <input id="sell-date" type="date" value={sellDate} onChange={e => setSellDate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
             </div>
           </div>
@@ -403,8 +403,8 @@ export default function MFProfitCalculator() {
 
           {assetClass === 'debt' && (
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Your Income Tax Slab (%)</label>
-              <input type="number" min="0" max="45" value={slabRate} onChange={e => setSlabRate(e.target.value)}
+              <label htmlFor="slab-rate" className="block text-sm font-semibold text-slate-700 mb-1">Your Income Tax Slab (%)</label>
+              <input id="slab-rate" type="number" min="0" max="45" value={slabRate} onChange={e => setSlabRate(e.target.value)}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400" />
               <p className="text-xs text-slate-400 mt-1">Used only for short-term debt gains, which are taxed at slab</p>
             </div>

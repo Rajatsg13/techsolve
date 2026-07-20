@@ -32,6 +32,8 @@ const TOOL_PAGES = [
   { path: '/fire-calculator/', title: 'FIRE' },
   { path: '/graham-number-calculator/', title: 'Graham' },
   { path: '/sharpe-ratio-calculator/', title: 'Sharpe' },
+  { path: '/stock-profit-calculator/', title: 'Stock Profit' },
+  { path: '/mf-profit-calculator/', title: 'MF Profit' },
   // Info pages
   { path: '/about/', title: 'About' },
   { path: '/contact/', title: 'Contact' },
