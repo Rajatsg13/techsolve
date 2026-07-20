@@ -128,3 +128,14 @@ The unpkg URLs interpolate `pdfjsLib.version`, so they track whatever `pdfjs-dis
 ## Static export and time
 
 Pages are pre-rendered at build time, so **anything derived from the current date must be resolved after mount**, not during render. Calling a `today()` helper inline bakes the build date into the HTML, and React does not patch the attribute on hydration — a `max` on a date input then caps at a date in the past and the browser marks the field invalid. Use `useState('')` + `useEffect`, and treat the empty first-render value as "no constraint yet".
+
+## Web3Forms (contact form + feedback widget)
+
+The access key lives in exactly one place — `app/lib/web3forms.js` — and both `/contact` and `app/components/FeedbackWidget.js` submit through its `submitToWeb3Forms()` helper. Do not inline a second `fetch('https://api.web3forms.com/submit', ...)` anywhere; import the helper.
+
+Two things that matter if you touch this code:
+
+- **A `200` response can still mean failure.** Web3Forms returns HTTP 200 with `{"success": false, "message": "..."}` on a rejected submission (bad key, spam heuristics, etc.). Checking `res.ok` alone is not enough — `submitToWeb3Forms()` throws on `data.success === false` too.
+- **Never show a success state without confirming the request actually succeeded.** `/contact` previously called `preventDefault()`, set `sent = true`, and submitted nothing — every visitor who used it for months believed their message was sent when it never left the browser. The key was documented in `PROJECT_INSTRUCTIONS.md` but wired into no code. If you add another form on this site, treat "does the success message require a resolved, checked response" as a hard requirement, not a nice-to-have.
+
+**Verification history**: both the contact form and the feedback widget were confirmed delivering real mail by live tests on 20 Jul 2026 — the first time either was actually verified end-to-end, as opposed to assumed from the docs. Direct requests to `api.web3forms.com` from the Claude Code sandbox get HTTP 403'd by Web3Forms' own bot detection (confirmed IP/fingerprint-based, not a domain check — spoofing `Origin: https://techsolve44.com` made no difference). So automated verification from this environment is not possible; a real submission from a real browser, followed by checking the inbox, is the only way to confirm this integration works.
