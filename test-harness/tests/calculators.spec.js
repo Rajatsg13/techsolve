@@ -330,11 +330,20 @@ test.describe('@calc MF Profit Calculator — lump sum', () => {
     await expect(page.getByLabel('Buy Date')).toHaveAttribute('max', iso);
   });
 
+  // Role-scoped: the slider and the text box share a label prefix, so a bare
+  // getByLabel matches both.
   test('the amount slider and text field stay in sync', async ({ page }) => {
-    const box = page.getByLabel('Investment Amount');
-    await box.fill('250000');
+    await page.getByRole('textbox', { name: 'Investment Amount' }).fill('250000');
     await page.waitForTimeout(300);
     await expect(page.getByText('₹2,50,000').first()).toBeVisible();
+    await expect(page.getByRole('slider', { name: /Investment amount/i })).toHaveValue('250000');
+  });
+
+  test('the slider drives the text field', async ({ page }) => {
+    await page.getByRole('slider', { name: /Investment amount/i }).fill('500000');
+    await page.waitForTimeout(300);
+    await expect(page.getByRole('textbox', { name: 'Investment Amount' })).toHaveValue('500000');
+    await expect(page.getByText('₹5,00,000').first()).toBeVisible();
   });
 
   test('computes gain, XIRR and holding period', async ({ page }) => {
@@ -396,7 +405,8 @@ test.describe('@calc MF Profit Calculator — SIP', () => {
     await pickScheme(page);
 
     await page.getByRole('button', { name: 'SIP', exact: true }).click();
-    await page.getByLabel('Buy Date').fill('2021-07-19');
+    // The label reads "SIP Start Date" in this mode, so address the field by id.
+    await page.locator('#buy-date').fill('2021-07-19');
     await page.getByRole('button', { name: 'Calculate Profit' }).click();
     await page.waitForTimeout(1500);
 
@@ -414,6 +424,6 @@ test.describe('@calc MF Profit Calculator — SIP', () => {
 
     await expect(page.getByText('SIP Start Date')).toBeVisible();
     await expect(page.getByText('SIP End / Redeem Date')).toBeVisible();
-    await expect(page.getByLabel('Monthly SIP Amount')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Monthly SIP Amount' })).toBeVisible();
   });
 });
