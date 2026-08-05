@@ -2,6 +2,7 @@ import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FeedbackWidget from './components/FeedbackWidget';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata = {
   metadataBase: new URL('https://techsolve44.com'),
@@ -67,6 +68,7 @@ export default function RootLayout({ children }) {
           gtag('js', new Date());
           gtag('config', 'G-FFVH7DK4LD');
         `}} />
+        <SpeedInsights />
       </body>
     </html>
   );
