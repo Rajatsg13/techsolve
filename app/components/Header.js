@@ -1,49 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-
-const navGroups = [
-  {
-    label: 'PDF Tools',
-    items: [
-      { label: '🔗 Merge PDF',        href: '/pdf-merge' },
-      { label: '✂️ Split PDF',        href: '/pdf-split' },
-      { label: '📑 Organize Pages',   href: '/pdf-organize' },
-      { label: '🗜️ Compress PDF',     href: '/pdf-compress' },
-      { label: '📄 PDF to Word',      href: '/pdf-to-word' },
-      { label: '📝 Word to PDF',      href: '/word-to-pdf' },
-      { label: '🖼️ PDF to JPG',       href: '/pdf-to-jpg' },
-      { label: '💧 Watermark PDF',    href: '/pdf-watermark' },
-      { label: '🔢 Add Page Numbers', href: '/pdf-page-numbers' },
-      { label: '🌐 HTML to PDF',      href: '/html-to-pdf' },
-      { label: '🔍 OCR PDF',          href: '/pdf-ocr' },
-      { label: '🔓 Remove Password',   href: '/pdf-unlock' },
-    ],
-  },
-  {
-    label: 'Image Tools',
-    items: [
-      { label: '🖼️ Image to PDF',     href: '/image-to-pdf' },
-      { label: '📐 Image Resizer',    href: '/image-resize' },
-      { label: '📷 Scan to PDF',      href: '/scan-to-pdf' },
-    ],
-  },
-  {
-    label: 'Calculators',
-    items: [
-      { label: '🏦 EMI Calculator',        href: '/emi-calculator' },
-      { label: '📈 SIP Calculator',         href: '/sip-calculator' },
-      { label: '💰 Lumpsum Calculator',     href: '/lumpsum-calculator' },
-      { label: '🏛️ PPF Calculator',        href: '/ppf-calculator' },
-      { label: '🧾 Income Tax Calculator',    href: '/income-tax-calculator' },
-      { label: '📐 Graham Number Calculator', href: '/graham-number-calculator' },
-      { label: '🔥 FIRE Calculator',           href: '/fire-calculator' },
-      { label: '📊 Sharpe Ratio Calculator',   href: '/sharpe-ratio-calculator' },
-      { label: '📉 Stock Profit Calculator',   href: '/stock-profit-calculator' },
-      { label: '💹 MF Profit Calculator',      href: '/mf-profit-calculator' },
-    ],
-  },
-];
+import { getNavigationGroups } from '../lib/tools';
 
 function DropdownMenu({ group, onClose }) {
   return (
@@ -57,6 +15,11 @@ function DropdownMenu({ group, onClose }) {
     </div>
   );
 }
+
+// Tool links come from the central registry (app/lib/tools.js) so the nav
+// cannot drift from the homepage or sitemap. To hide the FinLearn set later,
+// call getNavigationGroups({ excludeFinLearn: true }).
+const navGroups = getNavigationGroups();
 
 export default function Header() {
   const [menuOpen, setMenuOpen]     = useState(false);

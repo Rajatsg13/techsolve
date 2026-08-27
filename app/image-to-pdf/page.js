@@ -2,13 +2,34 @@
 import { useState, useCallback } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
 
+const MAX_TOTAL_MB = 100;
+
+// pdf-lib can only embed PNG and JPEG. Anything else the browser can
+// decode (WebP, GIF, BMP…) is re-encoded to PNG on a canvas first.
+async function toEmbeddable(file) {
+  if (file.type === 'image/png' || file.type === 'image/jpeg') {
+    return { bytes: await file.arrayBuffer(), kind: file.type === 'image/png' ? 'png' : 'jpg' };
+  }
+  const bitmap = await createImageBitmap(file);
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  canvas.getContext('2d').drawImage(bitmap, 0, 0);
+  const blob = await new Promise((res, rej) =>
+    canvas.toBlob(b => (b ? res(b) : rej(new Error('could not re-encode image'))), 'image/png'));
+  return { bytes: await blob.arrayBuffer(), kind: 'png' };
+}
+
 export default function ImageToPDF() {
   const [images, setImages]   = useState([]);
   const [loading, setLoading] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [error, setError]     = useState('');
 
   const addImages = (files) => {
     const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
+    if (valid.length < files.length) setError('Some files were skipped — only image files are accepted.');
+    else setError('');
     const entries = valid.map(f => ({ file: f, url: URL.createObjectURL(f), name: f.name }));
     setImages(prev => [...prev, ...entries]);
   };
@@ -22,18 +43,26 @@ export default function ImageToPDF() {
 
   const convert = async () => {
     if (!images.length) return;
+    const totalBytes = images.reduce((s, i) => s + i.file.size, 0);
+    if (totalBytes > MAX_TOTAL_MB * 1048576) {
+      setError(`Total image size is too large — max ${MAX_TOTAL_MB} MB across all images.`);
+      return;
+    }
     setLoading(true);
+    setError('');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const pdfDoc = await PDFDocument.create();
       for (const img of images) {
-        const bytes = await img.file.arrayBuffer();
-        let pdfImg;
-        if (img.file.type === 'image/png') {
-          pdfImg = await pdfDoc.embedPng(bytes);
-        } else {
-          pdfImg = await pdfDoc.embedJpg(bytes);
+        let embeddable;
+        try {
+          embeddable = await toEmbeddable(img.file);
+        } catch (_) {
+          throw new Error(`"${img.name}" could not be read as an image. Remove it and try again.`);
         }
+        const pdfImg = embeddable.kind === 'png'
+          ? await pdfDoc.embedPng(embeddable.bytes)
+          : await pdfDoc.embedJpg(embeddable.bytes);
         const { width, height } = pdfImg;
         const page = pdfDoc.addPage([width, height]);
         page.drawImage(pdfImg, { x: 0, y: 0, width, height });
@@ -42,7 +71,9 @@ export default function ImageToPDF() {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'converted.pdf'; a.click();
-    } catch (e) { alert('Conversion failed: ' + e.message); }
+    } catch (e) {
+      setError('Conversion failed: ' + (e.message || 'unknown error'));
+    }
     setLoading(false);
   };
 
@@ -51,6 +82,9 @@ export default function ImageToPDF() {
       <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-1">Image to PDF Converter</h1>
       <p className="text-slate-500 mb-8 text-sm">Convert JPG, PNG, WebP images into a single PDF file. Free, fast, browser-based — your files never leave your device.</p>
 
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">⚠️ {error}</div>
+      )}
 
       {/* Drop zone */}
       <div

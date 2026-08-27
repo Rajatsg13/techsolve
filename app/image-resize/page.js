@@ -12,6 +12,8 @@ const PRESETS = [
 const fmtSize = (b) => b >= 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB';
 
 
+const MAX_DIM = 16384; // conservative canvas dimension limit shared by modern browsers
+
 export default function ImageResizer() {
   const [src, setSrc]         = useState(null);
   const [origW, setOrigW]     = useState(0);
@@ -24,13 +26,17 @@ export default function ImageResizer() {
   const [quality, setQuality] = useState(85);
   const [outSize, setOutSize] = useState(null);
   const [outUrl, setOutUrl]   = useState(null);
+  const [error, setError]     = useState('');
   const imgRef = useRef(null);
 
   const onFile = (file) => {
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setError('Please upload an image file (JPG, PNG or WebP).'); return; }
+    setError('');
     setOrigSize(file.size);
     setOutUrl(null); setOutSize(null);
     const reader = new FileReader();
+    reader.onerror = () => setError('Could not read this file. It may be corrupt.');
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
@@ -38,6 +44,7 @@ export default function ImageResizer() {
         setWidth(String(img.width)); setHeight(String(img.height));
         setSrc(e.target.result);
       };
+      img.onerror = () => setError('This file could not be decoded as an image. It may be corrupt or an unsupported format.');
       img.src = e.target.result;
       imgRef.current = img;
     };
@@ -57,15 +64,25 @@ export default function ImageResizer() {
 
   const resize = useCallback(() => {
     if (!imgRef.current) return;
-    const canvas = document.createElement('canvas');
-    canvas.width  = parseInt(width)  || origW;
-    canvas.height = parseInt(height) || origH;
-    canvas.getContext('2d').drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
-    const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
-    canvas.toBlob((blob) => {
-      setOutSize(blob.size);
-      setOutUrl(URL.createObjectURL(blob));
-    }, mime, quality / 100);
+    const w = parseInt(width)  || origW;
+    const h = parseInt(height) || origH;
+    if (w < 1 || h < 1) { setError('Width and height must be at least 1 pixel.'); return; }
+    if (w > MAX_DIM || h > MAX_DIM) { setError(`Maximum output dimension is ${MAX_DIM}px.`); return; }
+    setError('');
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width  = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(imgRef.current, 0, 0, w, h);
+      const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
+      canvas.toBlob((blob) => {
+        if (!blob) { setError('Resize failed — the output image may be too large for your browser. Try smaller dimensions.'); return; }
+        setOutSize(blob.size);
+        setOutUrl(URL.createObjectURL(blob));
+      }, mime, quality / 100);
+    } catch (e) {
+      setError('Resize failed: ' + (e.message || 'unknown error'));
+    }
   }, [width, height, format, quality, origW, origH]);
 
   return (
@@ -73,6 +90,9 @@ export default function ImageResizer() {
       <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-1">Image Resizer</h1>
       <p className="text-slate-500 mb-8 text-sm">Resize JPG, PNG or WebP images. Change format and quality. 100% browser-based.</p>
 
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">⚠️ {error}</div>
+      )}
 
       {/* Drop zone */}
       {!src && (

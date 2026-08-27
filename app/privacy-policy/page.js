@@ -1,8 +1,9 @@
-export const metadata = {
-  alternates: { canonical: '/privacy-policy/' },
+import { toolMetadata } from '../lib/toolMeta';
+
+export const metadata = toolMetadata('/privacy-policy/', {
   title: 'Privacy Policy — TechSolve44',
   description: 'Privacy policy for TechSolve44, a division of GDB Advisories LLP — how we handle your data (spoiler: we don\'t collect any).',
-};
+});
 
 export default function PrivacyPolicy() {
   return (

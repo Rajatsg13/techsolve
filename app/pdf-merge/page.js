@@ -1,12 +1,14 @@
 'use client';
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import ToolContent from '../components/tool-content/ToolContent';
+import { getToolContent } from '../content/tools';
+import { MAX_FILES, MAX_FILE_MB, MAX_TOTAL_MB } from './limits';
 
-const MAX_FILES      = 20;
-const MAX_FILE_MB    = 30;          // per file
-const MAX_TOTAL_MB   = 100;         // total across all files
 const MAX_FILE_BYTES  = MAX_FILE_MB  * 1024 * 1024;
 const MAX_TOTAL_BYTES = MAX_TOTAL_MB * 1024 * 1024;
+
+const content = getToolContent('pdf-merge');
 
 const fmtSize = (bytes) => {
   if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
@@ -81,7 +83,9 @@ export default function PDFMerge() {
   return (
     <div className="tool-container">
       <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-1">Merge PDF Files</h1>
-      <p className="text-slate-500 mb-2 text-sm">Combine multiple PDFs into one. Reorder pages before merging. 100% private — runs in your browser.</p>
+      <p className="text-slate-500 mb-2 text-sm">
+        {content?.outcome ?? 'Combine multiple PDFs into one. Reorder pages before merging. 100% private — runs in your browser.'}
+      </p>
 
       {/* Limits badge */}
       <div className="flex flex-wrap gap-2 mb-8">
@@ -168,40 +172,9 @@ export default function PDFMerge() {
         <p className="text-center text-xs text-slate-400 mt-2">Processing happens entirely in your browser. Large files may take 10–30 seconds.</p>
       )}
 
-      <div className="mt-10 bg-slate-50 rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-slate-800 mb-4">How to Merge PDFs</h2>
-        <ol className="space-y-3">
-          {[
-            'Upload 2 or more PDF files using the button above.',
-            'Reorder files using the ↑ ↓ arrows — the order here is the page order in the merged PDF.',
-            'Click Merge and your combined PDF downloads instantly.',
-          ].map((s, i) => (
-            <li key={i} className="flex gap-3 text-sm text-slate-600">
-              <span className="w-6 h-6 flex-shrink-0 rounded-full bg-brand-700 text-white text-xs font-bold flex items-center justify-center mt-0.5">{i+1}</span>{s}
-            </li>
-          ))}
-        </ol>
-      </div>
-
       <CrossBrandCard pageSlug="pdf-merge" />
-      <section className="mt-10">
-        <h2 className="text-xl font-bold text-slate-800 mb-4">Frequently Asked Questions</h2>
-        <div className="space-y-3">
-          {[
-            ['How many PDFs can I merge?', `You can merge up to ${MAX_FILES} PDFs at once. Need more? Download the merged file, then merge it again with additional files.`],
-            ['Is there a file size limit?', `Yes — max ${MAX_FILE_MB} MB per file and ${MAX_TOTAL_MB} MB total. This ensures reliable merging across all devices and browsers. For very large catalogs (100 MB+), consider splitting them first using our PDF Compress tool.`],
-            ['Will the merged PDF lose quality?', 'No — pdf-lib copies pages at their original resolution. No re-compression or quality loss occurs.'],
-            ['Is my data safe?', 'Yes. Everything runs inside your browser — your files are never uploaded to any server.'],
-          ].map(([q, a]) => (
-            <details key={q} className="faq-item bg-white border border-slate-100 rounded-xl overflow-hidden">
-              <summary className="px-5 py-4 font-semibold text-slate-700 text-sm flex justify-between items-center">
-                {q}<span className="text-brand-600 text-lg faq-icon"></span>
-              </summary>
-              <div className="px-5 pb-4 text-sm text-slate-600">{a}</div>
-            </details>
-          ))}
-        </div>
-      </section>
+
+      <ToolContent content={content} />
     </div>
   );
 }

@@ -99,7 +99,10 @@ export default function PDFOcr() {
         const canvas   = document.createElement('canvas');
         canvas.width   = viewport.width;
         canvas.height  = viewport.height;
-        await srcPage.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        // intent: 'print' — display-intent rendering runs on requestAnimationFrame,
+        // which browsers suspend in hidden tabs; a user who switches tabs during
+        // a slow OCR run would hang forever. Print intent uses timeouts.
+        await srcPage.render({ canvasContext: canvas.getContext('2d'), viewport, intent: 'print' }).promise;
 
         // Run OCR — we need word-level bounding boxes
         const { data } = await worker.recognize(canvas);

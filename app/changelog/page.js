@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import { changelog } from '../lib/changelog';
+import { toolMetadata } from '../lib/toolMeta';
 
-export const metadata = {
-  alternates: { canonical: '/changelog/' },
+export const metadata = toolMetadata('/changelog/', {
   // Root layout applies the '%s | TechSolve44' template — do not append the
   // suffix here too. (about/contact/privacy/terms do append it and end up with
   // a doubled "TechSolve44 | TechSolve44" in the rendered <title>; pre-existing,
   // left alone here since fixing it is out of scope for this page.)
   title: "What's New — Changelog",
   description: 'New tools, updates, and fixes on TechSolve44 — including changes made from user feedback.',
-};
+});
 
 const TAG_STYLES = {
   New: 'bg-green-100 text-green-700',

@@ -1,44 +1,11 @@
 import ToolCard from './components/ToolCard';
+import { getHomepageSections } from './lib/tools';
 
 export const metadata = {
   alternates: { canonical: '/' },
   title: 'TechSolve44 — Free Online Tools: PDF, Calculators, Image Tools',
   description: 'Free online PDF tools, EMI calculator, SIP calculator, image resizer and more. No signup. No download. Works in your browser.',
 };
-
-const pdfTools = [
-  { icon: '📄', title: 'PDF to Word',      description: 'Convert PDF files to editable Word documents instantly.', href: '/pdf-to-word', badge: 'Popular' },
-  { icon: '🖼️', title: 'PDF to JPG',       description: 'Convert each PDF page to a high-quality JPG image.', href: '/pdf-to-jpg' },
-  { icon: '🔗', title: 'Merge PDF',         description: 'Combine multiple PDF files into a single document.', href: '/pdf-merge' },
-  { icon: '✂️', title: 'Split PDF',         description: 'Split a PDF into pages or custom page ranges.', href: '/pdf-split' },
-  { icon: '📑', title: 'Organize Pages',    description: 'Reorder and delete pages in your PDF.', href: '/pdf-organize' },
-  { icon: '🗜️', title: 'Compress PDF',     description: 'Reduce PDF file size without losing quality.', href: '/pdf-compress' },
-  { icon: '📝', title: 'Word to PDF',       description: 'Convert Word (.docx) files to PDF format online.', href: '/word-to-pdf' },
-  { icon: '💧', title: 'Watermark PDF',     description: 'Add a custom text watermark to every page.', href: '/pdf-watermark' },
-  { icon: '🔢', title: 'Add Page Numbers',  description: 'Number every page of your PDF automatically.', href: '/pdf-page-numbers' },
-  { icon: '🌐', title: 'HTML to PDF',       description: 'Convert any HTML content to a PDF file.', href: '/html-to-pdf', badge: 'New' },
-  { icon: '🔍', title: 'OCR PDF',           description: 'Extract text from scanned PDFs using OCR.', href: '/pdf-ocr', badge: 'New' },
-  { icon: '🔓', title: 'Remove PDF Password', description: 'Remove owner or user password protection from any PDF.', href: '/pdf-unlock', badge: 'New' },
-];
-
-const imageTools = [
-  { icon: '🖼️', title: 'Image to PDF',  description: 'Convert JPG, PNG images into a PDF file easily.', href: '/image-to-pdf', badge: 'Popular' },
-  { icon: '📐', title: 'Image Resizer', description: 'Resize JPG, PNG or WebP to any size. Change format & quality.', href: '/image-resize' },
-  { icon: '📷', title: 'Scan to PDF',   description: 'Use your phone camera to scan documents to PDF.', href: '/scan-to-pdf' },
-];
-
-const calculators = [
-  { icon: '🏠', title: 'EMI Calculator',             description: 'Calculate EMI for home, car or personal loans instantly.', href: '/emi-calculator', badge: 'Popular' },
-  { icon: '📈', title: 'SIP Calculator',              description: 'Calculate returns on your monthly SIP investments.', href: '/sip-calculator', badge: 'Popular' },
-  { icon: '💰', title: 'Lumpsum Calculator',          description: 'Calculate returns on a one-time mutual fund investment.', href: '/lumpsum-calculator' },
-  { icon: '🏦', title: 'PPF Calculator',              description: 'Calculate your Public Provident Fund returns & maturity.', href: '/ppf-calculator' },
-  { icon: '🧾', title: 'Income Tax Calculator',       description: 'Calculate salary breakdown & income tax for FY 2025-26.', href: '/income-tax-calculator' },
-  { icon: '📐', title: 'Graham Number Calculator',    description: "Find a stock's intrinsic value using Benjamin Graham's formula.", href: '/graham-number-calculator', badge: 'New' },
-  { icon: '🔥', title: 'FIRE Calculator',             description: 'Calculate your Financial Independence number and years to early retirement.', href: '/fire-calculator', badge: 'New' },
-  { icon: '📊', title: 'Sharpe Ratio Calculator',     description: "Measure your portfolio's risk-adjusted return quality.", href: '/sharpe-ratio-calculator', badge: 'New' },
-  { icon: '📉', title: 'Stock Profit Calculator',     description: 'Net share trading profit after brokerage, STT, GST and capital gains tax.', href: '/stock-profit-calculator', badge: 'New' },
-  { icon: '💹', title: 'MF Profit Calculator',        description: 'Search any Indian mutual fund and see real profit, XIRR and tax on gains.', href: '/mf-profit-calculator', badge: 'New' },
-];
 
 const stats = [
   { value: '25+', label: 'Free Tools' },
@@ -78,44 +45,29 @@ export default function HomePage() {
       <div className="max-w-4xl mx-auto px-4 mt-6">
       </div>
 
-      <section className="max-w-7xl mx-auto px-4 pt-12 pb-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-lg">📄</div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-800">PDF Tools</h2>
-            <p className="text-sm text-slate-500">Convert, merge, split and edit PDF files for free</p>
+      {getHomepageSections().map((section, i) => (
+        <section key={section.id} className={`max-w-7xl mx-auto px-4 ${i === 0 ? 'pt-12' : 'pt-10'} pb-4`}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`w-8 h-8 rounded-lg ${section.homeIconBg} flex items-center justify-center text-lg`}>{section.homeIcon}</div>
+            <div>
+              <h2 className="text-xl font-bold text-slate-800">{section.homeTitle}</h2>
+              <p className="text-sm text-slate-500">{section.homeSubtitle}</p>
+            </div>
           </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {pdfTools.map(t => <ToolCard key={t.href} {...t} />)}
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4 pt-10 pb-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-lg">🧮</div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-800">Financial Calculators</h2>
-            <p className="text-sm text-slate-500">EMI, SIP, PPF, Income Tax and more</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {section.tools.map(t => (
+              <ToolCard
+                key={t.href}
+                icon={t.icon}
+                title={t.name}
+                description={t.shortDescription}
+                href={t.href}
+                badge={t.badge}
+              />
+            ))}
           </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {calculators.map(t => <ToolCard key={t.href} {...t} />)}
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4 pt-10 pb-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-lg">🖼️</div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-800">Image Tools</h2>
-            <p className="text-sm text-slate-500">Convert and resize images in your browser</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {imageTools.map(t => <ToolCard key={t.href} {...t} />)}
-        </div>
-      </section>
+        </section>
+      ))}
 
       <div className="max-w-4xl mx-auto px-4 mt-8 mb-4">
       </div>

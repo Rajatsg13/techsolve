@@ -2,18 +2,24 @@
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
 
+const MAX_MB = 25;
+
 export default function WordToPDF() {
   const [file, setFile]       = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState('');
 
   const handleFile = (f) => {
-    if (f && (f.name.endsWith('.docx') || f.name.endsWith('.doc'))) setFile(f);
-    else alert('Please upload a .docx file.');
+    if (!f) return;
+    if (!f.name.endsWith('.docx') && !f.name.endsWith('.doc')) { setError('Please upload a .docx file.'); return; }
+    if (f.size > MAX_MB * 1048576) { setError(`File too large — max ${MAX_MB} MB.`); return; }
+    setError(''); setFile(f);
   };
 
   const convert = async () => {
     if (!file) return;
     setLoading(true);
+    setError('');
     try {
       const mammoth = await import('mammoth');
       const bytes = await file.arrayBuffer();
@@ -92,7 +98,9 @@ export default function WordToPDF() {
       a.download = file.name.replace(/\.docx?$/, '.pdf');
       a.click();
       document.body.removeChild(iframe);
-    } catch (e) { alert('Conversion failed: ' + e.message); }
+    } catch (e) {
+      setError('Conversion failed: ' + (e.message || 'unknown error') + '. The file may be corrupt, or an old .doc format — save it as .docx in Word and try again.');
+    }
     setLoading(false);
   };
 
@@ -104,6 +112,9 @@ export default function WordToPDF() {
         ⚠️ Supports .docx files. Basic text & paragraph formatting is preserved.
       </div>
 
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">⚠️ {error}</div>
+      )}
 
       {!file ? (
         <div className="drop-zone mb-6"
@@ -112,7 +123,7 @@ export default function WordToPDF() {
           onClick={() => document.getElementById('wtp-input').click()}>
           <div className="text-4xl mb-3">📝</div>
           <p className="font-semibold text-slate-700">Drop your Word file here or <span className="text-brand-700 underline">browse</span></p>
-          <p className="text-xs text-slate-400 mt-1">Accepts .docx files</p>
+          <p className="text-xs text-slate-400 mt-1">Accepts .docx files · Max {MAX_MB} MB</p>
           <input id="wtp-input" type="file" accept=".docx,.doc" className="hidden"
             onChange={e => handleFile(e.target.files[0])} />
         </div>
@@ -123,7 +134,7 @@ export default function WordToPDF() {
             <p className="font-semibold text-slate-700 text-sm">{file.name}</p>
             <p className="text-xs text-slate-400">{(file.size / 1024).toFixed(1)} KB</p>
           </div>
-          <button onClick={() => setFile(null)} className="text-xs text-red-500 font-medium">Remove</button>
+          <button onClick={() => { setFile(null); setError(''); }} className="text-xs text-red-500 font-medium">Remove</button>
         </div>
       )}
 

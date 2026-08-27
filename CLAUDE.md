@@ -21,7 +21,7 @@ npm run test:pages             # page-load checks only (@pages)
 npm run test:pdf               # PDF tools only (@pdf)
 ```
 
-The project is configured for **static export** (`output: 'export'` in `next.config.mjs`). There is no server runtime — `npm run build` produces a fully static `out/` folder that can be dropped directly into Hostinger's `public_html`.
+The project is configured for **static export** (`output: 'export'` in `next.config.mjs`). There is no server runtime — `npm run build` produces a fully static `out/` folder. That folder is what Vercel serves; the `output: 'export'` / `trailingSlash` / `images.unoptimized` trio dates from the earlier Hostinger deployment and is retained deliberately so existing URLs do not move.
 
 ## Architecture
 
@@ -32,20 +32,103 @@ The project is configured for **static export** (`output: 'export'` in `next.con
 ### Routing & file structure
 
 Each tool lives in `app/<tool-name>/page.js`. Adding a new tool requires:
-1. `app/<tool-name>/page.js` — the page component
-2. `app/<tool-name>/layout.js` — per-tool SEO metadata via `toolMetadata()` plus the `SoftwareApplication` JSON-LD block
-3. Entry in the homepage grid (`app/page.js` — the relevant `pdfTools`, `imageTools`, or `calculators` array)
-4. Entry in `Header.js` (`navGroups`) and `Footer.js`
-5. A `<loc>` in `public/sitemap.xml` (trailing slash — `trailingSlash: true` means `/tool/` is the real URL)
-6. Slug in `app/lib/crossBrandConfig.js` `PAGE_BRAND_MAP` if the tool should carry a cross-brand card
-7. Entries in `test-harness/tests/pages.spec.js` (`TOOL_PAGES`) and, for calculators, `tests/calculators.spec.js`
+1. **An entry in `app/lib/tools.js`** — the central registry. This one entry feeds the homepage grid, the header navigation and the sitemap.
+2. `app/<tool-name>/page.js` — the page component
+3. `app/<tool-name>/layout.js` — per-tool SEO metadata via `toolMetadata()` plus the `SoftwareApplication` JSON-LD block
+4. Optional: slug in `app/lib/crossBrandConfig.js` `PAGE_BRAND_MAP` if the tool should carry a cross-brand card
+5. Optional: entry in `Footer.js`, which shows a hand-picked shortlist rather than the full catalogue
+6. Entries in `test-harness/tests/pages.spec.js` (`TOOL_PAGES`) and, for calculators, `tests/calculators.spec.js`
+
+Steps 1–3 are the required ones. Homepage, navigation and sitemap all derive from step 1 — never hand-edit a tool list in those files again.
+
+Rich page content is separate and optional — see **Tool page content** below.
 
 `toolMetadata()` in `app/lib/toolMeta.js` exists because Next.js merges `openGraph`/`twitter` *shallowly* across the layout tree — a tool that declares its own `openGraph` replaces the root's rather than merging, silently dropping the OG image. Always go through the helper.
 
+### Central tool registry (`app/lib/tools.js`)
+
+`app/lib/tools.js` is the single source of truth for the tool catalogue. It exports `TOOLS` (one entry per tool), `CATEGORY_META`, `SUPPORT_PAGES` and a set of selectors.
+
+Consumed by:
+- `app/page.js` — via `getHomepageSections()`
+- `app/components/Header.js` — via `getNavigationGroups()`
+- `app/sitemap.js` — via `TOOLS` + `SUPPORT_PAGES`
+
+**Tool status.** Every entry carries a `status`:
+
+| Status | Meaning |
+|---|---|
+| `ACTIVE` | Part of the forward-looking tool catalogue (documents + images). |
+| `FINLEARN_MIGRATION` | The 10 finance/investment calculators. Fully functional and still shipping, but not part of the future product direction — candidates to move to a separate FinLearn product. |
+
+`FINLEARN_MIGRATION` is a **classification, not a switch**. Nothing is deleted, redirected or hidden today, and the rendered site is unchanged. When the time comes to drop finance tools from the main experience, pass `{ excludeFinLearn: true }` to `getHomepageSections()` and `getNavigationGroups()` — that is the whole change. Do not delete the entries or their routes.
+
+**Ordering gotchas** (both predate the registry and are preserved on purpose):
+- The homepage orders categories PDF → Calculators → Images; the nav orders them PDF → Images → Calculators. Hence `HOMEPAGE_CATEGORY_ORDER` and `NAV_CATEGORY_ORDER`.
+- Within the PDF category the nav order differs from the homepage order, which is what the per-tool `navOrder` field encodes.
+
+**Deliberately *not* in the registry yet:** per-tool SEO metadata (still `toolMetadata()` in each `layout.js`) and per-tool rich content such as FAQs (still inline JSX). Folding those in is the intended next step, not this one.
+
+### Tool page content (`app/content/tools/`)
+
+Two registries, deliberately separate:
+
+| | |
+|---|---|
+| `app/lib/tools.js` | Catalogue facts — name, route, category, status. **Every** tool has an entry. Drives homepage, nav and sitemap. |
+| `app/content/tools/` | Page content — explanations, steps, FAQs, workflows. **Optional per tool.** Drives what a visitor reads. |
+
+Adoption is progressive. A tool with no content file renders exactly as before — `getToolContent()` returns `undefined` and `<ToolContent>` returns `null`. There are no empty headings and no errors. Partial content works too: omit a field and only that section disappears.
+
+`app/pdf-merge/` is the reference implementation.
+
+**Adding content for a tool**
+
+1. Create `app/content/tools/<slug>.js` with a default-exported object (copy `pdf-merge.js`).
+2. Register it in `app/content/tools/index.js`.
+3. In the tool's `page.js`:
+   ```js
+   import ToolContent from '../components/tool-content/ToolContent';
+   import { getToolContent } from '../content/tools';
+   const content = getToolContent('<slug>');
+   // …then, after the tool interface:
+   <ToolContent content={content} />
+   ```
+
+**Placement rule.** The heading, the one-line `outcome` and the tool interface stay in `page.js`, above `<ToolContent>`. A visitor must never scroll past an article to reach the tool.
+
+**Schema.** Every field optional except `slug`. Full reference in the header comment of `app/content/tools/index.js`:
+`outcome`, `whatItDoes` (paragraph array), `whenToUse`, `workplaceUses`, `howToSteps`, `tips` (all `{title, body}[]`), `faqs` (`{q, a}[]`), `relatedWorkflows`, `relatedTools`.
+
+**Related tools resolve through the registry.** Content files list **slugs only** — `['pdf-split', 'pdf-compress']`. Names, routes, icons and descriptions are looked up via `getToolBySlug()`, so a tool renamed in `app/lib/tools.js` updates every cross-reference. An unknown slug is skipped rather than rendering a dead link.
+
+**Related workflows** are structured content, not an engine:
+```js
+{ title, description, steps: [
+    { slug: 'pdf-organize', note: 'why this step' },   // links via the registry
+    { label: 'Review and submit', note: '…' },         // a step that is not a tool
+] }
+```
+
+**Writing standard.** Content must describe what the tool *actually* does — check the implementation before writing. The Merge PDF claims about bookmarks and form fields were verified against `pdf-lib`'s `copyPages()` output, not assumed. No marketing voice, no padding, and never repeat a point across sections.
+
+**Behavioural constants** that appear in content (limits, caps) should live in a shared module the tool and the content both import — see `app/pdf-merge/limits.js` — so documented limits cannot drift from enforced ones.
+
+### Reusable content components (`app/components/tool-content/`)
+
+- **ToolContent.js** — orchestrator. Renders every section the content object has, in a fixed order, skipping absent ones. One line in a page adds the whole structure.
+- **Section.js** — section wrapper (heading + spacing) and `ItemList` for `{title, body}` lists.
+- **HowToSteps.js** — numbered steps.
+- **FaqList.js** — accordion, reusing the existing `.faq-item` styles.
+- **RelatedTools.js** — resolves slugs via the registry.
+- **RelatedWorkflows.js** — workflow sequences.
+
+Simple prose and list sections are rendered inside `ToolContent` rather than split into single-purpose components; only sections with genuinely distinct presentation get their own file.
+
 ### Shared components (`app/components/`)
 
-- **Header.js** — sticky nav with hover dropdowns (desktop) and accordion (mobile). `navGroups` array is the single source of truth for nav links.
-- **Footer.js** — four-column footer with hardcoded link lists.
+- **Header.js** — sticky nav with hover dropdowns (desktop) and accordion (mobile). Nav links come from `getNavigationGroups()` in the registry; there is no local `navGroups` array any more.
+- **Footer.js** — four-column footer with hardcoded link lists. Intentionally a curated shortlist, not the full catalogue, so it does *not* read from the registry.
 - **ToolCard.js** — card used on homepage grid, accepts `{ icon, title, description, href, badge }`.
 
 ### Global CSS utilities (`app/globals.css`)
@@ -72,14 +155,35 @@ The site uses **Auto Ads**, not manual placements — the old `.ad-slot` placeho
 
 ## Deployment
 
-`.github/workflows/deploy.yml` runs on every push to `main`: it builds on GitHub Actions and FTPs `out/` to Hostinger `public_html/`. There is no manual upload step and no `site_files/` directory any more.
+**Vercel is the only deployment mechanism.** It builds from GitHub automatically. There is no manual upload step.
 
-Two things worth knowing:
+### Do not re-enable the Hostinger deployment
 
-- **The FTP step is conditional** — `if: ${{ env.FTP_HOST != '' }}`. If the FTP secrets are ever missing the run still goes green *without deploying*. A passing check is not proof the site updated; verify against the live URL.
-- **`dangerous-clean-slate: false`** — files not in the build are never deleted server-side. This protects `ads.txt` and Search Console verification files, but it also means old hashed CSS/JS accumulate rather than being cleaned up.
+The repository previously carried `.github/workflows/deploy.yml`, which built the site and FTP'd `out/` to Hostinger `public_html/` on every push to `main`. **That workflow has been deleted.**
 
-The build ID is pinned to `ts44`, so `_next/static/ts44/` paths are stable. The **CSS filename hash is not stable** — it changes whenever styles change. Nothing should ever hardcode it.
+Once Vercel began deploying from the same repository, the workflow meant a single `git push` published the site to two different hosts. Restoring it would resurrect that conflict — during a rebrand it would keep the old brand live on Hostinger while the new one shipped on Vercel. If a deployment pipeline is ever needed again, add it to Vercel, not GitHub Actions.
+
+**Still requires manual verification in GitHub** (not inspectable from the repository): the `FTP_HOST`, `FTP_USERNAME` and `FTP_PASSWORD` repository secrets may still exist, and the Hostinger account may still be serving the old build. Deleting the workflow stops future pushes reaching Hostinger, but does not remove the secrets or take down anything already published there.
+
+### `.htaccess` is inactive on Vercel
+
+`public/.htaccess` is retained but **has no effect**. Vercel does not read Apache configuration. It currently declares:
+- a `www.techsolve44.com` → non-www 301 redirect
+- one-year `Expires` cache headers for CSS, JS and WOFF2
+
+Neither is in force. Nothing errors — the file is simply ignored, which is exactly why this is easy to miss.
+
+**Any future redirect, rewrite or cache header must be implemented through Vercel** — either a `vercel.json` at the repository root or the project's domain settings in the Vercel dashboard. Note that `output: 'export'` means `redirects()` / `rewrites()` / `headers()` in `next.config.mjs` **cannot** be used; they require a server runtime.
+
+The file is kept for now as a record of the intended behaviour, and because the www→non-www rule will need a Vercel equivalent when the domain is next touched. `npm run build` still copies it into `out/`, which is harmless.
+
+### No `vercel.json`
+
+There is deliberately no `vercel.json`. Vercel auto-detects Next.js and handles `output: 'export'` correctly on its own; pinning `buildCommand` or `outputDirectory` by hand would risk overriding correct behaviour with a worse guess. Add one when there is something real to declare — redirects, headers, or region settings — not before.
+
+### Build ID
+
+The build ID is pinned to `ts44` in `next.config.mjs`, so `_next/static/ts44/` paths are stable. This was originally to keep paths stable across FTP deploys; on Vercel that concern no longer applies, and the override could be renamed or dropped. The **CSS filename hash is not stable** — it changes whenever styles change. Nothing should ever hardcode it.
 
 ## Tool pattern
 
@@ -110,6 +214,25 @@ The calculators encode tax rules that change with each Budget. Current basis (FY
 
 MFapi's `/mf/search` endpoint caps at **15 unranked rows**, which buries obvious matches — `?q=HDFC` never returns HDFC Flexi Cap. The page therefore fetches the full `/mf` catalogue once (~37k schemes, ~470 KB gzipped) on first interaction and ranks locally. Do not "simplify" this back to the search endpoint.
 
+## PDF compression engine — MuPDF removed
+
+`app/lib/pdfCompress.js` used to offer four modes. Two of them (`balanced`, `high`) downsampled every embedded image while keeping text selectable, and a third (`extreme`) flattened pages. All three were implemented with **MuPDF** (WASM), loaded at runtime from `cdn.jsdelivr.net`.
+
+**MuPDF is published under AGPL-3.0-or-later** (verified from the package metadata during the repository audit). Artifex dual-licenses it — AGPL or a paid commercial licence. Rather than carry that obligation into a commercial product, the dependency was removed outright.
+
+**What the tool offers now:**
+
+| Mode | Engine | Text | Notes |
+|---|---|---|---|
+| Lossless | `pdf-lib` (MIT) | Kept | Structural re-save. Nothing re-encoded. Saving depends entirely on how wastefully the source PDF was written — often small. |
+| Strong | `pdfjs-dist` (Apache-2.0) + Canvas + `pdf-lib` | **Lost** | Renders each page to JPEG and rebuilds the document. Large, reliable savings on scanned and image-heavy PDFs. |
+
+**What was lost:** image downsampling *with text preserved*. That genuinely requires a PDF **editing** engine — `pdf-lib` cannot decode image streams across the filters real PDFs use, and `pdf.js` is a renderer, not an editor. There is no way to reinstate that capability with the current dependency set.
+
+**If it is wanted back**, it is a deliberate engine decision, not a package swap. Keep any new engine behind this module's exported surface (`MODES` + `compressPdf`) so `app/pdf-compress/page.js` does not need to change. Do not reintroduce an AGPL engine without a licensing decision first.
+
+**Do not** reintroduce `mupdf` — not as an npm dependency, not as a CDN import, not as a bundled WASM asset.
+
 ## Runtime network dependencies
 
 Tool logic runs in the browser, but **six pages fetch from the network at runtime** — worth knowing before claiming the site is fully offline-capable:
@@ -117,7 +240,7 @@ Tool logic runs in the browser, but **six pages fetch from the network at runtim
 | Page | Host | What |
 |---|---|---|
 | `mf-profit-calculator` | `api.mfapi.in` | Scheme catalogue + NAV history |
-| `pdf-compress` | `cdn.jsdelivr.net` | `mupdf@1.26.4` |
+| `pdf-compress` | `unpkg.com` | pdf.js worker — **Strong mode only**; Lossless mode is fully offline |
 | `pdf-to-word` | `cdnjs.cloudflare.com` | `pdf.js@3.11.174` + worker |
 | `pdf-ocr` | `unpkg.com` | pdf.js worker (version from bundled `pdfjs-dist`) |
 | `pdf-to-jpg` | `unpkg.com` | pdf.js worker (same) |

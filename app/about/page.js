@@ -1,8 +1,9 @@
-export const metadata = {
-  alternates: { canonical: '/about/' },
+import { toolMetadata } from '../lib/toolMeta';
+
+export const metadata = toolMetadata('/about/', {
   title: 'About Us — TechSolve44',
   description: 'Learn about TechSolve44 — a free online tools platform for PDF conversion, financial calculators, image tools and more.',
-};
+});
 
 export default function AboutPage() {
   return (

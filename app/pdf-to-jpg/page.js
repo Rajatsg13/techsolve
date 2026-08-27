@@ -40,7 +40,10 @@ export default function PDFToJPG() {
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        // intent: 'print' — display-intent rendering runs on requestAnimationFrame,
+        // which browsers suspend in hidden tabs; a user who switches tabs
+        // mid-conversion would hang forever. Print intent uses timeouts.
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport, intent: 'print' }).promise;
         const dataUrl = canvas.toDataURL('image/jpeg', quality / 100);
         results.push({ dataUrl, page: i });
       }

@@ -1,76 +1,78 @@
-# TechSolve44 — Next.js Project
+# TechSolve44
 
-## Quick Start
+Free browser-based tools — PDF conversion and manipulation, image utilities, and financial calculators. Everything runs client-side; user files never leave the device.
+
+> **Note on naming.** A rebrand to *Tools by Decyfy* is planned. The visible brand, the domain and the finance-tool split have **not** happened yet — this repository is still TechSolve44 throughout. See `CLAUDE.md` for the tool-status model that prepares for that split.
+
+## Quick start
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Run locally
-npm run dev
-# Open http://localhost:3000
-
-# 3. Build for production
-npm run build
-npm start
+npm run dev          # http://localhost:3000
+npm run build        # static export → out/
+npm run lint
 ```
 
-## Deploy to Vercel (Free)
+Tests live in a separate package:
 
-1. Push this folder to a GitHub repo
-2. Go to vercel.com → New Project → Import your repo
-3. Vercel auto-detects Next.js — click Deploy
-4. Add your custom domain techsolve44.com in Vercel settings
-
-## Tier 1 Tools Included
-
-### Financial Calculators
-- `/emi-calculator` — Home/car/personal loan EMI
-- `/sip-calculator` — Monthly SIP returns
-- `/lumpsum-calculator` — One-time investment returns
-- `/ppf-calculator` — PPF maturity calculator
-- `/income-tax-calculator` — FY 2024-25, New + Old regime
-
-### PDF Tools
-- `/image-to-pdf` — JPG/PNG to PDF (browser-based)
-- `/pdf-merge` — Combine multiple PDFs
-- `/pdf-compress` — Reduce PDF size
-- `/pdf-to-word` — Extract text from PDF into .docx
-- `/word-to-pdf` — Convert .docx to PDF
-
-### Supporting Pages
-- `/about` — About page (required for AdSense)
-- `/contact` — Contact form
-- `/privacy-policy` — Privacy policy (required for AdSense)
-
-## AdSense Setup
-
-Replace the `[ AdSense — ... ]` placeholder divs in each page with your actual AdSense ad unit code:
-
-```jsx
-// Replace this:
-<div className="ad-slot h-24">[ AdSense — Leaderboard ]</div>
-
-// With this (your actual ad unit):
-<ins className="adsbygoogle"
-  style={{ display: 'block' }}
-  data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-  data-ad-slot="XXXXXXXXXX"
-  data-ad-format="auto">
-</ins>
+```bash
+cd test-harness
+npm install && npm run setup      # setup installs the Chromium binary
+BASE_URL=http://localhost:3000 npm test
 ```
 
-## Adding More Tools (Tier 2)
+> `npm run dev` and `npm run build` share the `.next/` directory. Running a build while the dev server is serving will corrupt it — stop one before starting the other.
 
-Each new tool = one new folder under `app/`:
-1. Create `app/tool-name/page.js`
-2. Add it to the homepage grid in `app/page.js`
-3. Add it to the Header and Footer links
+## Stack
 
-## Tech Stack
-- Next.js 14 (App Router)
-- Tailwind CSS
-- pdf-lib (PDF operations)
-- mammoth (Word reading)
-- docx (Word generation)
-- Recharts (charts in calculators)
+| | |
+|---|---|
+| Framework | Next.js 14.2.5, App Router |
+| Language | JavaScript (no TypeScript) |
+| Styling | Tailwind CSS 3.4 |
+| Output | Static export (`output: 'export'`) → `out/` |
+| Hosting | **Vercel**, deployed automatically from GitHub |
+
+## Deployment
+
+**Vercel is the only deployment mechanism.** Pushes to `main` deploy automatically.
+
+A GitHub Actions workflow that FTP-deployed to Hostinger has been removed — with Vercel building from the same repository it caused every push to publish to two hosts. **Do not re-add it.** Full context in `CLAUDE.md`.
+
+`public/.htaccess` is retained but **has no effect on Vercel**. Any redirect or cache header must go through `vercel.json` or the Vercel dashboard.
+
+## The tool catalogue
+
+`app/lib/tools.js` is the **single source of truth**. One entry there feeds the homepage grid, the header navigation and the sitemap.
+
+Adding a tool: add a registry entry, then create `app/<slug>/page.js` and `app/<slug>/layout.js`. Nothing else needs a manual list update.
+
+### Tool page content
+
+Rich page content (explanations, how-to steps, FAQs, workflows) lives separately in `app/content/tools/<slug>.js` and is **optional**. A tool without a content file renders exactly as before — the architecture supports progressive migration, one tool at a time.
+
+`app/pdf-merge/` is the reference implementation. Related tools and workflow steps reference registry slugs only, so names and URLs are never duplicated. See `CLAUDE.md` for the schema and how to add content to another tool.
+
+Each tool carries a `status`:
+
+- **`ACTIVE`** — the 15 document and image tools that form the forward-looking catalogue.
+- **`FINLEARN_MIGRATION`** — the 10 finance calculators. Fully functional and still shipping, but earmarked to move to a separate product later. This is a label only: nothing is hidden, deleted or redirected today.
+
+## Tools
+
+**Documents & PDF** — PDF to Word · PDF to JPG · Merge · Split · Organize Pages · Compress · Word to PDF · Watermark · Add Page Numbers · HTML to PDF · OCR · Remove Password
+
+**Images & Scanning** — Image to PDF · Image Resizer · Scan to PDF
+
+**Financial calculators** *(FinLearn migration candidates)* — EMI · SIP · Lumpsum · PPF · Income Tax · Graham Number · FIRE · Sharpe Ratio · Stock Profit · MF Profit
+
+## Privacy
+
+No tool uploads user files to a server. Six pages do fetch an engine or dataset from a CDN at runtime (pdf.js workers, Tesseract language data, MFAPI scheme data) — the files themselves are still processed locally. `CLAUDE.md` lists exactly which pages and why.
+
+## Contributing notes
+
+Two constraints worth knowing before making changes:
+
+- **Never add `export const metadata` to a tool `page.js`** — they are all `'use client'`, and it is a build error. Metadata belongs in the sibling `layout.js`, via `toolMetadata()`.
+- **Do not reintroduce MuPDF.** It was removed from PDF compression because it is AGPL-3.0-or-later. See `CLAUDE.md` for what replaced it and what capability was lost.

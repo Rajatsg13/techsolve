@@ -1,8 +1,9 @@
-export const metadata = {
-  alternates: { canonical: '/terms-of-service/' },
+import { toolMetadata } from '../lib/toolMeta';
+
+export const metadata = toolMetadata('/terms-of-service/', {
   title: 'Terms of Service — TechSolve44',
   description: 'Terms of Service for TechSolve44, a division of GDB Advisories LLP. Free browser-based tools. No account required.',
-};
+});
 
 export default function TermsOfService() {
   return (

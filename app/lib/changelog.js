@@ -1,6 +1,33 @@
 // Newest entry first. `date` (ISO) is the sort key; `displayDate` is what renders.
 export const changelog = [
   {
+    date: '2026-08-02',
+    displayDate: '02 Aug 2026',
+    tag: 'New',
+    title: 'PDF to Word — Exact Layout mode',
+    description: 'New conversion mode that keeps every page looking pixel-identical to the PDF (as full-page images, not editable text). Editable mode also gained centered/right alignment detection and true font sizes.',
+    link: '/pdf-to-word/',
+    quote: null,
+  },
+  {
+    date: '2026-08-02',
+    displayDate: '02 Aug 2026',
+    tag: 'Improved',
+    title: 'PDF to Word — much better tables',
+    description: 'Rebuilt table detection from user feedback: paragraphs no longer get chopped into fake tables, side-by-side tables split correctly, and spanning headers merge properly. Large PDFs no longer freeze the tab, and clear limits and error messages were added across the PDF and image tools.',
+    link: '/pdf-to-word/',
+    quote: null,
+  },
+  {
+    date: '2026-08-02',
+    displayDate: '02 Aug 2026',
+    tag: 'New',
+    title: 'Share buttons',
+    description: 'Every tool page now has quick share buttons — WhatsApp, X, LinkedIn, email or copy the link.',
+    link: null,
+    quote: null,
+  },
+  {
     date: '2026-07-20',
     displayDate: '20 Jul 2026',
     tag: 'New',
