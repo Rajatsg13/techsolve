@@ -1,19 +1,19 @@
 import Link from 'next/link';
-import { getToolBySlug } from '../../lib/tools';
+import { resolveRelatedTools } from '../../lib/tools';
 
 /**
  * Related tools, resolved from the central registry.
  *
  * Content files list slugs only — names, routes, icons and descriptions all
  * come from app/lib/tools.js, so renaming a tool in one place updates every
- * cross-reference. An unknown slug is skipped rather than rendering a dead
- * link, which keeps a typo from shipping a 404.
+ * cross-reference.
+ *
+ * Filtering lives in resolveRelatedTools() in the registry, not here: unknown
+ * slugs, the current tool, and FinLearn tools recommended from an ACTIVE page
+ * are all dropped there. This component only decides how the survivors look.
  */
 export default function RelatedTools({ slugs, currentSlug }) {
-  const tools = (slugs || [])
-    .filter(slug => slug !== currentSlug)
-    .map(getToolBySlug)
-    .filter(Boolean);
+  const tools = resolveRelatedTools(slugs, { currentSlug });
 
   if (!tools.length) return null;
 

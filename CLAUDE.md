@@ -32,9 +32,9 @@ The project is configured for **static export** (`output: 'export'` in `next.con
 ### Routing & file structure
 
 Each tool lives in `app/<tool-name>/page.js`. Adding a new tool requires:
-1. **An entry in `app/lib/tools.js`** — the central registry. This one entry feeds the homepage grid, the header navigation and the sitemap.
-2. `app/<tool-name>/page.js` — the page component
-3. `app/<tool-name>/layout.js` — per-tool SEO metadata via `toolMetadata()` plus the `SoftwareApplication` JSON-LD block
+1. **Build the tool** — `app/<tool-name>/page.js` and `app/<tool-name>/layout.js` (SEO metadata via `toolMetadata()` plus the `SoftwareApplication` JSON-LD block).
+2. **An entry in `app/lib/tools.js`** — the central registry. Assign a `category` from the five-category taxonomy and `status: STATUS.ACTIVE`. This one entry feeds the homepage grid, the header navigation and the sitemap.
+3. **Optionally, rich content** in `app/content/tools/<slug>.js`.
 4. Optional: slug in `app/lib/crossBrandConfig.js` `PAGE_BRAND_MAP` if the tool should carry a cross-brand card
 5. Optional: entry in `Footer.js`, which shows a hand-picked shortlist rather than the full catalogue
 6. Entries in `test-harness/tests/pages.spec.js` (`TOOL_PAGES`) and, for calculators, `tests/calculators.spec.js`
@@ -54,18 +54,41 @@ Consumed by:
 - `app/components/Header.js` — via `getNavigationGroups()`
 - `app/sitemap.js` — via `TOOLS` + `SUPPORT_PAGES`
 
+**Product taxonomy.** Five public categories, defined in `CATEGORY_META`:
+
+| Order | Category | Description | ACTIVE tools |
+|---|---|---|---|
+| 1 | **Documents & PDF** | Work with PDFs, documents and everyday file tasks. | 12 |
+| 2 | **File & Image** | Convert, resize and manage images and common files. | 3 |
+| 3 | **Data & Text** | Format, convert and work with structured data and text. | 0 |
+| 4 | **Business & Work** | Practical calculators and utilities for everyday work decisions. | 0 |
+| 5 | **Generators** | Create commonly used business and personal documents. | 0 |
+
+Plus one legacy category, `finance` (`legacy: true`), which the FinLearn tools still reference. It is kept out of public surfaces by **status**, not by category.
+
+The last three categories have no tools yet. They are defined so the taxonomy is ready, and the selectors drop empty categories, so they never render as empty headings. **Do not add placeholder or "coming soon" entries** — the live catalogue contains only tools that actually work. Planned tools belong in documentation, not in the registry.
+
+**Classification principle.** Tools are filed by **the artefact the user starts with**, not the one they end up with:
+
+- Holding a PDF or a document -> **Documents & PDF** (this includes Word to PDF and HTML to PDF: the split is documents vs images, not PDF vs non-PDF)
+- Holding images or photos -> **File & Image** (Image to PDF, Image Resizer, Scan to PDF)
+
+People browse by what they have in hand, and every planned File & Image tool is image-in. `PDF to JPG` is filed under Documents because the input is a PDF. Image to PDF and Scan to PDF are the genuinely arguable cases — see the note in `app/lib/tools.js`. Reclassifying one is a single-field edit.
+
 **Tool status.** Every entry carries a `status`:
 
 | Status | Meaning |
 |---|---|
-| `ACTIVE` | Part of the forward-looking tool catalogue (documents + images). |
-| `FINLEARN_MIGRATION` | The 10 finance/investment calculators. Fully functional and still shipping, but not part of the future product direction — candidates to move to a separate FinLearn product. |
+| `ACTIVE` | The public catalogue. Appears on the homepage, in the navigation, and in related-tool recommendations. |
+| `FINLEARN_MIGRATION` | The 10 finance/investment calculators. Routes keep working, pages stay in the sitemap and remain linked from the footer — but they are **excluded from the primary discovery surfaces**. Candidates to move to a separate FinLearn product. |
 
-`FINLEARN_MIGRATION` is a **classification, not a switch**. Nothing is deleted, redirected or hidden today, and the rendered site is unchanged. When the time comes to drop finance tools from the main experience, pass `{ excludeFinLearn: true }` to `getHomepageSections()` and `getNavigationGroups()` — that is the whole change. Do not delete the entries or their routes.
+**The discovery rule lives in the registry selectors, nowhere else.** `getHomepageSections()`, `getNavigationGroups()` and `getToolsByCategory()` exclude `FINLEARN_MIGRATION` **by default**, so call sites pass nothing and cannot forget. `resolveRelatedTools()` applies the same rule to content cross-links — an ACTIVE page cannot recommend a FinLearn tool even if a content file lists one, while a FinLearn page may still recommend its siblings.
 
-**Ordering gotchas** (both predate the registry and are preserved on purpose):
-- The homepage orders categories PDF → Calculators → Images; the nav orders them PDF → Images → Calculators. Hence `HOMEPAGE_CATEGORY_ORDER` and `NAV_CATEGORY_ORDER`.
-- Within the PDF category the nav order differs from the homepage order, which is what the per-tool `navOrder` field encodes.
+If a status check ever appears inside a component, the rule has leaked and belongs back in `app/lib/tools.js`.
+
+**Future FinLearn migration.** Do not delete these tools, change their routes, or edit their implementations. When they move, the work is: export the finance entries and their `app/<slug>/` directories to the new project, then add redirects. Nothing else in this codebase depends on them — `recharts` and `app/utils/sanitize.js` are used only by that group.
+
+**Ordering.** A single `order` field on each category drives every surface (`CATEGORY_ORDER`). The homepage and nav previously needed separate orderings only because the finance section sat in a different position on each; with finance out of both, one order serves both. Within Documents & PDF the nav still lists tools in a different order from the homepage grid — that is what the per-tool `navOrder` field encodes.
 
 **Deliberately *not* in the registry yet:** per-tool SEO metadata (still `toolMetadata()` in each `layout.js`) and per-tool rich content such as FAQs (still inline JSX). Folding those in is the intended next step, not this one.
 

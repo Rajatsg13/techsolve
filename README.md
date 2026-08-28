@@ -53,10 +53,28 @@ Rich page content (explanations, how-to steps, FAQs, workflows) lives separately
 
 `app/pdf-merge/` is the reference implementation. Related tools and workflow steps reference registry slugs only, so names and URLs are never duplicated. See `CLAUDE.md` for the schema and how to add content to another tool.
 
+### Product taxonomy
+
+Five categories, defined in `CATEGORY_META` in the registry:
+
+| Category | ACTIVE tools |
+|---|---|
+| Documents & PDF | 12 |
+| File & Image | 3 |
+| Data & Text | 0 |
+| Business & Work | 0 |
+| Generators | 0 |
+
+The last three exist so the taxonomy is ready for new tools. Empty categories are never rendered. **Never add a registry entry for a tool that does not exist** — no placeholders, no "coming soon" cards, no sitemap entries for unbuilt tools.
+
+Tools are filed by **the artefact the user starts with**: a PDF or document goes to Documents & PDF, an image goes to File & Image.
+
 Each tool carries a `status`:
 
-- **`ACTIVE`** — the 15 document and image tools that form the forward-looking catalogue.
-- **`FINLEARN_MIGRATION`** — the 10 finance calculators. Fully functional and still shipping, but earmarked to move to a separate product later. This is a label only: nothing is hidden, deleted or redirected today.
+- **`ACTIVE`** — the 15 document and image tools that form the public catalogue.
+- **`FINLEARN_MIGRATION`** — the 10 finance calculators. Still functional, still routed, still in the sitemap and still linked from the footer, but **excluded from the homepage catalogue, the navigation and related-tool recommendations**. Earmarked to move to a separate FinLearn product.
+
+The rule is enforced centrally: the registry selectors exclude `FINLEARN_MIGRATION` by default, so no component filters by status.
 
 ## Tools
 

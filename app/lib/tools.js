@@ -1,32 +1,38 @@
 /**
  * CENTRAL TOOL REGISTRY — single source of truth for the tool catalogue.
  *
- * Before this file existed, every tool had to be listed by hand in the homepage
- * arrays, the header nav, the footer and public/sitemap.xml. They stayed in sync
- * by discipline alone. This registry replaces the first three of those sources
- * (the footer still has its own hand-picked shortlist — see NOTE at the bottom).
+ * Replaces what used to be four hand-maintained lists (homepage arrays, header
+ * nav, sitemap XML). The footer keeps its own curated shortlist — see NOTE.
  *
  * ── Adding a tool ────────────────────────────────────────────────────────────
- *   1. Add an entry here.
- *   2. Create app/<slug>/page.js and app/<slug>/layout.js (SEO metadata still
- *      lives in the layout via toolMetadata() — deliberately NOT merged into
- *      this registry yet, see NOTE).
+ *   1. Build the tool: app/<slug>/page.js and app/<slug>/layout.js.
+ *   2. Add an entry here — assign a `category` and `status: STATUS.ACTIVE`.
+ *   3. Optionally add rich content in app/content/tools/<slug>.js.
  *   The homepage grid, header navigation and sitemap all follow automatically.
  *
+ *   Never add an entry for a tool that does not exist and work. There are no
+ *   placeholder or "coming soon" entries — the live catalogue contains only
+ *   functioning tools. Planned tools live in the documentation, not here.
+ *
  * ── status ───────────────────────────────────────────────────────────────────
- *   ACTIVE              Part of the forward-looking tool catalogue.
- *   FINLEARN_MIGRATION  Finance/investment tools that still work and still ship,
- *                       but are not part of the future product direction. They
- *                       are candidates to move to a separate FinLearn product.
- *                       Nothing is deleted or redirected — this flag exists so
- *                       the rest of the site can exclude them later by changing
- *                       one filter rather than editing many files.
+ *   ACTIVE              The public Tools by Decyfy catalogue.
+ *   FINLEARN_MIGRATION  Finance and investment tools. Still functional, still
+ *                       routed, still in the sitemap, still linked from the
+ *                       footer — but excluded from the homepage catalogue, the
+ *                       navigation and related-tool recommendations. They are
+ *                       candidates to move to a separate FinLearn product.
+ *                       Do not delete them, change their routes, or edit their
+ *                       implementations.
+ *
+ * ── the rule ─────────────────────────────────────────────────────────────────
+ *   Status decides discovery; category decides where a tool is filed. Both live
+ *   here. Components must not filter by status themselves — the selectors below
+ *   already do it, by default, so a call site cannot forget.
  *
  * ── visibility ───────────────────────────────────────────────────────────────
- *   showOnHomepage / showInNavigation are independent of `status` on purpose.
- *   Today every tool is visible, which preserves the current site exactly.
- *   To hide the FinLearn set later, filter on `status` at the call sites in
- *   app/page.js and app/components/Header.js — do not delete entries.
+ *   showOnHomepage / showInNavigation are per-tool overrides, independent of
+ *   `status`. They exist to hide an individual ACTIVE tool from a surface; they
+ *   are not the FinLearn mechanism.
  */
 
 export const STATUS = {
@@ -35,52 +41,104 @@ export const STATUS = {
 };
 
 export const CATEGORY = {
-  DOCUMENTS: 'documents',
-  IMAGES: 'images',
-  FINANCE: 'finance',
+  DOCUMENTS:  'documents',
+  FILES:      'files',
+  DATA:       'data',
+  BUSINESS:   'business',
+  GENERATORS: 'generators',
+  // Legacy taxonomy. Retained because the finance tools still reference it and
+  // still work; it is kept out of public surfaces by STATUS, not by category.
+  FINANCE:    'finance',
 };
 
 /**
- * Category presentation metadata, keyed by category id.
+ * Category metadata — the Tools by Decyfy product taxonomy.
  *
- * `navLabel` drives the header dropdown heading. `homeTitle` / `homeSubtitle` /
- * `homeIcon` / `homeIconBg` drive the homepage section header. These strings and
- * classes are reproduced exactly as they were before the registry existed —
- * changing them changes the rendered site.
+ *   id           stable internal identifier (never change; routes and content
+ *                do not depend on it, but saved filters and analytics may)
+ *   order        display order across every surface
+ *   name         public display name
+ *   navLabel     header dropdown heading (usually the same as `name`)
+ *   description  one line, for section subtitles and future category pages
+ *   homeIcon     emoji shown beside the homepage section heading
+ *   homeIconBg   Tailwind class for that icon's background
+ *   legacy       true = defined for continuity, not part of the public catalogue
+ *
+ * Categories with no ACTIVE tools are defined here but never rendered — the
+ * selectors drop empty sections, so Data & Text, Business & Work and
+ * Generators stay invisible until their first real tool ships. This is
+ * deliberate: the taxonomy is ready, but the live catalogue only ever contains
+ * tools that actually work.
  */
 export const CATEGORY_META = {
   [CATEGORY.DOCUMENTS]: {
     id: CATEGORY.DOCUMENTS,
-    navLabel: 'PDF Tools',
-    homeTitle: 'PDF Tools',
-    homeSubtitle: 'Convert, merge, split and edit PDF files for free',
+    order: 1,
+    name: 'Documents & PDF',
+    navLabel: 'Documents & PDF',
+    description: 'Work with PDFs, documents and everyday file tasks.',
     homeIcon: '📄',
     homeIconBg: 'bg-red-100',
   },
-  [CATEGORY.IMAGES]: {
-    id: CATEGORY.IMAGES,
-    navLabel: 'Image Tools',
-    homeTitle: 'Image Tools',
-    homeSubtitle: 'Convert and resize images in your browser',
+  [CATEGORY.FILES]: {
+    id: CATEGORY.FILES,
+    order: 2,
+    name: 'File & Image',
+    navLabel: 'File & Image',
+    description: 'Convert, resize and manage images and common files.',
     homeIcon: '🖼️',
     homeIconBg: 'bg-blue-100',
   },
+  [CATEGORY.DATA]: {
+    id: CATEGORY.DATA,
+    order: 3,
+    name: 'Data & Text',
+    navLabel: 'Data & Text',
+    description: 'Format, convert and work with structured data and text.',
+    homeIcon: '🔤',
+    homeIconBg: 'bg-violet-100',
+  },
+  [CATEGORY.BUSINESS]: {
+    id: CATEGORY.BUSINESS,
+    order: 4,
+    name: 'Business & Work',
+    navLabel: 'Business & Work',
+    description: 'Practical calculators and utilities for everyday work decisions.',
+    homeIcon: '📊',
+    homeIconBg: 'bg-amber-100',
+  },
+  [CATEGORY.GENERATORS]: {
+    id: CATEGORY.GENERATORS,
+    order: 5,
+    name: 'Generators',
+    navLabel: 'Generators',
+    description: 'Create commonly used business and personal documents.',
+    homeIcon: '🧾',
+    homeIconBg: 'bg-emerald-100',
+  },
   [CATEGORY.FINANCE]: {
     id: CATEGORY.FINANCE,
+    order: 90,
+    legacy: true,
+    name: 'Financial Calculators',
     navLabel: 'Calculators',
-    homeTitle: 'Financial Calculators',
-    homeSubtitle: 'EMI, SIP, PPF, Income Tax and more',
+    description: 'Investment and loan calculators, pending migration to FinLearn.',
     homeIcon: '🧮',
     homeIconBg: 'bg-green-100',
   },
 };
 
 /**
- * The homepage and the header nav order their categories differently, and did
- * so before the registry existed. Both orders are preserved deliberately.
+ * Every category, in display order.
+ *
+ * The homepage and the header used to need separate orderings, because the
+ * finance section sat in a different position on each. Now that finance is out
+ * of both public surfaces, a single `order` serves both.
  */
-export const HOMEPAGE_CATEGORY_ORDER = [CATEGORY.DOCUMENTS, CATEGORY.FINANCE, CATEGORY.IMAGES];
-export const NAV_CATEGORY_ORDER      = [CATEGORY.DOCUMENTS, CATEGORY.IMAGES, CATEGORY.FINANCE];
+export const CATEGORY_ORDER = Object.values(CATEGORY_META)
+  .slice()
+  .sort((a, b) => a.order - b.order)
+  .map(c => c.id);
 
 /**
  * Field reference
@@ -282,7 +340,7 @@ export const TOOLS = [
     slug: 'image-to-pdf',
     name: 'Image to PDF',
     href: '/image-to-pdf',
-    category: CATEGORY.IMAGES,
+    category: CATEGORY.FILES,
     status: STATUS.ACTIVE,
     shortDescription: 'Convert JPG, PNG images into a PDF file easily.',
     icon: '🖼️',
@@ -296,7 +354,7 @@ export const TOOLS = [
     slug: 'image-resize',
     name: 'Image Resizer',
     href: '/image-resize',
-    category: CATEGORY.IMAGES,
+    category: CATEGORY.FILES,
     status: STATUS.ACTIVE,
     shortDescription: 'Resize JPG, PNG or WebP to any size. Change format & quality.',
     icon: '📐',
@@ -309,7 +367,7 @@ export const TOOLS = [
     slug: 'scan-to-pdf',
     name: 'Scan to PDF',
     href: '/scan-to-pdf',
-    category: CATEGORY.IMAGES,
+    category: CATEGORY.FILES,
     status: STATUS.ACTIVE,
     shortDescription: 'Use your phone camera to scan documents to PDF.',
     icon: '📷',
@@ -476,58 +534,83 @@ export const SUPPORT_PAGES = [
 ];
 
 /* ── Selectors ──────────────────────────────────────────────────────────────
- * Prefer these over filtering TOOLS inline, so the eventual FinLearn split is
- * a change in one place.
+ *
+ * THE DISCOVERY RULE, in one place:
+ *
+ *   ACTIVE              → the public Tools by Decyfy catalogue. Appears on the
+ *                         homepage, in the navigation, and in related-tool
+ *                         recommendations.
+ *   FINLEARN_MIGRATION  → functional legacy. Routes keep working, pages stay in
+ *                         the sitemap and remain linked from the footer, but
+ *                         they are absent from the primary discovery surfaces.
+ *
+ * getHomepageSections() and getNavigationGroups() exclude FINLEARN_MIGRATION by
+ * default, so call sites pass nothing and cannot forget the rule. Nothing in
+ * app/page.js or app/components/Header.js filters by status — if that ever
+ * appears in a component, the rule has leaked and belongs back here.
  */
 
-/** Every tool, regardless of status. */
+/** Every tool, both statuses. */
 export const getAllTools = () => TOOLS;
 
-/** Tools in the forward-looking catalogue. */
+/** The public catalogue. */
 export const getActiveTools = () => TOOLS.filter(t => t.status === STATUS.ACTIVE);
 
 /** Finance tools earmarked for a future FinLearn product. */
 export const getFinLearnTools = () => TOOLS.filter(t => t.status === STATUS.FINLEARN_MIGRATION);
 
-/** Tools in one category, in registry order. */
-export const getToolsByCategory = (categoryId) => TOOLS.filter(t => t.category === categoryId);
+/**
+ * Tools in one category, in registry order.
+ * ACTIVE-only by default, matching every other public-facing selector.
+ */
+export const getToolsByCategory = (categoryId, { includeFinLearn = false } = {}) =>
+  TOOLS.filter(t =>
+    t.category === categoryId &&
+    (includeFinLearn || t.status === STATUS.ACTIVE)
+  );
 
-/** Look up a single tool. Returns undefined if the slug is unknown. */
+/** Look up a single tool by slug, any status. Returns undefined if unknown. */
 export const getToolBySlug = (slug) => TOOLS.find(t => t.slug === slug);
 
+/** Categories that currently contain at least one ACTIVE tool, in display order. */
+export const getPopulatedCategories = () =>
+  CATEGORY_ORDER
+    .filter(id => getToolsByCategory(id).length > 0)
+    .map(id => CATEGORY_META[id]);
+
 /**
- * Homepage sections. Returns [{ ...category, tools: [] }], skipping any
- * category left with no visible tools.
+ * Homepage catalogue sections: [{ ...categoryMeta, tools: [] }].
  *
- * To drop the finance section from the main experience later, pass
- * { excludeFinLearn: true } — nothing else needs to change.
+ * Empty categories are dropped, so the three categories that exist in the
+ * taxonomy but have no tools yet (Data & Text, Business & Work, Generators)
+ * never render as empty headings.
  */
-export function getHomepageSections({ excludeFinLearn = false } = {}) {
-  return HOMEPAGE_CATEGORY_ORDER
+export function getHomepageSections({ includeFinLearn = false } = {}) {
+  return CATEGORY_ORDER
     .map(categoryId => ({
       ...CATEGORY_META[categoryId],
       tools: TOOLS.filter(t =>
         t.category === categoryId &&
         t.showOnHomepage &&
-        (!excludeFinLearn || t.status !== STATUS.FINLEARN_MIGRATION)
+        (includeFinLearn || t.status === STATUS.ACTIVE)
       ),
     }))
     .filter(section => section.tools.length > 0);
 }
 
 /**
- * Header dropdown groups. Same shape the header used before this registry
- * existed: [{ label, items: [{ label, href }] }].
+ * Header dropdown groups: [{ label, items: [{ label, href }] }].
+ * Groups with no items are dropped, so no empty dropdown can appear.
  */
-export function getNavigationGroups({ excludeFinLearn = false } = {}) {
-  return NAV_CATEGORY_ORDER
+export function getNavigationGroups({ includeFinLearn = false } = {}) {
+  return CATEGORY_ORDER
     .map(categoryId => ({
       label: CATEGORY_META[categoryId].navLabel,
       items: TOOLS
         .filter(t =>
           t.category === categoryId &&
           t.showInNavigation &&
-          (!excludeFinLearn || t.status !== STATUS.FINLEARN_MIGRATION)
+          (includeFinLearn || t.status === STATUS.ACTIVE)
         )
         // The header lists PDF tools in a different order from the homepage
         // grid. `navOrder` preserves that; categories without it keep registry
@@ -540,6 +623,32 @@ export function getNavigationGroups({ excludeFinLearn = false } = {}) {
         })),
     }))
     .filter(group => group.items.length > 0);
+}
+
+/**
+ * Resolve a content file's `relatedTools` slugs into tool objects.
+ *
+ * Centralised so no content file has to know the discovery rule, and so a
+ * future content author cannot accidentally recommend a tool that is on its way
+ * out of the product:
+ *
+ *   · unknown slug              → dropped (a typo never ships a dead link)
+ *   · the current tool itself   → dropped
+ *   · FINLEARN_MIGRATION tool   → dropped when the page it appears on is ACTIVE
+ *
+ * A FinLearn page may still recommend its FinLearn siblings — the rule is
+ * derived from the host page's status rather than hard-coded, so the finance
+ * tools stay coherent among themselves right up until they migrate.
+ */
+export function resolveRelatedTools(slugs, { currentSlug } = {}) {
+  const host = currentSlug ? getToolBySlug(currentSlug) : undefined;
+  const hostIsFinLearn = host?.status === STATUS.FINLEARN_MIGRATION;
+
+  return (slugs || [])
+    .filter(slug => slug !== currentSlug)
+    .map(getToolBySlug)
+    .filter(Boolean)
+    .filter(tool => hostIsFinLearn || tool.status === STATUS.ACTIVE);
 }
 
 /*

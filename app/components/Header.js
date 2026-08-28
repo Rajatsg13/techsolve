@@ -17,8 +17,8 @@ function DropdownMenu({ group, onClose }) {
 }
 
 // Tool links come from the central registry (app/lib/tools.js) so the nav
-// cannot drift from the homepage or sitemap. To hide the FinLearn set later,
-// call getNavigationGroups({ excludeFinLearn: true }).
+// cannot drift from the homepage or sitemap. The registry already excludes
+// FINLEARN_MIGRATION tools and empty categories — do not filter by status here.
 const navGroups = getNavigationGroups();
 
 export default function Header() {

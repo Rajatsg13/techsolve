@@ -50,8 +50,8 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-6">
             <div className={`w-8 h-8 rounded-lg ${section.homeIconBg} flex items-center justify-center text-lg`}>{section.homeIcon}</div>
             <div>
-              <h2 className="text-xl font-bold text-slate-800">{section.homeTitle}</h2>
-              <p className="text-sm text-slate-500">{section.homeSubtitle}</p>
+              <h2 className="text-xl font-bold text-slate-800">{section.name}</h2>
+              <p className="text-sm text-slate-500">{section.description}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
