@@ -54,9 +54,31 @@
  */
 
 import pdfMerge from './pdf-merge';
+import jsonFormatter from './json-formatter';
+import base64EncoderDecoder from './base64-encoder-decoder';
+import urlEncoderDecoder from './url-encoder-decoder';
+import percentageCalculator from './percentage-calculator';
+import percentageIncreaseCalculator from './percentage-increase-calculator';
+import gstCalculator from './gst-calculator';
+import profitMarginCalculator from './profit-margin-calculator';
+import breakEvenCalculator from './break-even-calculator';
+import roiCalculator from './roi-calculator';
+import salaryHikeCalculator from './salary-hike-calculator';
+import workingDaysCalculator from './working-days-calculator';
 
 const CONTENT = {
   'pdf-merge': pdfMerge,
+  'json-formatter': jsonFormatter,
+  'base64-encoder-decoder': base64EncoderDecoder,
+  'url-encoder-decoder': urlEncoderDecoder,
+  'percentage-calculator': percentageCalculator,
+  'percentage-increase-calculator': percentageIncreaseCalculator,
+  'gst-calculator': gstCalculator,
+  'profit-margin-calculator': profitMarginCalculator,
+  'break-even-calculator': breakEvenCalculator,
+  'roi-calculator': roiCalculator,
+  'salary-hike-calculator': salaryHikeCalculator,
+  'working-days-calculator': workingDaysCalculator,
 };
 
 /**
