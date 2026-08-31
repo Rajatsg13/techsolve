@@ -17,8 +17,8 @@ export default function ContactPage() {
 
     try {
       await submitToWeb3Forms({
-        subject: 'TechSolve44 Contact Form',
-        from_name: 'TechSolve44 Contact Form',
+        subject: 'Tools by Decyfy Contact Form',
+        from_name: 'Tools by Decyfy Contact Form',
         name: form.name.trim(),
         email: form.email.trim(),
         message: form.message.trim(),

@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Extract text from scanned PDFs using OCR — free, no signup. Convert scanned documents to searchable, editable text in your browser.',
-  url: 'https://techsolve44.com/pdf-ocr/',
+  url: 'https://tools.decyfy.com/pdf-ocr/',
   featureList: ['OCR text extraction from scanned PDFs', 'Supports Hindi and English text', 'Browser-based OCR', 'No file upload to server', 'Free, no account needed'],
 };
 

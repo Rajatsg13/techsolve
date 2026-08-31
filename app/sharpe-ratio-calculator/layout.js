@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free Sharpe Ratio calculator. Measure the risk-adjusted return of your portfolio or mutual fund. Enter portfolio return, risk-free rate and standard deviation.',
-  url: 'https://techsolve44.com/sharpe-ratio-calculator/',
+  url: 'https://tools.decyfy.com/sharpe-ratio-calculator/',
   featureList: [
     'Sharpe Ratio = (Rp - Rf) / σ',
     'Portfolio performance vs risk-free rate',

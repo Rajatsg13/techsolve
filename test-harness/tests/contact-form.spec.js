@@ -54,7 +54,7 @@ test.describe('@contact Contact form', () => {
     await expect(page.getByText(/Message Sent/i)).toBeVisible({ timeout: 10_000 });
     expect(captured).toHaveLength(1);
     expect(captured[0].access_key).toBeTruthy();
-    expect(captured[0].subject).toBe('TechSolve44 Contact Form');
+    expect(captured[0].subject).toBe('Tools by Decyfy Contact Form');
     expect(captured[0].name).toBe('Test Person');
     expect(captured[0].email).toBe('test@example.com');
     expect(captured[0].message).toBe('A test message');

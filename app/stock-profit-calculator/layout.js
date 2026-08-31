@@ -9,7 +9,7 @@ const schema = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description:
     'Free stock profit calculator for Indian markets. Calculate net trading profit after brokerage, STT, GST, SEBI charges, stamp duty, DP charges and capital gains tax.',
-  url: 'https://techsolve44.com/stock-profit-calculator/',
+  url: 'https://tools.decyfy.com/stock-profit-calculator/',
   featureList: [
     'Net profit after every statutory charge',
     'Zerodha equity delivery defaults built in',

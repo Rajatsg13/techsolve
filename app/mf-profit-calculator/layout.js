@@ -9,7 +9,7 @@ const schema = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description:
     'Free mutual fund profit calculator. Search any Indian MF scheme, pick buy and sell dates, and see absolute profit, XIRR and capital gains tax on your investment.',
-  url: 'https://techsolve44.com/mf-profit-calculator/',
+  url: 'https://tools.decyfy.com/mf-profit-calculator/',
   featureList: [
     'Search 10,000+ Indian mutual fund schemes by name',
     'Historical NAV lookup for any buy and sell date',

@@ -16,11 +16,11 @@
  *
  * ── status ───────────────────────────────────────────────────────────────────
  *   ACTIVE              The public Tools by Decyfy catalogue.
- *   FINLEARN_MIGRATION  Finance and investment tools. Still functional, still
+ *   LEGACY_FINANCE  Finance and investment tools. Still functional, still
  *                       routed, still in the sitemap, still linked from the
  *                       footer — but excluded from the homepage catalogue, the
  *                       navigation and related-tool recommendations. They are
- *                       candidates to move to a separate FinLearn product.
+ *                       candidates to move to a separate product later.
  *                       Do not delete them, change their routes, or edit their
  *                       implementations.
  *
@@ -32,12 +32,12 @@
  * ── visibility ───────────────────────────────────────────────────────────────
  *   showOnHomepage / showInNavigation are per-tool overrides, independent of
  *   `status`. They exist to hide an individual ACTIVE tool from a surface; they
- *   are not the FinLearn mechanism.
+ *   are not the legacy-status mechanism.
  */
 
 export const STATUS = {
   ACTIVE: 'ACTIVE',
-  FINLEARN_MIGRATION: 'FINLEARN_MIGRATION',
+  LEGACY_FINANCE: 'LEGACY_FINANCE',
 };
 
 export const CATEGORY = {
@@ -78,7 +78,7 @@ export const CATEGORY_META = {
     navLabel: 'Documents & PDF',
     description: 'Work with PDFs, documents and everyday file tasks.',
     homeIcon: '📄',
-    homeIconBg: 'bg-red-100',
+    homeIconBg: 'bg-doc-soft',
   },
   [CATEGORY.FILES]: {
     id: CATEGORY.FILES,
@@ -87,7 +87,7 @@ export const CATEGORY_META = {
     navLabel: 'File & Image',
     description: 'Convert, resize and manage images and common files.',
     homeIcon: '🖼️',
-    homeIconBg: 'bg-blue-100',
+    homeIconBg: 'bg-img-soft',
   },
   [CATEGORY.DATA]: {
     id: CATEGORY.DATA,
@@ -96,7 +96,7 @@ export const CATEGORY_META = {
     navLabel: 'Data & Text',
     description: 'Format, convert and work with structured data and text.',
     homeIcon: '🔤',
-    homeIconBg: 'bg-violet-100',
+    homeIconBg: 'bg-data-soft',
   },
   [CATEGORY.BUSINESS]: {
     id: CATEGORY.BUSINESS,
@@ -105,7 +105,7 @@ export const CATEGORY_META = {
     navLabel: 'Business & Work',
     description: 'Practical calculators and utilities for everyday work decisions.',
     homeIcon: '📊',
-    homeIconBg: 'bg-amber-100',
+    homeIconBg: 'bg-biz-soft',
   },
   [CATEGORY.GENERATORS]: {
     id: CATEGORY.GENERATORS,
@@ -114,7 +114,7 @@ export const CATEGORY_META = {
     navLabel: 'Generators',
     description: 'Create commonly used business and personal documents.',
     homeIcon: '🧾',
-    homeIconBg: 'bg-emerald-100',
+    homeIconBg: 'bg-data-soft',
   },
   [CATEGORY.FINANCE]: {
     id: CATEGORY.FINANCE,
@@ -122,7 +122,10 @@ export const CATEGORY_META = {
     legacy: true,
     name: 'Financial Calculators',
     navLabel: 'Calculators',
-    description: 'Investment and loan calculators, pending migration to FinLearn.',
+    // Kept deliberately neutral: `description` is a renderable string, unlike the
+    // comments in this file. Nothing about the migration should be able to reach a
+    // user even if this category is ever surfaced by mistake.
+    description: 'Loan and investment calculators.',
     homeIcon: '🧮',
     homeIconBg: 'bg-green-100',
   },
@@ -377,7 +380,7 @@ export const TOOLS = [
     sitemapChangefreq: 'monthly',
   },
 
-  // ── Finance — FinLearn migration candidates ───────────────────────────────
+  // ── Finance — legacy, excluded from all public surfaces ──────────────────
   // Fully functional and still shipping. Not part of the future product
   // direction. Do not delete, redirect or modify their implementations.
   {
@@ -385,7 +388,7 @@ export const TOOLS = [
     name: 'EMI Calculator',
     href: '/emi-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Calculate EMI for home, car or personal loans instantly.',
     icon: '🏠',
     navIcon: '🏦',
@@ -400,7 +403,7 @@ export const TOOLS = [
     name: 'SIP Calculator',
     href: '/sip-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Calculate returns on your monthly SIP investments.',
     icon: '📈',
     badge: 'Popular',
@@ -414,7 +417,7 @@ export const TOOLS = [
     name: 'Lumpsum Calculator',
     href: '/lumpsum-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Calculate returns on a one-time mutual fund investment.',
     icon: '💰',
     showOnHomepage: true,
@@ -427,7 +430,7 @@ export const TOOLS = [
     name: 'PPF Calculator',
     href: '/ppf-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Calculate your Public Provident Fund returns & maturity.',
     icon: '🏦',
     navIcon: '🏛️',
@@ -441,7 +444,7 @@ export const TOOLS = [
     name: 'Income Tax Calculator',
     href: '/income-tax-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Calculate salary breakdown & income tax for FY 2025-26.',
     icon: '🧾',
     showOnHomepage: true,
@@ -454,7 +457,7 @@ export const TOOLS = [
     name: 'Graham Number Calculator',
     href: '/graham-number-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: "Find a stock's intrinsic value using Benjamin Graham's formula.",
     icon: '📐',
     badge: 'New',
@@ -468,7 +471,7 @@ export const TOOLS = [
     name: 'FIRE Calculator',
     href: '/fire-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Calculate your Financial Independence number and years to early retirement.',
     icon: '🔥',
     badge: 'New',
@@ -482,7 +485,7 @@ export const TOOLS = [
     name: 'Sharpe Ratio Calculator',
     href: '/sharpe-ratio-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: "Measure your portfolio's risk-adjusted return quality.",
     icon: '📊',
     badge: 'New',
@@ -496,7 +499,7 @@ export const TOOLS = [
     name: 'Stock Profit Calculator',
     href: '/stock-profit-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Net share trading profit after brokerage, STT, GST and capital gains tax.',
     icon: '📉',
     badge: 'New',
@@ -510,7 +513,7 @@ export const TOOLS = [
     name: 'MF Profit Calculator',
     href: '/mf-profit-calculator',
     category: CATEGORY.FINANCE,
-    status: STATUS.FINLEARN_MIGRATION,
+    status: STATUS.LEGACY_FINANCE,
     shortDescription: 'Search any Indian mutual fund and see real profit, XIRR and tax on gains.',
     icon: '💹',
     badge: 'New',
@@ -540,11 +543,11 @@ export const SUPPORT_PAGES = [
  *   ACTIVE              → the public Tools by Decyfy catalogue. Appears on the
  *                         homepage, in the navigation, and in related-tool
  *                         recommendations.
- *   FINLEARN_MIGRATION  → functional legacy. Routes keep working, pages stay in
+ *   LEGACY_FINANCE  → functional legacy. Routes keep working, pages stay in
  *                         the sitemap and remain linked from the footer, but
  *                         they are absent from the primary discovery surfaces.
  *
- * getHomepageSections() and getNavigationGroups() exclude FINLEARN_MIGRATION by
+ * getHomepageSections() and getNavigationGroups() exclude LEGACY_FINANCE by
  * default, so call sites pass nothing and cannot forget the rule. Nothing in
  * app/page.js or app/components/Header.js filters by status — if that ever
  * appears in a component, the rule has leaked and belongs back here.
@@ -556,17 +559,17 @@ export const getAllTools = () => TOOLS;
 /** The public catalogue. */
 export const getActiveTools = () => TOOLS.filter(t => t.status === STATUS.ACTIVE);
 
-/** Finance tools earmarked for a future FinLearn product. */
-export const getFinLearnTools = () => TOOLS.filter(t => t.status === STATUS.FINLEARN_MIGRATION);
+/** Finance tools earmarked to move out of this product later. */
+export const getLegacyFinanceTools = () => TOOLS.filter(t => t.status === STATUS.LEGACY_FINANCE);
 
 /**
  * Tools in one category, in registry order.
  * ACTIVE-only by default, matching every other public-facing selector.
  */
-export const getToolsByCategory = (categoryId, { includeFinLearn = false } = {}) =>
+export const getToolsByCategory = (categoryId, { includeLegacy = false } = {}) =>
   TOOLS.filter(t =>
     t.category === categoryId &&
-    (includeFinLearn || t.status === STATUS.ACTIVE)
+    (includeLegacy || t.status === STATUS.ACTIVE)
   );
 
 /** Look up a single tool by slug, any status. Returns undefined if unknown. */
@@ -585,14 +588,14 @@ export const getPopulatedCategories = () =>
  * taxonomy but have no tools yet (Data & Text, Business & Work, Generators)
  * never render as empty headings.
  */
-export function getHomepageSections({ includeFinLearn = false } = {}) {
+export function getHomepageSections({ includeLegacy = false } = {}) {
   return CATEGORY_ORDER
     .map(categoryId => ({
       ...CATEGORY_META[categoryId],
       tools: TOOLS.filter(t =>
         t.category === categoryId &&
         t.showOnHomepage &&
-        (includeFinLearn || t.status === STATUS.ACTIVE)
+        (includeLegacy || t.status === STATUS.ACTIVE)
       ),
     }))
     .filter(section => section.tools.length > 0);
@@ -602,7 +605,7 @@ export function getHomepageSections({ includeFinLearn = false } = {}) {
  * Header dropdown groups: [{ label, items: [{ label, href }] }].
  * Groups with no items are dropped, so no empty dropdown can appear.
  */
-export function getNavigationGroups({ includeFinLearn = false } = {}) {
+export function getNavigationGroups({ includeLegacy = false } = {}) {
   return CATEGORY_ORDER
     .map(categoryId => ({
       label: CATEGORY_META[categoryId].navLabel,
@@ -610,7 +613,7 @@ export function getNavigationGroups({ includeFinLearn = false } = {}) {
         .filter(t =>
           t.category === categoryId &&
           t.showInNavigation &&
-          (includeFinLearn || t.status === STATUS.ACTIVE)
+          (includeLegacy || t.status === STATUS.ACTIVE)
         )
         // The header lists PDF tools in a different order from the homepage
         // grid. `navOrder` preserves that; categories without it keep registry
@@ -634,21 +637,21 @@ export function getNavigationGroups({ includeFinLearn = false } = {}) {
  *
  *   · unknown slug              → dropped (a typo never ships a dead link)
  *   · the current tool itself   → dropped
- *   · FINLEARN_MIGRATION tool   → dropped when the page it appears on is ACTIVE
+ *   · LEGACY_FINANCE tool   → dropped when the page it appears on is ACTIVE
  *
- * A FinLearn page may still recommend its FinLearn siblings — the rule is
+ * A legacy finance page may still recommend its siblings — the rule is
  * derived from the host page's status rather than hard-coded, so the finance
  * tools stay coherent among themselves right up until they migrate.
  */
 export function resolveRelatedTools(slugs, { currentSlug } = {}) {
   const host = currentSlug ? getToolBySlug(currentSlug) : undefined;
-  const hostIsFinLearn = host?.status === STATUS.FINLEARN_MIGRATION;
+  const hostIsLegacy = host?.status === STATUS.LEGACY_FINANCE;
 
   return (slugs || [])
     .filter(slug => slug !== currentSlug)
     .map(getToolBySlug)
     .filter(Boolean)
-    .filter(tool => hostIsFinLearn || tool.status === STATUS.ACTIVE);
+    .filter(tool => hostIsLegacy || tool.status === STATUS.ACTIVE);
 }
 
 /*

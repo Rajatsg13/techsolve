@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Scan documents to PDF using your device camera — free, no signup. Capture, crop and convert to PDF instantly in your browser.',
-  url: 'https://techsolve44.com/scan-to-pdf/',
+  url: 'https://tools.decyfy.com/scan-to-pdf/',
   featureList: ['Camera-based document scanning', 'Auto crop and perspective correction', 'Convert to PDF instantly', 'No app download needed', 'Free, no account needed'],
 };
 

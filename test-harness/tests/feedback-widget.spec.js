@@ -147,7 +147,7 @@ test.describe('@feedback Submission', () => {
     expect(page.url()).toBe(urlBefore);          // static export: must not navigate
     expect(captured).toHaveLength(1);
     expect(captured[0].access_key).toBeTruthy();
-    expect(captured[0].subject).toBe('TechSolve44 Feedback Widget');
+    expect(captured[0].subject).toBe('Tools by Decyfy Feedback Widget');
     expect(captured[0].message).toBe('An Axis Atlas vs Infinia comparison');
     expect(captured[0].email).toBe('someone@example.com');
     expect(captured[0].botcheck).toBe('');

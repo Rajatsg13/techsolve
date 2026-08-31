@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Add text watermark to PDF files free online. Customise font, size, opacity and position. No signup, no file upload — all processing in your browser.',
-  url: 'https://techsolve44.com/pdf-watermark/',
+  url: 'https://tools.decyfy.com/pdf-watermark/',
   featureList: ['Add text watermark to PDF', 'Customise font, size, opacity', 'Diagonal and horizontal positioning', 'Browser-only processing', 'Free, no account needed'],
 };
 

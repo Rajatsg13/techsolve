@@ -1,11 +1,11 @@
 import { toolMetadata } from '../lib/toolMeta';
 
 export const metadata = toolMetadata('/contact/', {
-  title: 'Contact — TechSolve44',
-  description: 'Get in touch with the TechSolve44 team. Questions, feedback and bug reports are always welcome.',
+  title: 'Contact',
+  description: 'Get in touch with the Tools by Decyfy team. Questions, feedback and bug reports are always welcome.',
   openGraph: {
-    title: 'Contact TechSolve44',
-    description: 'Questions, feedback or bug reports? Reach the TechSolve44 team.',
+    title: 'Contact Tools by Decyfy',
+    description: 'Questions, feedback or bug reports? Reach the Tools by Decyfy team.',
   },
 });
 

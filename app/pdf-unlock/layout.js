@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Remove password protection from PDF files free online. Enter the password to unlock your PDF. All processing in your browser — files never uploaded.',
-  url: 'https://techsolve44.com/pdf-unlock/',
+  url: 'https://tools.decyfy.com/pdf-unlock/',
   featureList: ['Remove PDF password protection', 'Unlock owner-restricted PDFs', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

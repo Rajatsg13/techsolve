@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free SIP calculator for mutual fund investments in India. Calculate maturity value, total invested and estimated returns for your Systematic Investment Plan.',
-  url: 'https://techsolve44.com/sip-calculator/',
+  url: 'https://tools.decyfy.com/sip-calculator/',
   featureList: [
     'SIP maturity value calculation',
     'Total invested vs estimated returns',

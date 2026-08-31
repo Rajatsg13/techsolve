@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Convert any HTML code or webpage URL to a PDF file — free, no signup. Paste HTML or enter a URL and download the PDF instantly.',
-  url: 'https://techsolve44.com/html-to-pdf/',
+  url: 'https://tools.decyfy.com/html-to-pdf/',
   featureList: ['Convert HTML code to PDF', 'Convert URL to PDF', 'Instant download', 'No software installation', 'Free, no account needed'],
 };
 

@@ -337,7 +337,7 @@ export default function StockProfitCalculator() {
       <p className="mt-10 text-xs text-slate-400 leading-relaxed border-t border-slate-200 pt-5">
         Results are approximate and may differ from actual broker contract notes. Charge rates vary by broker, exchange
         and segment, and change over time. Tax calculations are simplified and do not account for surcharge, cess, or
-        individual slab variations. TechSolve44 is not a financial advisor, broker, or tax consultant. Use at your own
+        individual slab variations. Tools by Decyfy is not a financial advisor, broker, or tax consultant. Use at your own
         discretion.
       </p>
 

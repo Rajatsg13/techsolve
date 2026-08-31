@@ -70,7 +70,7 @@ test.describe('@pages All pages load', () => {
 test.describe('@pages Footer and nav', () => {
   test('Homepage loads', async ({ page }) => {
     await page.goto('/');
-    expect(await page.title()).toContain('TechSolve');
+    expect(await page.title()).toContain('Decyfy');
   });
 
   test('404 page works', async ({ page }) => {

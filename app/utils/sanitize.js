@@ -1,5 +1,5 @@
 /**
- * Input sanitization utilities for TechSolve44
+ * Input sanitization utilities for Tools by Decyfy
  * All tools run client-side, so these primarily guard against:
  * - NaN / Infinity entering calculator state
  * - Excessively large numbers causing UI/performance issues

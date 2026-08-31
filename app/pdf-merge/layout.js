@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Merge multiple PDF files into one — free, no signup, no file size limit. All processing happens in your browser. Your files are never uploaded to a server.',
-  url: 'https://techsolve44.com/pdf-merge/',
+  url: 'https://tools.decyfy.com/pdf-merge/',
   featureList: ['Merge unlimited PDF files', 'Drag-and-drop reordering', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

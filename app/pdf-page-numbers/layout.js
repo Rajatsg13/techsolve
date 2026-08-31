@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Add page numbers to PDF files free online. Choose position (header/footer), starting number and font size. No signup, files processed in your browser.',
-  url: 'https://techsolve44.com/pdf-page-numbers/',
+  url: 'https://tools.decyfy.com/pdf-page-numbers/',
   featureList: ['Add page numbers to PDF', 'Choose header or footer position', 'Custom starting page number', 'Browser-only processing', 'Free, no account needed'],
 };
 

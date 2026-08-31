@@ -634,7 +634,7 @@ export default function MFProfitCalculator() {
       <p className="mt-10 text-xs text-slate-400 leading-relaxed border-t border-slate-200 pt-5">
         Data sourced from publicly available NAV feeds. Results are approximate and may differ from actual broker
         statements. Tax calculations are simplified and do not account for surcharge, cess, or individual slab
-        variations. TechSolve44 is not a financial advisor, broker, or tax consultant. Use at your own discretion.
+        variations. Tools by Decyfy is not a financial advisor, broker, or tax consultant. Use at your own discretion.
       </p>
 
       <section className="mt-12">

@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Convert PDF pages to JPG images free online. Extract every page as a high-quality image. No signup, files processed in your browser.',
-  url: 'https://techsolve44.com/pdf-to-jpg/',
+  url: 'https://tools.decyfy.com/pdf-to-jpg/',
   featureList: ['Convert PDF pages to JPG', 'High-quality image extraction', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

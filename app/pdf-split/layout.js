@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Split a PDF into separate pages or extract specific pages — free, no signup. All processing in your browser. Files never uploaded to any server.',
-  url: 'https://techsolve44.com/pdf-split/',
+  url: 'https://tools.decyfy.com/pdf-split/',
   featureList: ['Split PDF into individual pages', 'Extract specific page ranges', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

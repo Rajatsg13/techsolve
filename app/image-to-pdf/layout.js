@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Convert JPG, PNG or other images to PDF for free. Combine multiple images into a single PDF. No signup, no file upload — works in your browser.',
-  url: 'https://techsolve44.com/image-to-pdf/',
+  url: 'https://tools.decyfy.com/image-to-pdf/',
   featureList: ['Convert JPG/PNG to PDF', 'Combine multiple images into one PDF', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

@@ -3,12 +3,10 @@ import { changelog } from '../lib/changelog';
 import { toolMetadata } from '../lib/toolMeta';
 
 export const metadata = toolMetadata('/changelog/', {
-  // Root layout applies the '%s | TechSolve44' template — do not append the
-  // suffix here too. (about/contact/privacy/terms do append it and end up with
-  // a doubled "TechSolve44 | TechSolve44" in the rendered <title>; pre-existing,
-  // left alone here since fixing it is out of scope for this page.)
+  // Root layout applies the '%s | Tools by Decyfy' template — never append the
+  // brand here as well, or the rendered <title> carries it twice.
   title: "What's New — Changelog",
-  description: 'New tools, updates, and fixes on TechSolve44 — including changes made from user feedback.',
+  description: 'New tools, updates and fixes on Tools by Decyfy — including changes made from user feedback.',
 });
 
 const TAG_STYLES = {

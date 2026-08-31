@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: "Free Graham Number calculator. Find a stock's intrinsic value using Benjamin Graham's formula — enter EPS and Book Value Per Share to check if a stock is undervalued or overvalued.",
-  url: 'https://techsolve44.com/graham-number-calculator/',
+  url: 'https://tools.decyfy.com/graham-number-calculator/',
   featureList: [
     "Graham Number = √(22.5 × EPS × BVPS)",
     'Undervalued vs overvalued stock signal',

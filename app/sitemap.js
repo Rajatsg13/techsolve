@@ -10,10 +10,12 @@ import { TOOLS, SUPPORT_PAGES } from './lib/tools';
  *   · next.config.mjs sets `trailingSlash: true`, so every URL here ends in a
  *     slash. Registry `href` values deliberately do not, hence the appended '/'.
  *   · The domain is duplicated from app/lib/toolMeta.js rather than imported.
- *     Metadata generation was left out of scope for this step; when the site
- *     moves to its new domain, both constants must change together.
+ *     Keep the two constants in step if the origin ever changes again.
  */
-const SITE = 'https://techsolve44.com';
+// Canonical origin. tools.decyfy.com is the live host; techsolve44.com 308-redirects
+// here. Every canonical, sitemap and JSON-LD URL must use this value — pointing them
+// at the old host would declare each page canonical to a URL that redirects away.
+const SITE = 'https://tools.decyfy.com';
 
 export default function sitemap() {
   return [

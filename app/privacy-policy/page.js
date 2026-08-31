@@ -1,8 +1,8 @@
 import { toolMetadata } from '../lib/toolMeta';
 
 export const metadata = toolMetadata('/privacy-policy/', {
-  title: 'Privacy Policy — TechSolve44',
-  description: 'Privacy policy for TechSolve44, a division of GDB Advisories LLP — how we handle your data (spoiler: we don\'t collect any).',
+  title: 'Privacy Policy',
+  description: 'Privacy policy for Tools by Decyfy, a division of GDB Advisories LLP — how we handle your data (spoiler: we don\'t collect any).',
 });
 
 export default function PrivacyPolicy() {
@@ -14,12 +14,12 @@ export default function PrivacyPolicy() {
       <div className="space-y-8 text-slate-700 leading-relaxed text-sm">
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">1. Overview</h2>
-          <p>TechSolve44 is a division of <strong>GDB Advisories LLP</strong> ("GDB Advisories", "we", "us", "our"), which owns and operates the website techsolve44.com. This Privacy Policy explains how TechSolve44 and GDB Advisories LLP collect, use, and protect any information you provide when using our tools.</p>
+          <p>Tools by Decyfy is a division of <strong>GDB Advisories LLP</strong> ("GDB Advisories", "we", "us", "our"), which owns and operates this website. This Privacy Policy explains how Tools by Decyfy and GDB Advisories LLP collect, use, and protect any information you provide when using our tools.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">2. Files and Data</h2>
-          <p>All tools on TechSolve44 run entirely in your browser. <strong>TechSolve44 and GDB Advisories LLP do not upload, store, or process your files on any server.</strong> Your documents, images, and data never leave your device. Processing happens locally using JavaScript.</p>
+          <p>All tools on Tools by Decyfy run entirely in your browser. <strong>Tools by Decyfy and GDB Advisories LLP do not upload, store, or process your files on any server.</strong> Your documents, images, and data never leave your device. Processing happens locally using JavaScript.</p>
         </section>
 
         <section>
@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
 
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">8. Contact</h2>
-          <p>If you have questions about this Privacy Policy, please <a href="/contact" className="text-brand-700 underline">contact us</a>. TechSolve44 is a division of GDB Advisories LLP.</p>
+          <p>If you have questions about this Privacy Policy, please <a href="/contact" className="text-brand-700 underline">contact us</a>. Tools by Decyfy is a division of GDB Advisories LLP.</p>
         </section>
       </div>
     </div>

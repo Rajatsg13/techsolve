@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Compress PDF file size without losing quality — free, no signup. All processing happens in your browser. Files never uploaded to any server.',
-  url: 'https://techsolve44.com/pdf-compress/',
+  url: 'https://tools.decyfy.com/pdf-compress/',
   featureList: ['Reduce PDF file size', 'No quality loss', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free lumpsum investment calculator for India. Calculate the future value of a one-time investment using CAGR. See year-by-year wealth growth.',
-  url: 'https://techsolve44.com/lumpsum-calculator/',
+  url: 'https://tools.decyfy.com/lumpsum-calculator/',
   featureList: [
     'Lumpsum maturity value using CAGR',
     'Year-by-year wealth growth chart',

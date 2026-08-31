@@ -1,8 +1,8 @@
 import { toolMetadata } from '../lib/toolMeta';
 
 export const metadata = toolMetadata('/terms-of-service/', {
-  title: 'Terms of Service — TechSolve44',
-  description: 'Terms of Service for TechSolve44, a division of GDB Advisories LLP. Free browser-based tools. No account required.',
+  title: 'Terms of Service',
+  description: 'Terms of Service for Tools by Decyfy, a division of GDB Advisories LLP. Free browser-based tools. No account required.',
 });
 
 export default function TermsOfService() {
@@ -14,18 +14,18 @@ export default function TermsOfService() {
       <div className="space-y-8 text-slate-700 leading-relaxed text-sm">
 
         <section>
-          <h2 className="text-lg font-bold text-slate-800 mb-3">1. About TechSolve44</h2>
+          <h2 className="text-lg font-bold text-slate-800 mb-3">1. About Tools by Decyfy</h2>
           <p>
-            TechSolve44 ("TechSolve44", "we", "us", "our") is a division of <strong>GDB Advisories LLP</strong>,
+            Tools by Decyfy ("Tools by Decyfy", "we", "us", "our") is a division of <strong>GDB Advisories LLP</strong>,
             a limited liability partnership registered under the laws of India ("GDB Advisories", "the Company").
-            The website techsolve44.com is owned and operated by GDB Advisories LLP.
+            This website is owned and operated by GDB Advisories LLP.
           </p>
         </section>
 
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">2. Acceptance of Terms</h2>
           <p>
-            By accessing or using techsolve44.com, you agree to be bound by these Terms of Service.
+            By accessing or using this website, you agree to be bound by these Terms of Service.
             If you do not agree to these terms, please do not use the site.
             These Terms constitute a binding agreement between you and GDB Advisories LLP.
           </p>
@@ -34,9 +34,9 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">3. Description of Service</h2>
           <p>
-            TechSolve44, operated by GDB Advisories LLP, provides free, browser-based utility tools
+            Tools by Decyfy, operated by GDB Advisories LLP, provides free, browser-based utility tools
             including PDF converters, image tools, and financial calculators. All processing runs
-            locally in your browser. TechSolve44 and GDB Advisories LLP do not upload, store, or
+            locally in your browser. Tools by Decyfy and GDB Advisories LLP do not upload, store, or
             transmit your files or personal data to any server.
           </p>
         </section>
@@ -55,16 +55,16 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">5. Financial Calculator Disclaimer</h2>
           <p>
-            The financial calculators on TechSolve44 — including EMI, SIP, lumpsum, PPF, income tax,
+            The financial calculators on Tools by Decyfy — including EMI, SIP, lumpsum, PPF, income tax,
             FIRE, Sharpe ratio, and Graham number calculators — are provided for <strong>informational
             and educational purposes only</strong>. Results are mathematical estimates based solely on
             the inputs you provide.
           </p>
           <p className="mt-3">
-            <strong>TechSolve44 and GDB Advisories LLP are not financial advisors, tax consultants,
+            <strong>Tools by Decyfy and GDB Advisories LLP are not financial advisors, tax consultants,
             investment advisors, or registered professionals under SEBI, IRDA, or any other regulatory
             body.</strong> Nothing on this website constitutes financial, investment, tax, or legal advice.
-            TechSolve44 and GDB Advisories LLP shall not be held responsible or liable for any financial
+            Tools by Decyfy and GDB Advisories LLP shall not be held responsible or liable for any financial
             decisions, losses, or consequences arising from reliance on calculator outputs. Always consult
             a qualified and registered professional before making any financial or investment decision.
           </p>
@@ -73,8 +73,8 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">6. File Processing Disclaimer</h2>
           <p>
-            PDF and image tools on TechSolve44 operate entirely within your browser. While we make
-            reasonable efforts to ensure our tools function correctly, <strong>TechSolve44 and GDB
+            PDF and image tools on Tools by Decyfy operate entirely within your browser. While we make
+            reasonable efforts to ensure our tools function correctly, <strong>Tools by Decyfy and GDB
             Advisories LLP are not responsible for any data loss, file corruption, processing errors,
             or any other damage</strong> that may occur during or after using these tools. You are
             solely responsible for maintaining backup copies of your original files before use.
@@ -85,9 +85,9 @@ export default function TermsOfService() {
           <h2 className="text-lg font-bold text-slate-800 mb-3">7. Disclaimer of Warranties</h2>
           <p>
             The service is provided "as is" and "as available" without warranties of any kind, express
-            or implied. <strong>TechSolve44 and GDB Advisories LLP make no warranty</strong> that the
+            or implied. <strong>Tools by Decyfy and GDB Advisories LLP make no warranty</strong> that the
             tools will be error-free, uninterrupted, accurate, or fit for any particular purpose.
-            TechSolve44 and GDB Advisories LLP are not responsible for any problems, errors,
+            Tools by Decyfy and GDB Advisories LLP are not responsible for any problems, errors,
             inaccuracies, or failures arising from the use of this service.
           </p>
         </section>
@@ -95,7 +95,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">8. Limitation of Liability</h2>
           <p>
-            To the fullest extent permitted by applicable law, <strong>TechSolve44 and GDB Advisories
+            To the fullest extent permitted by applicable law, <strong>Tools by Decyfy and GDB Advisories
             LLP shall not be liable</strong> for any direct, indirect, incidental, special, consequential,
             or punitive damages — including but not limited to loss of data, loss of profits, or financial
             loss — arising from:
@@ -108,7 +108,7 @@ export default function TermsOfService() {
           </ul>
           <p className="mt-3">
             This limitation applies regardless of the legal theory under which the claim is brought
-            and even if TechSolve44 or GDB Advisories LLP has been advised of the possibility of
+            and even if Tools by Decyfy or GDB Advisories LLP has been advised of the possibility of
             such damages.
           </p>
         </section>
@@ -116,7 +116,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">9. No Professional Advice</h2>
           <p>
-            Neither TechSolve44 nor GDB Advisories LLP provides legal, financial, tax, medical, or
+            Neither Tools by Decyfy nor GDB Advisories LLP provides legal, financial, tax, medical, or
             any other form of professional advice through this website. Any content, article, or tool
             result is general in nature and should not be relied upon as a substitute for advice from
             a qualified professional with knowledge of your specific situation.
@@ -126,7 +126,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">10. Intellectual Property</h2>
           <p>
-            All content, design, code, and branding on TechSolve44 are the property of GDB Advisories
+            All content, design, code, and branding on Tools by Decyfy are the property of GDB Advisories
             LLP and are protected by applicable intellectual property laws. You may not reproduce,
             distribute, or create derivative works from any part of this site without prior written
             permission from GDB Advisories LLP.
@@ -136,9 +136,9 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">11. Third-Party Services</h2>
           <p>
-            TechSolve44 uses Google Analytics for anonymous usage statistics and Google AdSense for
+            Tools by Decyfy uses Google Analytics for anonymous usage statistics and Google AdSense for
             advertising. These services operate under their own terms and privacy policies.
-            TechSolve44 and GDB Advisories LLP are not responsible for the practices, content, or
+            Tools by Decyfy and GDB Advisories LLP are not responsible for the practices, content, or
             reliability of any third-party services linked to or embedded in this website.
           </p>
         </section>
@@ -147,7 +147,7 @@ export default function TermsOfService() {
           <h2 className="text-lg font-bold text-slate-800 mb-3">12. Changes to Terms</h2>
           <p>
             GDB Advisories LLP reserves the right to modify these Terms of Service at any time.
-            Changes will be posted on this page with an updated date. Continued use of TechSolve44
+            Changes will be posted on this page with an updated date. Continued use of Tools by Decyfy
             after any changes constitutes your acceptance of the revised Terms.
           </p>
         </section>
@@ -156,7 +156,7 @@ export default function TermsOfService() {
           <h2 className="text-lg font-bold text-slate-800 mb-3">13. Governing Law</h2>
           <p>
             These Terms of Service are governed by and construed in accordance with the laws of India.
-            Any disputes arising in connection with these Terms or your use of TechSolve44 shall be
+            Any disputes arising in connection with these Terms or your use of Tools by Decyfy shall be
             subject to the exclusive jurisdiction of the competent courts in India.
           </p>
         </section>
@@ -166,7 +166,7 @@ export default function TermsOfService() {
           <p>
             For questions or concerns regarding these Terms of Service, please{' '}
             <a href="/contact" className="text-brand-700 underline">contact us</a>.
-            TechSolve44 is a division of GDB Advisories LLP.
+            Tools by Decyfy is a division of GDB Advisories LLP.
           </p>
         </section>
 

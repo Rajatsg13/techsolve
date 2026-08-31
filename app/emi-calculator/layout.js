@@ -39,7 +39,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free EMI calculator for home loan, car loan and personal loan in India. Get your monthly EMI instantly with principal vs interest breakup. No login required.',
-  url: 'https://techsolve44.com/emi-calculator/',
+  url: 'https://tools.decyfy.com/emi-calculator/',
   featureList: [
     'Monthly EMI calculation',
     'Total interest payable',

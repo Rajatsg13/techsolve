@@ -9,7 +9,7 @@ import { resolveRelatedTools } from '../../lib/tools';
  * cross-reference.
  *
  * Filtering lives in resolveRelatedTools() in the registry, not here: unknown
- * slugs, the current tool, and FinLearn tools recommended from an ACTIVE page
+ * slugs, the current tool, and legacy finance tools recommended from an ACTIVE page
  * are all dropped there. This component only decides how the survivors look.
  */
 export default function RelatedTools({ slugs, currentSlug }) {

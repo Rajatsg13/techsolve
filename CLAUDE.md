@@ -80,9 +80,9 @@ People browse by what they have in hand, and every planned File & Image tool is 
 | Status | Meaning |
 |---|---|
 | `ACTIVE` | The public catalogue. Appears on the homepage, in the navigation, and in related-tool recommendations. |
-| `FINLEARN_MIGRATION` | The 10 finance/investment calculators. Routes keep working, pages stay in the sitemap and remain linked from the footer — but they are **excluded from the primary discovery surfaces**. Candidates to move to a separate FinLearn product. |
+| `LEGACY_FINANCE` | The 10 finance/investment calculators. Routes keep working, pages stay in the sitemap and remain linked from the footer — but they are **excluded from the primary discovery surfaces**. Candidates to move to a separate FinLearn product. |
 
-**The discovery rule lives in the registry selectors, nowhere else.** `getHomepageSections()`, `getNavigationGroups()` and `getToolsByCategory()` exclude `FINLEARN_MIGRATION` **by default**, so call sites pass nothing and cannot forget. `resolveRelatedTools()` applies the same rule to content cross-links — an ACTIVE page cannot recommend a FinLearn tool even if a content file lists one, while a FinLearn page may still recommend its siblings.
+**The discovery rule lives in the registry selectors, nowhere else.** `getHomepageSections()`, `getNavigationGroups()` and `getToolsByCategory()` exclude `LEGACY_FINANCE` **by default**, so call sites pass nothing and cannot forget. `resolveRelatedTools()` applies the same rule to content cross-links — an ACTIVE page cannot recommend a FinLearn tool even if a content file lists one, while a FinLearn page may still recommend its siblings.
 
 If a status check ever appears inside a component, the rule has leaked and belongs back in `app/lib/tools.js`.
 
@@ -91,6 +91,21 @@ If a status check ever appears inside a component, the rule has leaked and belon
 **Ordering.** A single `order` field on each category drives every surface (`CATEGORY_ORDER`). The homepage and nav previously needed separate orderings only because the finance section sat in a different position on each; with finance out of both, one order serves both. Within Documents & PDF the nav still lists tools in a different order from the homepage grid — that is what the per-tool `navOrder` field encodes.
 
 **Deliberately *not* in the registry yet:** per-tool SEO metadata (still `toolMetadata()` in each `layout.js`) and per-tool rich content such as FAQs (still inline JSX). Folding those in is the intended next step, not this one.
+
+
+### Brand and the legacy finance tools
+
+The public brand is **Tools by Decyfy**. The old TechSolve44 name is gone from every
+user-facing surface; the only remaining occurrences are the `techsolve44.com` origin in
+`metadataBase`, `toolMeta.js`, `sitemap.js` and `robots.txt`. **Those are deliberate** —
+the site is still served from that host, and canonical/sitemap URLs must match the origin
+that actually answers. Change them only when DNS moves.
+
+The finance calculators are `LEGACY_FINANCE`. They still build, still work and stay in the
+sitemap, but they appear on no public surface: not the homepage, navigation, footer or
+related-tool recommendations. The status value is deliberately named without reference to
+any future product, because the registry ships to the browser and its string values are
+readable in the JS bundle. Do not reintroduce a product name there.
 
 ### Tool page content (`app/content/tools/`)
 

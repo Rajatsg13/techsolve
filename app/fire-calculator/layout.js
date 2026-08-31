@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free FIRE calculator for India. Calculate your Financial Independence Retire Early number using the 4% safe withdrawal rule. Find out how many years until you can retire early.',
-  url: 'https://techsolve44.com/fire-calculator/',
+  url: 'https://tools.decyfy.com/fire-calculator/',
   featureList: [
     'FIRE corpus calculation using 4% rule',
     'Years to FIRE based on savings rate',

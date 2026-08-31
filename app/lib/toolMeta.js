@@ -6,7 +6,10 @@
 // `summary_large_image` card here, or they silently fall back to the root's values
 // (or `summary` with no image). This wraps a tool's hand-written metadata and layers
 // on canonical + og:url + og:image + twitter, keeping the tool's own title/keywords.
-const SITE = 'https://techsolve44.com';
+// Canonical origin. tools.decyfy.com is the live host; techsolve44.com 308-redirects
+// here. Every canonical, sitemap and JSON-LD URL must use this value — pointing them
+// at the old host would declare each page canonical to a URL that redirects away.
+const SITE = 'https://tools.decyfy.com';
 const OG_IMAGE = '/og-image.jpg';
 
 export function toolMetadata(path, meta = {}) {
@@ -18,7 +21,7 @@ export function toolMetadata(path, meta = {}) {
     openGraph: {
       type: 'website',
       locale: 'en_IN',
-      siteName: 'TechSolve44',
+      siteName: 'Tools by Decyfy',
       ...(meta.openGraph || {}),
       url: SITE + path,
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: ogTitle }],

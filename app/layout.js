@@ -5,14 +5,16 @@ import FeedbackWidget from './components/FeedbackWidget';
 import ShareBar from './components/ShareBar';
 
 export const metadata = {
-  metadataBase: new URL('https://techsolve44.com'),
+  // Live origin. techsolve44.com 308-redirects here, so canonicals and social
+  // cards must reference this host, not the old one.
+  metadataBase: new URL('https://tools.decyfy.com'),
   title: {
-    default: 'TechSolve44 — Free Online Tools',
-    template: '%s | TechSolve44',
+    default: 'Tools by Decyfy — Practical Online Tools for Documents and Files',
+    template: '%s | Tools by Decyfy',
   },
-  description: '22+ free online tools for India — PDF merge, split & compress, EMI calculator, SIP calculator, income tax calculator, image resizer and more. No login. No data stored.',
-  keywords: ['free online tools india', 'pdf converter', 'emi calculator', 'sip calculator', 'income tax calculator', 'image resizer', 'fire calculator', 'sharpe ratio calculator', 'graham number calculator'],
-  authors: [{ name: 'TechSolve44' }],
+  description: 'Free browser-based tools for everyday document and file work — merge, split, compress and convert PDFs, run OCR, resize images. No sign-up, and your files never leave your device.',
+  keywords: ['online pdf tools', 'merge pdf', 'split pdf', 'compress pdf', 'pdf to word', 'ocr pdf', 'image resizer', 'free document tools', 'browser based tools'],
+  authors: [{ name: 'Decyfy' }],
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',
@@ -20,13 +22,13 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://techsolve44.com',
-    siteName: 'TechSolve44',
-    title: 'TechSolve44 — Free Online Tools for India',
-    description: '22+ free browser-based tools. PDF, calculators, image tools — no login, no data stored.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'TechSolve44 — Free Online Tools for India' }],
+    url: 'https://tools.decyfy.com',
+    siteName: 'Tools by Decyfy',
+    title: 'Tools by Decyfy — Practical Online Tools for Documents and Files',
+    description: 'Free browser-based tools for PDFs, documents and images. No sign-up, and your files never leave your device.',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Tools by Decyfy' }],
   },
-  twitter: { card: 'summary_large_image', title: 'TechSolve44 — Free Online Tools for India', description: '22+ free tools. No login. No data stored.', images: ['/og-image.jpg'] },
+  twitter: { card: 'summary_large_image', title: 'Tools by Decyfy', description: 'Practical browser-based tools for documents and files. No sign-up, files stay on your device.', images: ['/og-image.jpg'] },
   robots: { index: true, follow: true },
 };
 
@@ -40,7 +42,7 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
           as="style"
           id="font-preload"
         />
@@ -50,10 +52,10 @@ export default function RootLayout({ children }) {
           }}
         />
         <noscript>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" />
         </noscript>
       </head>
-      <body className="flex flex-col min-h-screen bg-slate-50">
+      <body className="flex flex-col min-h-screen bg-[#f7f9fc]">
         <Header />
         <main className="flex-1">{children}</main>
         {/* ShareBar and FeedbackWidget are mounted here so they render on every

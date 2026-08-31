@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Convert PDF to editable Word (.docx) document free online. No signup, no file upload — all conversion happens in your browser.',
-  url: 'https://techsolve44.com/pdf-to-word/',
+  url: 'https://tools.decyfy.com/pdf-to-word/',
   featureList: ['Convert PDF to Word (.docx)', 'Preserves text formatting', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

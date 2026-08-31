@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Resize images online for free. Resize by pixels or percentage. No signup, no file upload — all processing in your browser.',
-  url: 'https://techsolve44.com/image-resize/',
+  url: 'https://tools.decyfy.com/image-resize/',
   featureList: ['Resize by pixels or percentage', 'Maintains aspect ratio option', 'Browser-only processing', 'No file upload to server', 'Free, no account needed'],
 };
 

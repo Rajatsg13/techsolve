@@ -23,7 +23,7 @@ const LINKS = [
   {
     key: 'x',
     label: 'X',
-    color: 'text-slate-800',
+    color: 'text-ink-900',
     href: (url, text) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
     icon: <IconWrap><path d="M4 4l7.5 9.4L4.4 20H7l5.2-5.8L16.5 20H21l-8-10L20 4h-2.6l-4.8 5.4L8.4 4H4z" strokeWidth="1.2" fill="currentColor" stroke="none"/></IconWrap>,
   },
@@ -46,7 +46,7 @@ const LINKS = [
 export default function ShareBar() {
   const pathname = usePathname();
   const [url, setUrl] = useState('');
-  const [title, setTitle] = useState('TechSolve44 — Free Online Tools');
+  const [title, setTitle] = useState('Tools by Decyfy');
   const [canNativeShare, setCanNativeShare] = useState(false);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -54,7 +54,7 @@ export default function ShareBar() {
 
   useEffect(() => {
     setUrl(window.location.href);
-    setTitle(document.title || 'TechSolve44 — Free Online Tools');
+    setTitle(document.title || 'Tools by Decyfy');
     setCanNativeShare(typeof navigator !== 'undefined' && typeof navigator.share === 'function');
     setOpen(false);
   }, [pathname]);
@@ -104,8 +104,8 @@ export default function ShareBar() {
 
   return (
     <section className="max-w-4xl mx-auto px-4 pt-2">
-      <div className="flex items-center justify-between py-4 border-t border-slate-100">
-        <p className="text-sm text-slate-500">
+      <div className="flex items-center justify-between py-4 border-t border-ink-100">
+        <p className="text-sm text-ink-500">
           {pathname === '/' ? 'Find this useful? Share it.' : 'Found this tool useful? Share it.'}
         </p>
 
@@ -115,25 +115,25 @@ export default function ShareBar() {
             onClick={() => setOpen(v => !v)}
             aria-expanded={open}
             aria-haspopup="true"
-            className="flex items-center gap-2 px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold rounded-xl transition-colors"
           >
             <IconWrap className="w-4 h-4"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 3.9M15.4 6.6 8.6 10.5"/></IconWrap>
             Share
           </button>
 
           {open && (
-            <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-100 py-2 z-50">
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-2xl shadow-lift border border-ink-100 py-2 z-50">
               {canNativeShare && (
                 <>
                   <button
                     type="button"
                     onClick={nativeShare}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-brand-700 transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-ink-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
                   >
-                    <IconWrap className="w-4 h-4 text-slate-500"><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></IconWrap>
+                    <IconWrap className="w-4 h-4 text-ink-500"><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></IconWrap>
                     More options…
                   </button>
-                  <div className="my-1 border-t border-slate-100" />
+                  <div className="my-1 border-t border-ink-100" />
                 </>
               )}
 
@@ -144,7 +144,7 @@ export default function ShareBar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-brand-700 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-ink-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
                 >
                   <span className={color}>{icon}</span>
                   {label}
@@ -154,9 +154,9 @@ export default function ShareBar() {
               <button
                 type="button"
                 onClick={copyLink}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-brand-700 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-ink-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
               >
-                <IconWrap className={`w-4 h-4 ${copied ? 'text-green-600' : 'text-slate-500'}`}>
+                <IconWrap className={`w-4 h-4 ${copied ? 'text-green-600' : 'text-ink-500'}`}>
                   {copied
                     ? <path d="M20 6 9 17l-5-5"/>
                     : <><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></>}

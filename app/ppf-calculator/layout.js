@@ -7,7 +7,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free PPF (Public Provident Fund) calculator for India. Calculate your PPF maturity value, total interest earned and year-wise balance at the current 7.1% interest rate.',
-  url: 'https://techsolve44.com/ppf-calculator/',
+  url: 'https://tools.decyfy.com/ppf-calculator/',
   featureList: [
     'PPF maturity value at 7.1% p.a.',
     'Year-by-year balance growth chart',

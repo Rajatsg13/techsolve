@@ -8,7 +8,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Reorder, rotate and delete PDF pages for free. Drag-and-drop page organizing that runs entirely in your browser — your files are never uploaded to a server.',
-  url: 'https://techsolve44.com/pdf-organize/',
+  url: 'https://tools.decyfy.com/pdf-organize/',
   featureList: ['Reorder PDF pages', 'Rotate pages', 'Delete pages', 'Drag-and-drop', 'Browser-only processing'],
 };
 

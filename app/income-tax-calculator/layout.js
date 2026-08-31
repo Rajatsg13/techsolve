@@ -34,7 +34,7 @@ const schema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
   description: 'Free income tax calculator for India FY 2025-26. Compare old vs new tax regime side-by-side with full deductions — 80C, 80D, HRA, home loan interest. See which regime saves you more.',
-  url: 'https://techsolve44.com/income-tax-calculator/',
+  url: 'https://tools.decyfy.com/income-tax-calculator/',
   featureList: [
     'Old vs new regime comparison FY 2025-26',
     'Section 87A rebate applied automatically',

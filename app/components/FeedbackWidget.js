@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { submitToWeb3Forms, friendlyError } from '../lib/web3forms';
 
 // Distinguishes these from the contact form in the inbox.
-const SUBJECT = 'TechSolve44 Feedback Widget';
+const SUBJECT = 'Tools by Decyfy Feedback Widget';
 
 export default function FeedbackWidget() {
   const [open, setOpen]       = useState(false);
@@ -32,7 +32,7 @@ export default function FeedbackWidget() {
     try {
       await submitToWeb3Forms({
         subject: SUBJECT,
-        from_name: 'TechSolve44 Feedback Widget',
+        from_name: 'Tools by Decyfy Feedback Widget',
         message: message.trim(),
         email: email.trim() || undefined,
         page: typeof window !== 'undefined' ? window.location.pathname : '',
@@ -60,13 +60,13 @@ export default function FeedbackWidget() {
 
   return (
     <section className="max-w-4xl mx-auto px-4 pb-12 pt-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+      <div className="bg-white rounded-3xl shadow-card border border-ink-100 p-5">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-800">
-              Didn&rsquo;t find the calculator you need?
+            <p className="text-sm font-semibold text-ink-900">
+              Didn&rsquo;t find the tool you need?
             </p>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <p className="text-sm text-ink-500 mt-0.5">
               Tell us what you&rsquo;re trying to calculate — we read every one.
             </p>
           </div>
@@ -88,7 +88,7 @@ export default function FeedbackWidget() {
         </div>
 
         {open && (
-          <div id="feedback-widget-form" className="mt-4 pt-4 border-t border-slate-100">
+          <div id="feedback-widget-form" className="mt-4 pt-4 border-t border-ink-100">
             {status === 'sent' ? (
               <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3">
                 <p className="text-sm font-semibold text-green-800">Thanks — we read every submission.</p>
@@ -96,25 +96,25 @@ export default function FeedbackWidget() {
             ) : (
               <form onSubmit={submit} className="space-y-3">
                 <div>
-                  <label htmlFor="feedback-message" className="block text-sm font-semibold text-slate-700 mb-1">
+                  <label htmlFor="feedback-message" className="block text-sm font-semibold text-ink-700 mb-1">
                     What are you trying to calculate?
                   </label>
                   <textarea
                     id="feedback-message" ref={textareaRef} required rows={3}
                     value={message} onChange={e => setMessage(e.target.value)}
                     placeholder="e.g. I want to know whether paying with Axis Atlas or Infinia gives more value for Emirates flights"
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400 resize-none"
+                    className="w-full border border-ink-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400 resize-none"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="feedback-email" className="block text-sm font-semibold text-slate-700 mb-1">
-                    Email <span className="text-slate-400 font-normal">— optional, if you&rsquo;d like a reply</span>
+                  <label htmlFor="feedback-email" className="block text-sm font-semibold text-ink-700 mb-1">
+                    Email <span className="text-ink-400 font-normal">— optional, if you&rsquo;d like a reply</span>
                   </label>
                   <input
                     id="feedback-email" type="email" value={email} onChange={e => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                    className="w-full border border-ink-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
                   />
                 </div>
 
@@ -134,7 +134,7 @@ export default function FeedbackWidget() {
                 )}
 
                 <div className="flex items-center justify-between gap-4 flex-wrap pt-1">
-                  <p className="text-xs text-slate-400 max-w-sm">
+                  <p className="text-xs text-ink-400 max-w-sm">
                     By submitting, you may occasionally see an anonymized version of your feedback featured on our site.
                   </p>
                   <button

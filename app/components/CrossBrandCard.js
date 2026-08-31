@@ -58,7 +58,7 @@ export default function CrossBrandCard({ pageSlug }) {
   return (
     <div className="mt-8 mb-2">
       <p className="text-xs text-slate-400 mb-1.5 uppercase tracking-wide font-medium">
-        From the TechSolve44 family
+        From the Decyfy family
       </p>
       <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
         <div className="mt-0.5 shrink-0">

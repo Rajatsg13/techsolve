@@ -72,9 +72,9 @@ Tools are filed by **the artefact the user starts with**: a PDF or document goes
 Each tool carries a `status`:
 
 - **`ACTIVE`** — the 15 document and image tools that form the public catalogue.
-- **`FINLEARN_MIGRATION`** — the 10 finance calculators. Still functional, still routed, still in the sitemap and still linked from the footer, but **excluded from the homepage catalogue, the navigation and related-tool recommendations**. Earmarked to move to a separate FinLearn product.
+- **`LEGACY_FINANCE`** — the 10 finance calculators. Still functional, still routed, still in the sitemap and still linked from the footer, but **excluded from the homepage catalogue, the navigation and related-tool recommendations**. Earmarked to move to a separate FinLearn product.
 
-The rule is enforced centrally: the registry selectors exclude `FINLEARN_MIGRATION` by default, so no component filters by status.
+The rule is enforced centrally: the registry selectors exclude `LEGACY_FINANCE` by default, so no component filters by status.
 
 ## Tools
 
