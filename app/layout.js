@@ -9,7 +9,7 @@ export const metadata = {
   // cards must reference this host, not the old one.
   metadataBase: new URL('https://tools.decyfy.com'),
   title: {
-    default: 'Tools by Decyfy — Practical Online Tools for Documents and Files',
+    default: 'Tools by Decyfy — Free Online Tools for Everyday Work',
     template: '%s | Tools by Decyfy',
   },
   description: 'Free browser-based tools for everyday document and file work — merge, split, compress and convert PDFs, run OCR, resize images. No sign-up, and your files never leave your device.',
@@ -24,11 +24,11 @@ export const metadata = {
     locale: 'en_IN',
     url: 'https://tools.decyfy.com',
     siteName: 'Tools by Decyfy',
-    title: 'Tools by Decyfy — Practical Online Tools for Documents and Files',
-    description: 'Free browser-based tools for PDFs, documents and images. No sign-up, and your files never leave your device.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Tools by Decyfy' }],
+    title: 'Tools by Decyfy — Free Online Tools for Everyday Work',
+    description: 'Simple, free online tools for documents, files and images. No sign-up, no downloads — just open and use.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Tools by Decyfy — free online tools for documents, files and images' }],
   },
-  twitter: { card: 'summary_large_image', title: 'Tools by Decyfy', description: 'Practical browser-based tools for documents and files. No sign-up, files stay on your device.', images: ['/og-image.jpg'] },
+  twitter: { card: 'summary_large_image', title: 'Tools by Decyfy — Free Online Tools for Everyday Work', description: 'Simple, free online tools for documents, files and images. No sign-up, no downloads — just open and use.', images: ['/og-image.png'] },
   robots: { index: true, follow: true },
 };
 

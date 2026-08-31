@@ -95,11 +95,13 @@ If a status check ever appears inside a component, the rule has leaked and belon
 
 ### Brand and the legacy finance tools
 
-The public brand is **Tools by Decyfy**. The old TechSolve44 name is gone from every
-user-facing surface; the only remaining occurrences are the `techsolve44.com` origin in
-`metadataBase`, `toolMeta.js`, `sitemap.js` and `robots.txt`. **Those are deliberate** —
-the site is still served from that host, and canonical/sitemap URLs must match the origin
-that actually answers. Change them only when DNS moves.
+The public brand is **Tools by Decyfy**, live at **https://tools.decyfy.com**. The old
+`techsolve44.com` domain 308-redirects to it, per path.
+
+The old name survives in exactly two places, both deliberate: explanatory comments beside
+the `SITE` / `metadataBase` constants, and `public/.htaccess`. The latter is Apache
+configuration that Vercel never reads *and* now points at a retired domain — it is inert
+twice over and safe to delete whenever you want to tidy up.
 
 The finance calculators are `LEGACY_FINANCE`. They still build, still work and stay in the
 sitemap, but they appear on no public surface: not the homepage, navigation, footer or
@@ -184,7 +186,7 @@ Tailwind with a custom `brand` color scale (blue, defined in `tailwind.config.js
 ### Key config
 
 - `next.config.mjs`: `output: 'export'`, `trailingSlash: true`, `generateBuildId: () => 'ts44'` (keeps static asset paths stable across deploys), `images: { unoptimized: true }`, webpack `fs/net/tls/canvas` fallbacks set to `false` for browser-only packages.
-- Domain: `https://techsolve44.com`
+- Domain: `https://tools.decyfy.com`
 - Analytics: Google Analytics `G-FFVH7DK4LD` in `app/layout.js`
 
 ### AdSense

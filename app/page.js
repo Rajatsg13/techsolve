@@ -4,7 +4,7 @@ import { getActiveTools, getHomepageSections } from './lib/tools';
 
 export const metadata = {
   alternates: { canonical: '/' },
-  title: 'Tools by Decyfy — Practical Online Tools for Documents and Files',
+  title: 'Tools by Decyfy — Free Online Tools for Everyday Work',
   description:
     'Free browser-based tools for everyday document and file work — merge, split, compress and convert PDFs, run OCR, resize images. No sign-up, and your files never leave your device.',
 };

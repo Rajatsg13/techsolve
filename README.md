@@ -1,8 +1,10 @@
-# TechSolve44
+# Tools by Decyfy
 
-Free browser-based tools — PDF conversion and manipulation, image utilities, and financial calculators. Everything runs client-side; user files never leave the device.
+Free browser-based tools for everyday document and file work — PDF conversion and manipulation, plus image utilities. Everything runs client-side; user files never leave the device.
 
-> **Note on naming.** A rebrand to *Tools by Decyfy* is planned. The visible brand, the domain and the finance-tool split have **not** happened yet — this repository is still TechSolve44 throughout. See `CLAUDE.md` for the tool-status model that prepares for that split.
+**Live at https://tools.decyfy.com.** The former `techsolve44.com` domain 308-redirects here.
+
+> **Legacy finance tools.** Ten calculators from the previous product still build and still work at their original routes, but they appear on no public surface. They carry `status: LEGACY_FINANCE` in the registry and are candidates to move to a separate product. Do not promote them or change their routes.
 
 ## Quick start
 

@@ -10,7 +10,9 @@
 // here. Every canonical, sitemap and JSON-LD URL must use this value — pointing them
 // at the old host would declare each page canonical to a URL that redirects away.
 const SITE = 'https://tools.decyfy.com';
-const OG_IMAGE = '/og-image.jpg';
+// Shared social card. Per-tool titles and descriptions still come from each
+// tool's own metadata below; only the artwork is common.
+const OG_IMAGE = '/og-image.png';
 
 export function toolMetadata(path, meta = {}) {
   const ogTitle = (meta.openGraph && meta.openGraph.title) || meta.title;
