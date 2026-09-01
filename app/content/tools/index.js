@@ -68,6 +68,9 @@ import workingDaysCalculator from './working-days-calculator';
 import invoiceGenerator from './invoice-generator';
 import payslipGenerator from './payslip-generator';
 import rentReceiptGenerator from './rent-receipt-generator';
+import imageCompress from './image-compress';
+import imageCrop from './image-crop';
+import heicToJpg from './heic-to-jpg';
 
 const CONTENT = {
   'pdf-merge': pdfMerge,
@@ -85,6 +88,9 @@ const CONTENT = {
   'invoice-generator': invoiceGenerator,
   'payslip-generator': payslipGenerator,
   'rent-receipt-generator': rentReceiptGenerator,
+  'image-compress': imageCompress,
+  'image-crop': imageCrop,
+  'heic-to-jpg': heicToJpg,
 };
 
 /**

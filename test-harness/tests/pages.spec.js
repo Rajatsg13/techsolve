@@ -34,6 +34,9 @@ const TOOL_PAGES = [
   { path: '/sharpe-ratio-calculator/', title: 'Sharpe' },
   { path: '/stock-profit-calculator/', title: 'Stock Profit' },
   { path: '/mf-profit-calculator/', title: 'MF Profit' },
+  { path: '/image-compress/', title: 'Compress Image' },
+  { path: '/image-crop/', title: 'Crop Image' },
+  { path: '/heic-to-jpg/', title: 'HEIC to JPG' },
   // Data & Text
   { path: '/json-formatter/', title: 'JSON Formatter' },
   { path: '/base64-encoder-decoder/', title: 'Base64' },
