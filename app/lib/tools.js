@@ -682,6 +682,56 @@ export const TOOLS = [
     sitemapPriority: 0.9,
     sitemapChangefreq: 'monthly',
   },
+  /* ── Generators ──────────────────────────────────────────────────────────
+   * Documents built in the browser with pdf-lib. Amounts print as "Rs."
+   * because the standard PDF fonts cannot encode the rupee sign — see the
+   * note at the top of app/lib/docPdf.js.
+   */
+  {
+    slug: 'invoice-generator',
+    navOrder: 1,
+    name: 'Invoice Generator',
+    href: '/invoice-generator',
+    category: CATEGORY.GENERATORS,
+    status: STATUS.ACTIVE,
+    shortDescription: 'Create a professional invoice PDF with per-line tax and discounts.',
+    icon: '🧾',
+    badge: 'New',
+    showOnHomepage: true,
+    showInNavigation: true,
+    sitemapPriority: 0.9,
+    sitemapChangefreq: 'monthly',
+  },
+  {
+    slug: 'payslip-generator',
+    navOrder: 2,
+    name: 'Payslip Generator',
+    href: '/payslip-generator',
+    category: CATEGORY.GENERATORS,
+    status: STATUS.ACTIVE,
+    shortDescription: 'Produce a clear salary slip PDF from earnings and deductions.',
+    icon: '💼',
+    badge: 'New',
+    showOnHomepage: true,
+    showInNavigation: true,
+    sitemapPriority: 0.8,
+    sitemapChangefreq: 'monthly',
+  },
+  {
+    slug: 'rent-receipt-generator',
+    navOrder: 3,
+    name: 'Rent Receipt Generator',
+    href: '/rent-receipt-generator',
+    category: CATEGORY.GENERATORS,
+    status: STATUS.ACTIVE,
+    shortDescription: 'Generate a rent receipt PDF for one rent period, ready for HRA claims.',
+    icon: '🏠',
+    badge: 'New',
+    showOnHomepage: true,
+    showInNavigation: true,
+    sitemapPriority: 0.8,
+    sitemapChangefreq: 'monthly',
+  },
 ];
 
 /**

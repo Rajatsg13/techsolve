@@ -65,6 +65,9 @@ import breakEvenCalculator from './break-even-calculator';
 import roiCalculator from './roi-calculator';
 import salaryHikeCalculator from './salary-hike-calculator';
 import workingDaysCalculator from './working-days-calculator';
+import invoiceGenerator from './invoice-generator';
+import payslipGenerator from './payslip-generator';
+import rentReceiptGenerator from './rent-receipt-generator';
 
 const CONTENT = {
   'pdf-merge': pdfMerge,
@@ -79,6 +82,9 @@ const CONTENT = {
   'roi-calculator': roiCalculator,
   'salary-hike-calculator': salaryHikeCalculator,
   'working-days-calculator': workingDaysCalculator,
+  'invoice-generator': invoiceGenerator,
+  'payslip-generator': payslipGenerator,
+  'rent-receipt-generator': rentReceiptGenerator,
 };
 
 /**
