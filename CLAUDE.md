@@ -225,6 +225,64 @@ There is deliberately no `vercel.json`. Vercel auto-detects Next.js and handles 
 
 The build ID is pinned to `ts44` in `next.config.mjs`, so `_next/static/ts44/` paths are stable. This was originally to keep paths stable across FTP deploys; on Vercel that concern no longer applies, and the override could be renamed or dropped. The **CSS filename hash is not stable** — it changes whenever styles change. Nothing should ever hardcode it.
 
+## Shared libraries (`app/lib/`)
+
+Logic that more than one tool needs lives here, and the split is deliberate:
+anything that can be pure **is** pure, so it can be proved in plain Node rather
+than only observed through a browser.
+
+| Module | What it owns | Pure? |
+|---|---|---|
+| `calc.js` | Business & Work formulas | yes |
+| `textTools.js` | JSON / Base64 / URL transforms | yes |
+| `generators.js` | Invoice, payslip, receipt totals and validation | yes |
+| `image.js` | Crop geometry, aspect fitting, canvas limits | yes |
+| `pdfTables.js` | Table detection from positioned text | yes |
+| `xlsx.js` | XLSX writer (value typing, escaping, sheet names) | mostly |
+| `docPdf.js`, `generatorPdfs.js` | PDF document construction | no (pdf-lib) |
+| `imageCanvas.js`, `heic.js` | Decode / encode / crop images | no (canvas) |
+| `pdfRender.js`, `pdfPages.js` | pdf.js access, thumbnails, coordinate mapping | no |
+| `pdfToTables.js` | Drives `pdfTables.js` over a document | no (pdf.js) |
+
+**`pdfTables.js` was extracted from `app/pdf-to-word/page.js` verbatim** so PDF
+to Excel could reuse it instead of growing a second, subtly different detector.
+The thresholds in it are load-bearing — they were calibrated against real
+government report PDFs, and loosening them turns ordinary prose into fake
+tables. It had no tests while it lived inside the page; it does now.
+
+### Coordinate systems
+
+pdf.js viewports are top-left origin with y increasing downwards. pdf-lib pages
+are bottom-left origin with y increasing upwards. `pdfPages.toPdfRect()` is the
+one place that conversion happens; the interactive tools store selections as
+**fractions of the page** rather than pixels, so a selection means the same
+thing at any display size and the mobile and desktop layouts agree.
+
+## Tools with deliberate limitations
+
+Three tools trade something away on purpose. Each states it in the UI and in the
+`limitations` field of its content file, which `ToolContent` renders directly
+under "What this tool does" — before any of the selling. Do not move it lower
+and do not soften the wording.
+
+**Redact PDF** rasterises the pages it redacts. That is what actually removes
+the hidden text: a black rectangle drawn over text in a PDF editor leaves the
+text exactly where it was. Pages carrying a redaction are rebuilt from a
+rendered image with the boxes painted in *before* encoding, and the original
+page object is never copied into the output. Pages without redactions are copied
+across untouched and keep their text. A vector black rectangle is also drawn on
+top of each redacted region, so the area is exactly `#000` rather than JPEG's
+approximation of it.
+
+**Sign PDF** adds a visible signature image. There is no certificate, no
+identity verification and no tamper detection. Never describe it as a digital,
+certified or legally binding signature.
+
+**PDF to Excel** reads the text layer a PDF already carries. It cannot read
+scans or tables stored as images, and it says so rather than returning an empty
+workbook. When no grid is found it distinguishes "no text layer at all" from
+"text, but nothing table-shaped", because those need different advice.
+
 ## Tool pattern
 
 Every tool page follows the same structure:

@@ -162,10 +162,13 @@ test.describe('@images Compress Image', () => {
     await page.goto('/image-compress/');
     await upload(page, 'corrupt.jpg');
     // Either it refuses, or it decodes the partial image — but it must never
-    // silently present a result built from nothing.
-    const failed = await page.getByText(/could not be read as an image/i).isVisible().catch(() => false);
-    const opened = await page.getByTestId('compress-options').isVisible().catch(() => false);
-    expect(failed || opened).toBe(true);
+    // silently present a result built from nothing. Decoding is asynchronous,
+    // so poll rather than reading the DOM the instant the file is attached.
+    await expect.poll(async () => {
+      const failed = await page.getByText(/could not be read as an image/i).isVisible().catch(() => false);
+      const opened = await page.getByTestId('compress-options').isVisible().catch(() => false);
+      return failed || opened;
+    }, { timeout: 20000 }).toBe(true);
   });
 
   test('handles a one-pixel image without dividing by zero', async ({ page }) => {

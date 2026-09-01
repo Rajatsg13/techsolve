@@ -80,11 +80,26 @@ The rule is enforced centrally: the registry selectors exclude `LEGACY_FINANCE` 
 
 ## Tools
 
-**Documents & PDF** — PDF to Word · PDF to JPG · Merge · Split · Organize Pages · Compress · Word to PDF · Watermark · Add Page Numbers · HTML to PDF · OCR · Remove Password
+36 public tools across five categories. The registry in `app/lib/tools.js` is
+authoritative — this list is a convenience and can fall behind it.
 
-**Images & Scanning** — Image to PDF · Image Resizer · Scan to PDF
+**Documents & PDF** (16) — Merge · Split · Organize Pages · Compress · Rotate ·
+PDF to Word · Word to PDF · PDF to Excel · PDF to JPG · Watermark ·
+Add Page Numbers · HTML to PDF · OCR · Remove Password · Sign · Redact
 
-**Financial calculators** *(FinLearn migration candidates)* — EMI · SIP · Lumpsum · PPF · Income Tax · Graham Number · FIRE · Sharpe Ratio · Stock Profit · MF Profit
+**File & Image** (6) — Image to PDF · Image Resizer · Scan to PDF ·
+Compress Image · Crop Image · HEIC to JPG
+
+**Data & Text** (3) — JSON Formatter · Base64 Encode/Decode · URL Encode/Decode
+
+**Business & Work** (8) — Percentage · Percentage Increase · GST · Profit Margin ·
+Break-even · ROI · Salary Hike · Working Days
+
+**Generators** (3) — Invoice · Payslip · Rent Receipt
+
+A further 10 financial calculators remain routed and working but are marked
+`STATUS.LEGACY_FINANCE`, which keeps them out of the homepage, navigation,
+sitemap and related-tool links. They are reachable only by direct URL.
 
 ## Privacy
 
@@ -96,3 +111,4 @@ Two constraints worth knowing before making changes:
 
 - **Never add `export const metadata` to a tool `page.js`** — they are all `'use client'`, and it is a build error. Metadata belongs in the sibling `layout.js`, via `toolMetadata()`.
 - **Do not reintroduce MuPDF.** It was removed from PDF compression because it is AGPL-3.0-or-later. See `CLAUDE.md` for what replaced it and what capability was lost.
+- **Three tools have limitations that must stay documented**, not quietly dropped: Redact PDF rasterises the pages it redacts, Sign PDF is a visible signature and not a certified one, and PDF to Excel cannot read scanned documents. Each states this in its UI and in its `limitations` content field. See `TESTING.md`.

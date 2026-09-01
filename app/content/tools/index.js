@@ -32,6 +32,11 @@
  *   outcome           string    One line: the result the user gets. Shown under
  *                               the page heading, above the tool.
  *   whatItDoes        string[]  Paragraphs explaining the practical purpose
+ *   limitations       string[]  Trade-offs the reader must not miss. Rendered
+ *                               prominently, directly under whatItDoes, before
+ *                               any of the selling — use it for anything that
+ *                               would change whether the tool is the right
+ *                               choice (rasterisation, no certificate, etc.)
  *   whenToUse         Item[]    Situations that lead someone here
  *   workplaceUses     Item[]    Concrete work examples
  *   howToSteps        Item[]    Ordered instructions for the real interface
@@ -71,6 +76,10 @@ import rentReceiptGenerator from './rent-receipt-generator';
 import imageCompress from './image-compress';
 import imageCrop from './image-crop';
 import heicToJpg from './heic-to-jpg';
+import pdfRotate from './pdf-rotate';
+import pdfSign from './pdf-sign';
+import pdfRedact from './pdf-redact';
+import pdfToExcel from './pdf-to-excel';
 
 const CONTENT = {
   'pdf-merge': pdfMerge,
@@ -91,6 +100,10 @@ const CONTENT = {
   'image-compress': imageCompress,
   'image-crop': imageCrop,
   'heic-to-jpg': heicToJpg,
+  'pdf-rotate': pdfRotate,
+  'pdf-sign': pdfSign,
+  'pdf-redact': pdfRedact,
+  'pdf-to-excel': pdfToExcel,
 };
 
 /**

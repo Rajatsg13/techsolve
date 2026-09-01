@@ -37,6 +37,10 @@ const TOOL_PAGES = [
   { path: '/image-compress/', title: 'Compress Image' },
   { path: '/image-crop/', title: 'Crop Image' },
   { path: '/heic-to-jpg/', title: 'HEIC to JPG' },
+  { path: '/pdf-rotate/', title: 'Rotate PDF' },
+  { path: '/pdf-sign/', title: 'Sign PDF' },
+  { path: '/pdf-redact/', title: 'Redact PDF' },
+  { path: '/pdf-to-excel/', title: 'PDF to Excel' },
   // Data & Text
   { path: '/json-formatter/', title: 'JSON Formatter' },
   { path: '/base64-encoder-decoder/', title: 'Base64' },
