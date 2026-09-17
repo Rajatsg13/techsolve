@@ -36,6 +36,7 @@ yarn-error.log*
 # Playwright output (screenshots, traces, HTML report)
 test-harness/test-results/
 test-harness/playwright-report/
+test-harness/test-output/
 
 # Claude Code local config
 .claude/

@@ -26,6 +26,21 @@ at production.
 
 285 tests in total.
 
+## Test fixtures
+
+The image and PDF fixtures live in `test-harness/fixtures/` and are committed,
+so the suites run on any clone. They were previously generated into a temporary
+folder, which is why the image and Phase 4 suites once failed on missing files.
+
+- `node fixtures/generate.mjs` (from `test-harness/`) rebuilds the images and
+  PDFs, using the harness's Chromium and the site's `pdf-lib` — no Python.
+- `fixtures/make-heic.sh` rebuilds the two HEIC files. macOS only (`sips`).
+  They are **converted**, not camera-original, and do not count as evidence
+  that HEIC to JPG works on real iPhone photos.
+
+Files the tests download are written to `test-harness/test-output/`, which is
+git-ignored, so they can be opened and inspected after a run.
+
 ## Known environmental failures
 
 `calculators.spec.js` fails in the MF Profit Calculator whenever `api.mfapi.in`

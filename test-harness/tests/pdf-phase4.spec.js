@@ -12,10 +12,10 @@ const fs = require('fs');
  * a download starting is not evidence that the output is correct.
  */
 
-const FIX = process.env.PDF4_FIXTURES
-  || '/private/tmp/claude-501/-Users-rajat-Desktop-Dhyai-test/36af64ad-458a-449b-acc0-d4f9191ff638/scratchpad/pdffix';
-const OUT = process.env.PDF4_OUT
-  || '/private/tmp/claude-501/-Users-rajat-Desktop-Dhyai-test/36af64ad-458a-449b-acc0-d4f9191ff638/scratchpad/out4';
+// Committed fixtures (regenerate with fixtures/generate.mjs). Downloaded
+// outputs go to test-output/, which is git-ignored, for manual inspection.
+const FIX = process.env.PDF4_FIXTURES || path.resolve(__dirname, '..', 'fixtures');
+const OUT = process.env.PDF4_OUT || path.resolve(__dirname, '..', 'test-output', 'pdf4');
 
 const fx = (n) => path.join(FIX, n);
 test.beforeAll(() => fs.mkdirSync(OUT, { recursive: true }));

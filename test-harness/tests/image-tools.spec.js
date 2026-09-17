@@ -13,10 +13,10 @@ const fs = require('fs');
  * a valid image of the right size and format.
  */
 
-const FIXTURES = process.env.IMAGE_FIXTURES
-  || '/private/tmp/claude-501/-Users-rajat-Desktop-Dhyai-test/36af64ad-458a-449b-acc0-d4f9191ff638/scratchpad/fixtures';
-const OUT_DIR = process.env.IMAGE_OUT
-  || '/private/tmp/claude-501/-Users-rajat-Desktop-Dhyai-test/36af64ad-458a-449b-acc0-d4f9191ff638/scratchpad/caught';
+// Committed fixtures (regenerate with fixtures/generate.mjs). Downloaded
+// outputs go to test-output/, which is git-ignored, for manual inspection.
+const FIXTURES = process.env.IMAGE_FIXTURES || path.resolve(__dirname, '..', 'fixtures');
+const OUT_DIR = process.env.IMAGE_OUT || path.resolve(__dirname, '..', 'test-output', 'images');
 
 const fx = (name) => path.join(FIXTURES, name);
 
