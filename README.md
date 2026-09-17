@@ -74,7 +74,7 @@ Tools are filed by **the artefact the user starts with**: a PDF or document goes
 Each tool carries a `status`:
 
 - **`ACTIVE`** — the 15 document and image tools that form the public catalogue.
-- **`LEGACY_FINANCE`** — the 10 finance calculators. Still functional, still routed, still in the sitemap and still linked from the footer, but **excluded from the homepage catalogue, the navigation and related-tool recommendations**. Earmarked to move to a separate FinLearn product.
+- **`LEGACY_FINANCE`** — the 10 finance calculators. Still functional, still routed, still in the sitemap, but **excluded from the homepage catalogue, the navigation, the footer and related-tool recommendations**. Earmarked to move to a separate FinLearn product.
 
 The rule is enforced centrally: the registry selectors exclude `LEGACY_FINANCE` by default, so no component filters by status.
 
@@ -99,7 +99,7 @@ Break-even · ROI · Salary Hike · Working Days
 
 A further 10 financial calculators remain routed and working but are marked
 `STATUS.LEGACY_FINANCE`, which keeps them out of the homepage, navigation,
-sitemap and related-tool links. They are reachable only by direct URL.
+footer and related-tool links. They remain in the sitemap and reachable by URL.
 
 ## Privacy
 

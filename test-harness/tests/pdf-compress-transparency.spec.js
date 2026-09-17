@@ -26,7 +26,7 @@ const { pathToFileURL } = require('url');
  * the live source (the app package is CommonJS; the module is authored in ESM).
  */
 
-const ROOT = path.resolve(__dirname, '..', '..'); // techsolve44/
+const ROOT = path.resolve(__dirname, '..', '..'); // repository root
 const MUPDF_DIST = path.join(ROOT, 'node_modules', 'mupdf', 'dist', 'mupdf.js');
 const SRC = path.join(ROOT, 'app', 'lib', 'pdfCompress.js');
 

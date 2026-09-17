@@ -1,7 +1,7 @@
 {
-  "name": "techsolve44-tests",
+  "name": "tools-by-decyfy-tests",
   "version": "1.0.0",
-  "description": "Functional tests for TechSolve44 website tools",
+  "description": "Functional tests for Tools by Decyfy",
   "scripts": {
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",

@@ -1,6 +1,6 @@
-# TechSolve44 Test Harness
+# Tools by Decyfy Test Harness
 
-Playwright functional tests for [techsolve44.com](https://techsolve44.com).
+Playwright functional tests for [tools.decyfy.com](https://tools.decyfy.com).
 
 ## Setup
 

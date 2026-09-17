@@ -12,7 +12,7 @@ module.exports = defineConfig({
     // before it ships:
     //   (cd .. && npm run build && npx serve out -p 5055)
     //   BASE_URL=http://localhost:5055 npm test
-    baseURL: process.env.BASE_URL || 'https://techsolve44.com',
+    baseURL: process.env.BASE_URL || 'https://tools.decyfy.com',
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
