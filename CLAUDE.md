@@ -58,15 +58,17 @@ Consumed by:
 
 | Order | Category | Description | ACTIVE tools |
 |---|---|---|---|
-| 1 | **Documents & PDF** | Work with PDFs, documents and everyday file tasks. | 12 |
-| 2 | **File & Image** | Convert, resize and manage images and common files. | 3 |
-| 3 | **Data & Text** | Format, convert and work with structured data and text. | 0 |
-| 4 | **Business & Work** | Practical calculators and utilities for everyday work decisions. | 0 |
-| 5 | **Generators** | Create commonly used business and personal documents. | 0 |
+| 1 | **Documents & PDF** | Work with PDFs, documents and everyday file tasks. | 16 |
+| 2 | **File & Image** | Convert, resize and manage images and common files. | 6 |
+| 3 | **Data & Text** | Format, convert and work with structured data and text. | 3 |
+| 4 | **Business & Work** | Practical calculators and utilities for everyday work decisions. | 8 |
+| 5 | **Generators** | Create commonly used business and personal documents. | 3 |
+
+36 ACTIVE tools in total, plus 10 `LEGACY_FINANCE`. These counts are a snapshot — the registry is authoritative.
 
 Plus one legacy category, `finance` (`legacy: true`), which the FinLearn tools still reference. It is kept out of public surfaces by **status**, not by category.
 
-The last three categories have no tools yet. They are defined so the taxonomy is ready, and the selectors drop empty categories, so they never render as empty headings. **Do not add placeholder or "coming soon" entries** — the live catalogue contains only tools that actually work. Planned tools belong in documentation, not in the registry.
+The selectors drop empty categories, so a category with no ACTIVE tools never renders as an empty heading. **Do not add placeholder or "coming soon" entries** — the live catalogue contains only tools that actually work. Planned tools belong in documentation, not in the registry.
 
 **Classification principle.** Tools are filed by **the artefact the user starts with**, not the one they end up with:
 
@@ -80,7 +82,7 @@ People browse by what they have in hand, and every planned File & Image tool is 
 | Status | Meaning |
 |---|---|
 | `ACTIVE` | The public catalogue. Appears on the homepage, in the navigation, and in related-tool recommendations. |
-| `LEGACY_FINANCE` | The 10 finance/investment calculators. Routes keep working, pages stay in the sitemap and remain linked from the footer — but they are **excluded from the primary discovery surfaces**. Candidates to move to a separate FinLearn product. |
+| `LEGACY_FINANCE` | The 10 finance/investment calculators. Routes keep working and pages stay in the sitemap — but they are **excluded from every discovery surface**: homepage, navigation, footer and related-tool recommendations. Candidates to move to a separate FinLearn product. |
 
 **The discovery rule lives in the registry selectors, nowhere else.** `getHomepageSections()`, `getNavigationGroups()` and `getToolsByCategory()` exclude `LEGACY_FINANCE` **by default**, so call sites pass nothing and cannot forget. `resolveRelatedTools()` applies the same rule to content cross-links — an ACTIVE page cannot recommend a FinLearn tool even if a content file lists one, while a FinLearn page may still recommend its siblings.
 
@@ -98,10 +100,13 @@ If a status check ever appears inside a component, the rule has leaked and belon
 The public brand is **Tools by Decyfy**, live at **https://tools.decyfy.com**. The old
 `techsolve44.com` domain 308-redirects to it, per path.
 
-The old name survives in exactly two places, both deliberate: explanatory comments beside
-the `SITE` / `metadataBase` constants, and `public/.htaccess`. The latter is Apache
-configuration that Vercel never reads *and* now points at a retired domain — it is inert
-twice over and safe to delete whenever you want to tidy up.
+The old domain is mentioned only where it is a fact worth knowing: comments beside the
+`SITE` / `metadataBase` constants noting that it redirects, and the historical notes in
+this file. The project itself is Tools by Decyfy everywhere else.
+
+Two internal identifiers keep the old `ts44` prefix on purpose, because changing them
+changes behaviour rather than a name: the build ID (it is part of every
+`_next/static/` asset URL) and the `ts44-deep` element id on the EMI calculator page.
 
 The finance calculators are `LEGACY_FINANCE`. They still build, still work and stay in the
 sitemap, but they appear on no public surface: not the homepage, navigation, footer or
@@ -187,7 +192,7 @@ Tailwind with a custom `brand` color scale (blue, defined in `tailwind.config.js
 
 - `next.config.mjs`: `output: 'export'`, `trailingSlash: true`, `generateBuildId: () => 'ts44'` (keeps static asset paths stable across deploys), `images: { unoptimized: true }`, webpack `fs/net/tls/canvas` fallbacks set to `false` for browser-only packages.
 - Domain: `https://tools.decyfy.com`
-- Analytics: Google Analytics `G-FFVH7DK4LD` in `app/layout.js`
+- Analytics: Google Analytics `G-258PZM6WZJ` in `app/layout.js`
 
 ### AdSense
 
@@ -205,17 +210,15 @@ Once Vercel began deploying from the same repository, the workflow meant a singl
 
 **Still requires manual verification in GitHub** (not inspectable from the repository): the `FTP_HOST`, `FTP_USERNAME` and `FTP_PASSWORD` repository secrets may still exist, and the Hostinger account may still be serving the old build. Deleting the workflow stops future pushes reaching Hostinger, but does not remove the secrets or take down anything already published there.
 
-### `.htaccess` is inactive on Vercel
+### No `.htaccess`
 
-`public/.htaccess` is retained but **has no effect**. Vercel does not read Apache configuration. It currently declares:
-- a `www.techsolve44.com` → non-www 301 redirect
-- one-year `Expires` cache headers for CSS, JS and WOFF2
-
-Neither is in force. Nothing errors — the file is simply ignored, which is exactly why this is easy to miss.
+`public/.htaccess` has been deleted. Vercel never read it — it declared a www → non-www
+redirect for the retired domain and one-year cache headers for CSS, JS and WOFF2, none of
+which were ever in force here.
 
 **Any future redirect, rewrite or cache header must be implemented through Vercel** — either a `vercel.json` at the repository root or the project's domain settings in the Vercel dashboard. Note that `output: 'export'` means `redirects()` / `rewrites()` / `headers()` in `next.config.mjs` **cannot** be used; they require a server runtime.
 
-The file is kept for now as a record of the intended behaviour, and because the www→non-www rule will need a Vercel equivalent when the domain is next touched. `npm run build` still copies it into `out/`, which is harmless.
+If a www → non-www redirect or long-lived cache headers are wanted on `tools.decyfy.com`, they need a Vercel equivalent.
 
 ### No `vercel.json`
 
@@ -224,6 +227,64 @@ There is deliberately no `vercel.json`. Vercel auto-detects Next.js and handles 
 ### Build ID
 
 The build ID is pinned to `ts44` in `next.config.mjs`, so `_next/static/ts44/` paths are stable. This was originally to keep paths stable across FTP deploys; on Vercel that concern no longer applies, and the override could be renamed or dropped. The **CSS filename hash is not stable** — it changes whenever styles change. Nothing should ever hardcode it.
+
+## Shared libraries (`app/lib/`)
+
+Logic that more than one tool needs lives here, and the split is deliberate:
+anything that can be pure **is** pure, so it can be proved in plain Node rather
+than only observed through a browser.
+
+| Module | What it owns | Pure? |
+|---|---|---|
+| `calc.js` | Business & Work formulas | yes |
+| `textTools.js` | JSON / Base64 / URL transforms | yes |
+| `generators.js` | Invoice, payslip, receipt totals and validation | yes |
+| `image.js` | Crop geometry, aspect fitting, canvas limits | yes |
+| `pdfTables.js` | Table detection from positioned text | yes |
+| `xlsx.js` | XLSX writer (value typing, escaping, sheet names) | mostly |
+| `docPdf.js`, `generatorPdfs.js` | PDF document construction | no (pdf-lib) |
+| `imageCanvas.js`, `heic.js` | Decode / encode / crop images | no (canvas) |
+| `pdfRender.js`, `pdfPages.js` | pdf.js access, thumbnails, coordinate mapping | no |
+| `pdfToTables.js` | Drives `pdfTables.js` over a document | no (pdf.js) |
+
+**`pdfTables.js` was extracted from `app/pdf-to-word/page.js` verbatim** so PDF
+to Excel could reuse it instead of growing a second, subtly different detector.
+The thresholds in it are load-bearing — they were calibrated against real
+government report PDFs, and loosening them turns ordinary prose into fake
+tables. It had no tests while it lived inside the page; it does now.
+
+### Coordinate systems
+
+pdf.js viewports are top-left origin with y increasing downwards. pdf-lib pages
+are bottom-left origin with y increasing upwards. `pdfPages.toPdfRect()` is the
+one place that conversion happens; the interactive tools store selections as
+**fractions of the page** rather than pixels, so a selection means the same
+thing at any display size and the mobile and desktop layouts agree.
+
+## Tools with deliberate limitations
+
+Three tools trade something away on purpose. Each states it in the UI and in the
+`limitations` field of its content file, which `ToolContent` renders directly
+under "What this tool does" — before any of the selling. Do not move it lower
+and do not soften the wording.
+
+**Redact PDF** rasterises the pages it redacts. That is what actually removes
+the hidden text: a black rectangle drawn over text in a PDF editor leaves the
+text exactly where it was. Pages carrying a redaction are rebuilt from a
+rendered image with the boxes painted in *before* encoding, and the original
+page object is never copied into the output. Pages without redactions are copied
+across untouched and keep their text. A vector black rectangle is also drawn on
+top of each redacted region, so the area is exactly `#000` rather than JPEG's
+approximation of it.
+
+**Sign PDF** adds a visible signature image. There is no certificate, no
+identity verification and no tamper detection. Never describe it as a digital,
+certified or legally binding signature.
+
+**PDF to Excel** reads the text layer a PDF already carries. It cannot read
+scans or tables stored as images, and it says so rather than returning an empty
+workbook. When no grid is found it distinguishes "no text layer at all" from
+"text, but nothing table-shaped", because those need different advice.
 
 ## Tool pattern
 

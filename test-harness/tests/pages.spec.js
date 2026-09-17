@@ -34,6 +34,21 @@ const TOOL_PAGES = [
   { path: '/sharpe-ratio-calculator/', title: 'Sharpe' },
   { path: '/stock-profit-calculator/', title: 'Stock Profit' },
   { path: '/mf-profit-calculator/', title: 'MF Profit' },
+  { path: '/image-compress/', title: 'Compress Image' },
+  { path: '/image-crop/', title: 'Crop Image' },
+  { path: '/heic-to-jpg/', title: 'HEIC to JPG' },
+  { path: '/pdf-rotate/', title: 'Rotate PDF' },
+  { path: '/pdf-sign/', title: 'Sign PDF' },
+  { path: '/pdf-redact/', title: 'Redact PDF' },
+  { path: '/pdf-to-excel/', title: 'PDF to Excel' },
+  // Data & Text
+  { path: '/json-formatter/', title: 'JSON Formatter' },
+  { path: '/base64-encoder-decoder/', title: 'Base64' },
+  { path: '/url-encoder-decoder/', title: 'URL Encode' },
+  // Generators
+  { path: '/invoice-generator/', title: 'Invoice Generator' },
+  { path: '/payslip-generator/', title: 'Payslip Generator' },
+  { path: '/rent-receipt-generator/', title: 'Rent Receipt Generator' },
   // Info pages
   { path: '/about/', title: 'About' },
   { path: '/contact/', title: 'Contact' },

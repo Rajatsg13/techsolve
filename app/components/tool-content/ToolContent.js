@@ -30,6 +30,7 @@ export default function ToolContent({ content }) {
   const {
     slug,
     whatItDoes,
+    limitations,
     whenToUse,
     workplaceUses,
     howToSteps,
@@ -46,6 +47,25 @@ export default function ToolContent({ content }) {
           <div className="space-y-3">
             {whatItDoes.map((para, i) => (
               <p key={i} className="text-sm text-slate-600 leading-relaxed">{para}</p>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {/*
+        Limitations sit immediately after what the tool does, before any of the
+        selling. Some tools have a trade-off a reader must not miss — redaction
+        rasterises the page, signing is not a certified signature — and burying
+        that at the bottom of an FAQ would be a way of hiding it.
+      */}
+      {limitations?.length > 0 && (
+        <Section title="Important limitations">
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-3">
+            {limitations.map((para, i) => (
+              <p key={i} className="text-sm text-amber-900 leading-relaxed flex gap-2.5">
+                <span aria-hidden="true" className="select-none">•</span>
+                <span>{para}</span>
+              </p>
             ))}
           </div>
         </Section>

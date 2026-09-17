@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && cp public/.htaccess out/.htaccess",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "docx": "^9.7.1",
     "file-saver": "^2.0.5",
+    "heic-to": "^1.5.2",
+    "jszip": "^3.10.1",
     "mammoth": "^1.8.0",
     "next": "14.2.5",
     "pdf-lib": "^1.17.1",

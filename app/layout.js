@@ -64,13 +64,14 @@ export default function RootLayout({ children }) {
         <ShareBar />
         <FeedbackWidget />
         <Footer />
-        {/* Google Analytics — deferred until after page content */}
-        <script defer src="https://www.googletagmanager.com/gtag/js?id=G-FFVH7DK4LD"></script>
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-258PZM6WZJ"></script>
         <script dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-FFVH7DK4LD');
+
+          gtag('config', 'G-258PZM6WZJ');
         `}} />
       </body>
     </html>

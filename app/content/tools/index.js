@@ -32,6 +32,11 @@
  *   outcome           string    One line: the result the user gets. Shown under
  *                               the page heading, above the tool.
  *   whatItDoes        string[]  Paragraphs explaining the practical purpose
+ *   limitations       string[]  Trade-offs the reader must not miss. Rendered
+ *                               prominently, directly under whatItDoes, before
+ *                               any of the selling — use it for anything that
+ *                               would change whether the tool is the right
+ *                               choice (rasterisation, no certificate, etc.)
  *   whenToUse         Item[]    Situations that lead someone here
  *   workplaceUses     Item[]    Concrete work examples
  *   howToSteps        Item[]    Ordered instructions for the real interface
@@ -54,9 +59,51 @@
  */
 
 import pdfMerge from './pdf-merge';
+import jsonFormatter from './json-formatter';
+import base64EncoderDecoder from './base64-encoder-decoder';
+import urlEncoderDecoder from './url-encoder-decoder';
+import percentageCalculator from './percentage-calculator';
+import percentageIncreaseCalculator from './percentage-increase-calculator';
+import gstCalculator from './gst-calculator';
+import profitMarginCalculator from './profit-margin-calculator';
+import breakEvenCalculator from './break-even-calculator';
+import roiCalculator from './roi-calculator';
+import salaryHikeCalculator from './salary-hike-calculator';
+import workingDaysCalculator from './working-days-calculator';
+import invoiceGenerator from './invoice-generator';
+import payslipGenerator from './payslip-generator';
+import rentReceiptGenerator from './rent-receipt-generator';
+import imageCompress from './image-compress';
+import imageCrop from './image-crop';
+import heicToJpg from './heic-to-jpg';
+import pdfRotate from './pdf-rotate';
+import pdfSign from './pdf-sign';
+import pdfRedact from './pdf-redact';
+import pdfToExcel from './pdf-to-excel';
 
 const CONTENT = {
   'pdf-merge': pdfMerge,
+  'json-formatter': jsonFormatter,
+  'base64-encoder-decoder': base64EncoderDecoder,
+  'url-encoder-decoder': urlEncoderDecoder,
+  'percentage-calculator': percentageCalculator,
+  'percentage-increase-calculator': percentageIncreaseCalculator,
+  'gst-calculator': gstCalculator,
+  'profit-margin-calculator': profitMarginCalculator,
+  'break-even-calculator': breakEvenCalculator,
+  'roi-calculator': roiCalculator,
+  'salary-hike-calculator': salaryHikeCalculator,
+  'working-days-calculator': workingDaysCalculator,
+  'invoice-generator': invoiceGenerator,
+  'payslip-generator': payslipGenerator,
+  'rent-receipt-generator': rentReceiptGenerator,
+  'image-compress': imageCompress,
+  'image-crop': imageCrop,
+  'heic-to-jpg': heicToJpg,
+  'pdf-rotate': pdfRotate,
+  'pdf-sign': pdfSign,
+  'pdf-redact': pdfRedact,
+  'pdf-to-excel': pdfToExcel,
 };
 
 /**
