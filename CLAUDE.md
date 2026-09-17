@@ -192,7 +192,7 @@ Tailwind with a custom `brand` color scale (blue, defined in `tailwind.config.js
 
 - `next.config.mjs`: `output: 'export'`, `trailingSlash: true`, `generateBuildId: () => 'ts44'` (keeps static asset paths stable across deploys), `images: { unoptimized: true }`, webpack `fs/net/tls/canvas` fallbacks set to `false` for browser-only packages.
 - Domain: `https://tools.decyfy.com`
-- Analytics: Google Analytics, two properties — `G-FFVH7DK4LD` and `G-258PZM6WZJ` — in `app/layout.js`. One `gtag.js` loader, one `gtag('config', …)` call per property.
+- Analytics: Google Analytics `G-258PZM6WZJ` in `app/layout.js`
 
 ### AdSense
 
