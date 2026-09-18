@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { submitToWeb3Forms, friendlyError } from '../lib/web3forms';
+import { trackFeedbackSubmitted } from '../lib/analytics';
 
 // Distinguishes these from the contact form in the inbox.
 const SUBJECT = 'Tools by Decyfy Feedback Widget';
@@ -43,10 +44,9 @@ export default function FeedbackWidget() {
       setMessage('');
       setEmail('');
 
-      // gtag is defined globally in app/layout.js; guard anyway for ad blockers.
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', 'feedback_widget_submit');
-      }
+      // Fires only after a confirmed send. The message itself is never sent to
+      // GA4 — this event carries no parameters at all.
+      trackFeedbackSubmitted();
 
       collapseTimer.current = setTimeout(() => {
         setOpen(false);

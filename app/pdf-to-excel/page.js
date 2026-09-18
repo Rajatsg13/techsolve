@@ -7,6 +7,7 @@ import { getToolContent } from '../content/tools';
 import { extractTables, mergeContinuations } from '../lib/pdfToTables';
 import { buildXlsx } from '../lib/xlsx';
 import { downloadBlob } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('pdf-to-excel');
 const MAX_MB = 50;
@@ -23,13 +24,16 @@ export default function PdfToExcel() {
     setError(''); setResult(null); setBusy(true); setProgress('');
     try {
       const bytes = new Uint8Array(await f.arrayBuffer());
+      trackToolStarted('pdf-to-excel');
       const out = await extractTables(bytes, {
         onProgress: (done, total) => setProgress(`Analysing page ${done} of ${total}…`),
       });
       setResult(out);
+      if (out.tables.length) trackToolCompleted('pdf-to-excel');
       setFile(f);
       setProgress('');
     } catch (e) {
+      trackToolError('pdf-to-excel', ERROR_REASON.LOAD_FAILED);
       setError(e?.message || 'That PDF could not be read.');
       setFile(null); setResult(null);
     }
@@ -52,6 +56,7 @@ export default function PdfToExcel() {
       const blob = await buildXlsx(sheets());
       downloadBlob(blob, file.name.replace(/\.pdf$/i, '') + '.xlsx');
     } catch (e) {
+      trackToolError('pdf-to-excel', ERROR_REASON.ENCODING_FAILED);
       setError(e?.message || 'The spreadsheet could not be created.');
     }
     setBusy(false);

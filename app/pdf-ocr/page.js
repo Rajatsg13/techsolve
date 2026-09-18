@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const LANGS = [
   { code: 'eng', label: 'English' },
@@ -47,6 +48,7 @@ export default function PDFOcr() {
 
   const run = async () => {
     setLoading(true); setError(''); setDone(false); setPdfBlob(null); setPageTexts([]);
+    trackToolStarted('pdf-ocr');
     setStatus('Loading PDF engine…'); setProgress(0);
     try {
       // ── 1. Load pdf.js ──────────────────────────────────────────────────
@@ -155,12 +157,14 @@ export default function PDFOcr() {
       setStatus('Building searchable PDF…');
       setProgress(95);
       const outBytes = await outPdf.save();
+      trackToolCompleted('pdf-ocr');
       const blob     = new Blob([outBytes], { type: 'application/pdf' });
       setPdfBlob(blob);
       setDone(true);
       setProgress(100);
       setStatus('');
     } catch (e) {
+      trackToolError('pdf-ocr', ERROR_REASON.PROCESSING_FAILED);
       setError('OCR failed: ' + e.message);
     }
     setLoading(false);
@@ -171,6 +175,7 @@ export default function PDFOcr() {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(pdfBlob);
     a.download = (file.name.replace(/\.pdf$/i, '') || 'document') + '-searchable.pdf';
+    trackToolDownloaded('pdf-ocr');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -201,6 +206,7 @@ export default function PDFOcr() {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = baseName + '-ocr.docx';
+    trackToolDownloaded('pdf-ocr');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

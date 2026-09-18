@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const POSITIONS = [
   { id: 'bottom-center', label: 'Bottom Center' },
@@ -28,6 +29,7 @@ export default function PDFPageNumbers() {
 
   const apply = async () => {
     setLoading(true); setError('');
+    trackToolStarted('pdf-page-numbers');
     try {
       const { PDFDocument, rgb } = await import('pdf-lib');
       const bytes = await file.arrayBuffer();
@@ -51,11 +53,14 @@ export default function PDFPageNumbers() {
       });
 
       const blob = new Blob([await doc.save()], { type: 'application/pdf' });
+      trackToolCompleted('pdf-page-numbers');
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'numbered.pdf';
       a.click();
+      trackToolDownloaded('pdf-page-numbers');
     } catch (e) {
+      trackToolError('pdf-page-numbers', ERROR_REASON.PROCESSING_FAILED);
       setError('Failed: ' + e.message);
     }
     setLoading(false);

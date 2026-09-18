@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { profitMargin, priceForMargin } from '../lib/calc';
 import { parseNum, formatINR, formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('profit-margin-calculator');
 
@@ -19,6 +20,10 @@ export default function ProfitMarginCalculator() {
   const r = mode === 'from-price' ? profitMargin(c, rv) : null;
   const neededPrice = mode === 'target' ? priceForMargin(c, t) : null;
   const atTarget = neededPrice !== null ? profitMargin(c, neededPrice) : null;
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('profit-margin-calculator', `${mode}|${cost}|${revenue}|${target}`, (r !== null || neededPrice !== null));
 
   return (
     <ToolShell

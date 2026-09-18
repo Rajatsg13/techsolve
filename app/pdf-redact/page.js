@@ -7,6 +7,7 @@ import { getToolContent } from '../content/tools';
 import { loadPageThumbnails, renderPageForEditing, clampFraction } from '../lib/pdfPages';
 import { openPdf, renderPageToCanvas, canvasToJpeg, yieldToBrowser } from '../lib/pdfRender';
 import { downloadBytes, withExtension } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('pdf-redact');
 const MAX_MB = 100;
@@ -38,6 +39,7 @@ export default function PdfRedact() {
       setPreview(await renderPageForEditing(buf, 0));
       setFile(f);
     } catch (e) {
+      trackToolError('pdf-redact', ERROR_REASON.LOAD_FAILED);
       setError(e?.message || 'That PDF could not be opened. It may be damaged or password protected.');
       setFile(null); setBytes(null);
     }
@@ -104,6 +106,7 @@ export default function PdfRedact() {
   /* ── Export ──────────────────────────────────────────────────────────── */
   const save = async () => {
     setBusy(true); setError(''); setProgress('');
+    trackToolStarted('pdf-redact');
     try {
       const { PDFDocument, rgb } = await import('pdf-lib');
       const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
@@ -163,9 +166,11 @@ export default function PdfRedact() {
       }
 
       const saved = await out.save();
+      trackToolCompleted('pdf-redact');   // downloadBytes emits tool_downloaded
       downloadBytes(saved, withExtension(file.name.replace(/\.pdf$/i, '') + '-redacted', 'pdf'), 'application/pdf');
       setProgress('');
     } catch (e) {
+      trackToolError('pdf-redact', ERROR_REASON.PROCESSING_FAILED);
       setError(e?.message || 'The redacted PDF could not be created.');
     }
     setBusy(false);

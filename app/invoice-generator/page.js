@@ -10,6 +10,7 @@ import { invoiceTotals, validateInvoice } from '../lib/generators';
 import { hasUnsupportedCharacters } from '../lib/docPdf';
 import { downloadBytes } from '../lib/download';
 import { formatINR } from '../lib/format';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('invoice-generator');
 const blankItem = { description: '', qty: '1', rate: '', discountPercent: '', taxPercent: '18' };
@@ -41,11 +42,14 @@ export default function InvoiceGenerator() {
 
   const generate = async () => {
     setBusy(true); setError('');
+    trackToolStarted('invoice-generator');
     try {
       const { buildInvoicePdf } = await import('../lib/generatorPdfs');
       const { bytes } = await buildInvoicePdf(d);
+      trackToolCompleted('invoice-generator');   // the PDF exists; downloadBytes emits tool_downloaded
       downloadBytes(bytes, `invoice-${(d.invoiceNumber || 'draft').replace(/[^\w-]/g, '-')}.pdf`, 'application/pdf');
     } catch (e) {
+      trackToolError('invoice-generator', ERROR_REASON.PROCESSING_FAILED);
       setError('Could not generate the PDF: ' + (e?.message || 'unknown error'));
     }
     setBusy(false);

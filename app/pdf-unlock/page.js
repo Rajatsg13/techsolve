@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 export default function PDFUnlock() {
   const [file, setFile]         = useState(null);
@@ -24,6 +25,7 @@ export default function PDFUnlock() {
     if (!file) return;
     setLoading(true);
     setError('');
+    trackToolStarted('pdf-unlock');
     setDone(false);
 
     try {
@@ -53,14 +55,17 @@ export default function PDFUnlock() {
 
       // Save without any encryption — produces a plain, unlocked PDF
       const unlocked = await pdfDoc.save();
+      trackToolCompleted('pdf-unlock');
       const blob = new Blob([unlocked], { type: 'application/pdf' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       const baseName = file.name.replace(/\.pdf$/i, '');
       a.download = `${baseName}_unlocked.pdf`;
       a.click();
+      trackToolDownloaded('pdf-unlock');
       setDone(true);
     } catch (e) {
+      trackToolError('pdf-unlock', ERROR_REASON.PROCESSING_FAILED);
       setError('Could not unlock this PDF. ' + (e.message || 'The file may use unsupported encryption.'));
     }
 

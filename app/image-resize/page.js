@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useCallback } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const PRESETS = [
   { label: 'HD', w: 1280, h: 720 },
@@ -44,7 +45,10 @@ export default function ImageResizer() {
         setWidth(String(img.width)); setHeight(String(img.height));
         setSrc(e.target.result);
       };
-      img.onerror = () => setError('This file could not be decoded as an image. It may be corrupt or an unsupported format.');
+      img.onerror = () => {
+        trackToolError('image-resize', ERROR_REASON.LOAD_FAILED);
+        setError('This file could not be decoded as an image. It may be corrupt or an unsupported format.');
+      };
       img.src = e.target.result;
       imgRef.current = img;
     };
@@ -69,6 +73,9 @@ export default function ImageResizer() {
     if (w < 1 || h < 1) { setError('Width and height must be at least 1 pixel.'); return; }
     if (w > MAX_DIM || h > MAX_DIM) { setError(`Maximum output dimension is ${MAX_DIM}px.`); return; }
     setError('');
+    // Dimension checks above are ordinary validation and return before this
+    // point, so they never register as a start or an error.
+    trackToolStarted('image-resize');
     try {
       const canvas = document.createElement('canvas');
       canvas.width  = w;
@@ -76,11 +83,16 @@ export default function ImageResizer() {
       canvas.getContext('2d').drawImage(imgRef.current, 0, 0, w, h);
       const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
       canvas.toBlob((blob) => {
-        if (!blob) { setError('Resize failed — the output image may be too large for your browser. Try smaller dimensions.'); return; }
+        if (!blob) {
+          trackToolError('image-resize', ERROR_REASON.ENCODING_FAILED);
+          setError('Resize failed — the output image may be too large for your browser. Try smaller dimensions.'); return;
+        }
+        trackToolCompleted('image-resize');
         setOutSize(blob.size);
         setOutUrl(URL.createObjectURL(blob));
       }, mime, quality / 100);
     } catch (e) {
+      trackToolError('image-resize', ERROR_REASON.PROCESSING_FAILED);
       setError('Resize failed: ' + (e.message || 'unknown error'));
     }
   }, [width, height, format, quality, origW, origH]);
@@ -193,6 +205,7 @@ export default function ImageResizer() {
 
             {outUrl && (
               <a href={outUrl} download={`resized.${format === 'jpeg' ? 'jpg' : format}`}
+                onClick={() => trackToolDownloaded('image-resize')}
                 className="block w-full py-3 text-center bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors">
                 ⬇️ Download Resized Image
               </a>

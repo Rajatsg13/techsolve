@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { workingDays } from '../lib/calc';
 import { formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('working-days-calculator');
 const DAYS = [
@@ -23,6 +24,10 @@ export default function WorkingDaysCalculator() {
   const holidays = holidayText.split(/[\n,]/).map(s => s.trim()).filter(Boolean);
   const badHolidays = holidays.filter(h => !/^\d{4}-\d{2}-\d{2}$/.test(h));
   const r = start && end ? workingDays(start, end, { workingWeekdays: week, holidays, inclusive }) : null;
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('working-days-calculator', `${start}|${end}|${week.join(',')}|${inclusive}|${holidayText}`, r !== null);
 
   const toggleDay = (d) =>
     setWeek(w => (w.includes(d) ? w.filter(x => x !== d) : [...w, d].sort()));

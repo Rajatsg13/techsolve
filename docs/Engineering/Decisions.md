@@ -43,6 +43,7 @@ commit onwards and is meant to be appended to, not rewritten.
 | D-21 | 2026-09-17 | Google Analytics replaced with `G-258PZM6WZJ` | Active |
 | D-22 | 2026-09-17 | Expansion merged to production | Complete |
 | D-23 | 2026-09-17 | Test fixtures committed to the repository | Active |
+| D-24 | 2026-09-18 | GA4 Event Taxonomy v1 | Active |
 
 ---
 
@@ -521,6 +522,40 @@ the script that regenerates them, using only the harness's Chromium and the site
 `pdf-lib`. Test downloads go to the git-ignored `test-harness/test-output/`.
 
 **Note.** The HEIC fixtures are converted files and are not evidence for D-16.
+
+---
+
+### D-24 — GA4 Event Taxonomy v1
+
+**Date:** 2026-09-18 · **Branch:** `analytics-v1` (not deployed)
+
+**Context.** GA4 records page views, which cannot distinguish someone who landed
+on a tool page from someone who used the tool.
+
+**Decision.** Seven application-level events — `tool_started`, `tool_completed`,
+`tool_downloaded`, `tool_error`, `related_tool_clicked`, `share_clicked`,
+`feedback_submitted` — emitted through `app/lib/analytics.js`. No per-tool event
+names; the tool is a parameter. Categories are read from the registry so nothing
+duplicates catalogue metadata.
+
+**Privacy.** Only slug, category, a coarse error reason and a share platform are
+sent. Error reasons are a closed vocabulary (`ERROR_REASON`) precisely so an
+exception message — which can contain a filename or document text — cannot be
+forwarded. Feedback events carry no parameters at all.
+
+**The calculators.** Seven of the eight ship pre-filled and show a result before
+the visitor does anything, so "a result exists" would have fired on every page
+view and measured nothing beyond `page_view`. They fire on the first edit and the
+first valid result after it, once per page view, via
+`useCalculatorAnalytics`.
+
+**Two corrections to the original brief.** PDF to JPG and HTML to PDF were listed
+as having no download. Both do — `a.download` per page, and `html2pdf().save()`
+respectively — so both emit `tool_downloaded`.
+
+**Errors excluded deliberately.** Invalid JSON, a wrong PDF password, a rejected
+non-HEIC file and dimension validation are the tool working correctly and are not
+reported as errors.
 
 ---
 

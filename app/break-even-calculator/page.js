@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { breakEven, unitsForTargetProfit } from '../lib/calc';
 import { parseNum, formatINR, formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('break-even-calculator');
 
@@ -17,6 +18,10 @@ export default function BreakEvenCalculator() {
 
   const f = parseNum(fixed), p = parseNum(price), v = parseNum(variable), t = parseNum(target);
   const r = breakEven(f, p, v);
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('break-even-calculator', `${fixed}|${price}|${variable}|${target}`, r !== null);
   const targetUnits = t !== null ? unitsForTargetProfit(f, p, v, t) : null;
 
   return (

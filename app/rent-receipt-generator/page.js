@@ -10,6 +10,7 @@ import { validateRentReceipt, amountInWords } from '../lib/generators';
 import { hasUnsupportedCharacters } from '../lib/docPdf';
 import { downloadBytes } from '../lib/download';
 import { formatINR } from '../lib/format';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('rent-receipt-generator');
 
@@ -42,11 +43,14 @@ export default function RentReceiptGenerator() {
 
   const generate = async () => {
     setBusy(true); setError('');
+    trackToolStarted('rent-receipt-generator');
     try {
       const { buildRentReceiptPdf } = await import('../lib/generatorPdfs');
       const { bytes } = await buildRentReceiptPdf(d);
+      trackToolCompleted('rent-receipt-generator');   // the PDF exists; downloadBytes emits tool_downloaded
       downloadBytes(bytes, `rent-receipt-${(d.periodFrom || 'draft').slice(0, 7)}.pdf`, 'application/pdf');
     } catch (e) {
+      trackToolError('rent-receipt-generator', ERROR_REASON.PROCESSING_FAILED);
       setError('Could not generate the PDF: ' + (e?.message || 'unknown error'));
     }
     setBusy(false);

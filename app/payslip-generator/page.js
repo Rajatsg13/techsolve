@@ -10,6 +10,7 @@ import { payslipTotals, validatePayslip } from '../lib/generators';
 import { hasUnsupportedCharacters } from '../lib/docPdf';
 import { downloadBytes } from '../lib/download';
 import { formatINR } from '../lib/format';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('payslip-generator');
 
@@ -41,13 +42,16 @@ export default function PayslipGenerator() {
 
   const generate = async () => {
     setBusy(true); setError('');
+    trackToolStarted('payslip-generator');
     try {
       const { buildPayslipPdf } = await import('../lib/generatorPdfs');
       const { bytes } = await buildPayslipPdf(d);
+      trackToolCompleted('payslip-generator');   // the PDF exists; downloadBytes emits tool_downloaded
       const who = (d.employeeName || 'payslip').replace(/[^\w-]+/g, '-').toLowerCase();
       const when = (d.period || '').replace(/[^\w-]+/g, '-').toLowerCase();
       downloadBytes(bytes, `payslip-${who}${when ? '-' + when : ''}.pdf`, 'application/pdf');
     } catch (e) {
+      trackToolError('payslip-generator', ERROR_REASON.PROCESSING_FAILED);
       setError('Could not generate the PDF: ' + (e?.message || 'unknown error'));
     }
     setBusy(false);

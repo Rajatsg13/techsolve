@@ -10,6 +10,7 @@ import {
   cropProblem, OUTPUT_FORMATS, getFormat, defaultFormatFor, retargetFilename,
 } from '../lib/image';
 import { downloadBlob, formatBytes } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('image-crop');
 const MAX_MB = 50;
@@ -64,6 +65,7 @@ export default function ImageCrop() {
       setFormatId(defaultFormatFor(f.type));
       setFile(f);
     } catch (e) {
+      trackToolError('image-crop', ERROR_REASON.LOAD_FAILED);
       setError(e.message || 'That file could not be read as an image.');
       setFile(null); setImage(null);
     }
@@ -147,11 +149,14 @@ export default function ImageCrop() {
     const problem = cropProblem(crop, image.width, image.height);
     if (problem) { setError(problem); return; }
     setBusy(true); setError(''); setResult(null);
+    trackToolStarted('image-crop');
     try {
       const safe = clampCrop(crop, image.width, image.height);
       const out = await cropImage(decodedRef.current, safe, { formatId, quality: 0.92 });
+      trackToolCompleted('image-crop');   // downloadBlob emits tool_downloaded
       setResult({ ...out, url: URL.createObjectURL(out.blob) });
     } catch (e) {
+      trackToolError('image-crop', ERROR_REASON.ENCODING_FAILED);
       setError(e.message || 'The image could not be cropped.');
     }
     setBusy(false);

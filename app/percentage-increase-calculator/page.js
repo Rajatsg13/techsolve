@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { percentChange } from '../lib/calc';
 import { parseNum, formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('percentage-increase-calculator');
 
@@ -15,6 +16,10 @@ export default function PercentageIncreaseCalculator() {
 
   const nf = parseNum(from), nt = parseNum(to);
   const r = percentChange(nf, nt);
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('percentage-increase-calculator', `${from}|${to}`, r !== null);
   const undefinedFromZero = r && r.percentChange === null;
 
   return (

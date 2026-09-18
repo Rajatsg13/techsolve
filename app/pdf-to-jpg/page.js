@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const DPI_OPTIONS = [
   { label: 'Screen (72 DPI)', scale: 1 },
@@ -24,6 +25,7 @@ export default function PDFToJPG() {
 
   const convert = async () => {
     setLoading(true); setError(''); setPages([]);
+    trackToolStarted('pdf-to-jpg');
     try {
       const pdfjsLib = await import('pdfjs-dist');
       pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -49,8 +51,10 @@ export default function PDFToJPG() {
       }
 
       setPages(results);
+      trackToolCompleted('pdf-to-jpg');
       setProgress('');
     } catch (e) {
+      trackToolError('pdf-to-jpg', ERROR_REASON.PROCESSING_FAILED);
       setError('Conversion failed: ' + e.message);
     }
     setLoading(false);
@@ -61,6 +65,7 @@ export default function PDFToJPG() {
     a.href = p.dataUrl;
     a.download = `page-${p.page}.jpg`;
     a.click();
+    trackToolDownloaded('pdf-to-jpg');
   };
 
   const downloadAll = async () => {

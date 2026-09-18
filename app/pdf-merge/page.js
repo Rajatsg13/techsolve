@@ -4,6 +4,7 @@ import CrossBrandCard from '../components/CrossBrandCard';
 import ToolContent from '../components/tool-content/ToolContent';
 import { getToolContent } from '../content/tools';
 import { MAX_FILES, MAX_FILE_MB, MAX_TOTAL_MB } from './limits';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const MAX_FILE_BYTES  = MAX_FILE_MB  * 1024 * 1024;
 const MAX_TOTAL_BYTES = MAX_TOTAL_MB * 1024 * 1024;
@@ -59,6 +60,7 @@ export default function PDFMerge() {
     if (files.length < 2) { setErrors(['Please add at least 2 PDF files.']); return; }
     setLoading(true);
     setErrors([]);
+    trackToolStarted('pdf-merge');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const merged = await PDFDocument.create();
@@ -69,12 +71,15 @@ export default function PDFMerge() {
         pages.forEach(p => merged.addPage(p));
       }
       const out  = await merged.save();
+      trackToolCompleted('pdf-merge');
       const blob = new Blob([out], { type: 'application/pdf' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'merged.pdf';
       a.click();
+      trackToolDownloaded('pdf-merge');
     } catch (e) {
+      trackToolError('pdf-merge', ERROR_REASON.PROCESSING_FAILED);
       setErrors(['Merge failed: ' + e.message]);
     }
     setLoading(false);

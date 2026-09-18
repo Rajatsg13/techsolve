@@ -6,6 +6,7 @@ import { SelectField, TextField, ModeTabs } from '../components/tool-ui/Field';
 import { getToolContent } from '../content/tools';
 import { loadPageThumbnails, renderPageForEditing, clampFraction, toPdfRect, parsePageRange } from '../lib/pdfPages';
 import { downloadBytes, withExtension } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('pdf-sign');
 const MAX_MB = 100;
@@ -105,6 +106,7 @@ export default function PdfSign() {
       setPreview(await renderPageForEditing(buf, 0));
       setFile(f);
     } catch (e) {
+      trackToolError('pdf-sign', ERROR_REASON.LOAD_FAILED);
       setError(e?.message || 'That PDF could not be opened. It may be damaged or password protected.');
       setFile(null); setBytes(null);
     }
@@ -191,6 +193,9 @@ export default function PdfSign() {
 
   const save = async () => {
     setBusy(true); setError('');
+    // Only true once validation has passed and real work has begun, so a
+    // "type your name first" message never counts as a processing error.
+    let processing = false;
     try {
       let png;
       if (mode === 'type') {
@@ -209,6 +214,8 @@ export default function PdfSign() {
       const targets = targetPages();
       if (!targets.length) throw new Error('No pages selected. Check the page numbers.');
 
+      processing = true;
+      trackToolStarted('pdf-sign');
       const { PDFDocument } = await import('pdf-lib');
       // The original document is loaded and re-saved: only a signature image is
       // drawn onto the chosen pages. Nothing is rasterised, so the rest of the
@@ -226,8 +233,10 @@ export default function PdfSign() {
       }
 
       const out = await doc.save();
+      trackToolCompleted('pdf-sign');   // downloadBytes emits tool_downloaded
       downloadBytes(out, withExtension(file.name.replace(/\.pdf$/i, '') + '-signed', 'pdf'), 'application/pdf');
     } catch (e) {
+      if (processing) trackToolError('pdf-sign', ERROR_REASON.PROCESSING_FAILED);
       setError(e?.message || 'The signed PDF could not be created.');
     }
     setBusy(false);

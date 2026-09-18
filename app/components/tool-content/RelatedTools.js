@@ -1,5 +1,7 @@
+'use client';
 import Link from 'next/link';
 import { resolveRelatedTools } from '../../lib/tools';
+import { trackRelatedToolClicked } from '../../lib/analytics';
 
 /**
  * Related tools, resolved from the central registry.
@@ -23,6 +25,7 @@ export default function RelatedTools({ slugs, currentSlug }) {
         <li key={tool.slug}>
           <Link
             href={tool.href}
+            onClick={() => trackRelatedToolClicked(currentSlug, tool.slug)}
             className="group flex items-start gap-3 h-full bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-brand-300 hover:bg-brand-50/40 transition-colors"
           >
             <span className="text-xl leading-none mt-0.5" aria-hidden="true">{tool.icon}</span>

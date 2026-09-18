@@ -7,6 +7,7 @@ import { getToolContent } from '../content/tools';
 import { sniffHeic, decodeHeic } from '../lib/heic';
 import { retargetFilename, getFormat } from '../lib/image';
 import { downloadBlob, formatBytes } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('heic-to-jpg');
 const MAX_MB = 50;
@@ -50,6 +51,8 @@ export default function HeicToJpg() {
   const convert = async () => {
     setBusy(true); setError(''); cancelled.current = false;
     const mime = getFormat(formatId).mime;
+    trackToolStarted('heic-to-jpg');
+    let anyConverted = false, anyFailed = false;
 
     for (let i = 0; i < items.length; i++) {
       if (cancelled.current) break;
@@ -57,17 +60,21 @@ export default function HeicToJpg() {
       setItems(prev => prev.map((it, k) => k === i ? { ...it, status: 'working' } : it));
       try {
         const out = await decodeHeic(items[i].file, { mime, quality: quality / 100 });
+        anyConverted = true;
         setItems(prev => prev.map((it, k) => k === i ? {
           ...it, status: 'done', blob: out.blob, url: URL.createObjectURL(out.blob),
           width: out.width, height: out.height, decoder: out.decoder,
         } : it));
       } catch (e) {
+        anyFailed = true;
         setItems(prev => prev.map((it, k) => k === i ? {
           ...it, status: 'error',
           error: e?.message || 'This file could not be converted. It may be damaged or use an unsupported HEIC variant.',
         } : it));
       }
     }
+    if (anyConverted) trackToolCompleted('heic-to-jpg');   // downloadBlob emits tool_downloaded
+    if (anyFailed) trackToolError('heic-to-jpg', ERROR_REASON.UNSUPPORTED_INPUT);
     setBusy(false);
   };
 
