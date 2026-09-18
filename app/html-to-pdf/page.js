@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const SAMPLE = `<h1 style="color:#1e3a8a;font-family:Arial">My Document</h1>
 <p style="font-family:Arial;font-size:14px">This is a sample paragraph. Replace this with your own HTML content.</p>
@@ -20,6 +21,7 @@ export default function HTMLToPDF() {
 
   const convert = async () => {
     setLoading(true); setError('');
+    trackToolStarted('html-to-pdf');
     try {
       // Dynamically load html2pdf.js from CDN
       await new Promise((resolve, reject) => {
@@ -43,9 +45,14 @@ export default function HTMLToPDF() {
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       }).from(el).save();
+      // .save() both produces and writes the PDF, so completion and download
+      // are the same moment here.
+      trackToolCompleted('html-to-pdf');
+      trackToolDownloaded('html-to-pdf');
 
       document.body.removeChild(el);
     } catch (e) {
+      trackToolError('html-to-pdf', ERROR_REASON.PROCESSING_FAILED);
       setError('Conversion failed: ' + e.message);
     }
     setLoading(false);

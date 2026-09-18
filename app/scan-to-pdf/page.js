@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const PAGE_SIZES = [
   { label: 'Fit to image', id: 'fit' },
@@ -31,6 +32,7 @@ export default function ScanToPDF() {
   const generate = async () => {
     if (!images.length) return;
     setLoading(true); setError('');
+    trackToolStarted('scan-to-pdf');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const doc = await PDFDocument.create();
@@ -54,11 +56,14 @@ export default function ScanToPDF() {
       }
 
       const blob = new Blob([await doc.save()], { type: 'application/pdf' });
+      trackToolCompleted('scan-to-pdf');
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'scanned.pdf';
       a.click();
+      trackToolDownloaded('scan-to-pdf');
     } catch (e) {
+      trackToolError('scan-to-pdf', ERROR_REASON.PROCESSING_FAILED);
       setError('Failed: ' + e.message);
     }
     setLoading(false);

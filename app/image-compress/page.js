@@ -7,6 +7,7 @@ import { getToolContent } from '../content/tools';
 import { decodeImage, encodeImage, compressToTarget } from '../lib/imageCanvas';
 import { OUTPUT_FORMATS, defaultFormatFor, savingsPercent, retargetFilename, getFormat } from '../lib/image';
 import { downloadBlob, formatBytes } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('image-compress');
 const MAX_MB = 50;
@@ -46,6 +47,7 @@ export default function ImageCompress() {
       setFile(f);
       setFormatId(defaultFormatFor(f.type));
     } catch (e) {
+      trackToolError('image-compress', ERROR_REASON.LOAD_FAILED);
       setError(e.message || 'That file could not be read as an image.');
       setFile(null); setDecoded(null);
     }
@@ -55,12 +57,14 @@ export default function ImageCompress() {
   const run = async () => {
     if (!decodedRef.current) return;
     setBusy(true); setError(''); setResult(null);
+    trackToolStarted('image-compress');
     try {
       const limits = resize ? { maxWidth: maxDim, maxHeight: maxDim } : {};
       const out = mode === 'size'
         ? await compressToTarget(decodedRef.current, targetKB * 1024, { formatId, ...limits })
         : { ...await encodeImage(decodedRef.current, { formatId, quality: quality / 100, ...limits }),
             quality: quality / 100, reachedTarget: true };
+      trackToolCompleted('image-compress');   // downloadBlob emits tool_downloaded
       setResult({
         blob: out.blob, width: out.width, height: out.height,
         quality: Math.round(out.quality * 100),
@@ -68,6 +72,7 @@ export default function ImageCompress() {
         url: URL.createObjectURL(out.blob),
       });
     } catch (e) {
+      trackToolError('image-compress', ERROR_REASON.ENCODING_FAILED);
       setError(e.message || 'The image could not be compressed.');
     }
     setBusy(false);

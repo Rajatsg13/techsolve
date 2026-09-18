@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const MAX_MB = 25;
 
@@ -20,6 +21,7 @@ export default function WordToPDF() {
     if (!file) return;
     setLoading(true);
     setError('');
+    trackToolStarted('word-to-pdf');
     try {
       const mammoth = await import('mammoth');
       const bytes = await file.arrayBuffer();
@@ -92,13 +94,16 @@ export default function WordToPDF() {
       }
 
       const pdfBytes = await pdfDoc.save();
+      trackToolCompleted('word-to-pdf');
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = file.name.replace(/\.docx?$/, '.pdf');
       a.click();
+      trackToolDownloaded('word-to-pdf');
       document.body.removeChild(iframe);
     } catch (e) {
+      trackToolError('word-to-pdf', ERROR_REASON.PROCESSING_FAILED);
       setError('Conversion failed: ' + (e.message || 'unknown error') + '. The file may be corrupt, or an old .doc format — save it as .docx in Word and try again.');
     }
     setLoading(false);

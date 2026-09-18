@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const MAX_MB = 50;
 const fmtSize = (b) => b >= 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB';
@@ -44,6 +45,7 @@ export default function PDFSplit() {
   const split = async () => {
     if (!file) return;
     setLoading(true); setError(''); setDone(false);
+    trackToolStarted('pdf-split');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const bytes = await file.arrayBuffer();
@@ -75,7 +77,12 @@ export default function PDFSplit() {
         await new Promise(r => setTimeout(r, 300));
       }
       setDone(true);
+      trackToolCompleted('pdf-split');
+      // One event for the run: a 40-page split would otherwise report 40
+      // downloads and drown every other tool in the report.
+      trackToolDownloaded('pdf-split');
     } catch (e) {
+      trackToolError('pdf-split', ERROR_REASON.PROCESSING_FAILED);
       setError('Split failed: ' + e.message);
     }
     setLoading(false);

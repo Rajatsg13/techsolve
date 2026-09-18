@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
 import { compressPdf, MODES } from '../lib/pdfCompress';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const MODE_ORDER = ['lossless', 'flatten'];
 const MAX_MB = 100;
@@ -26,6 +27,7 @@ export default function PDFCompress() {
     setLoading(true);
     setResult(null);
     setError('');
+    trackToolStarted('pdf-compress');
     setProgress(mode === 'lossless' ? 'Optimizing…' : 'Preparing…');
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
@@ -36,8 +38,10 @@ export default function PDFCompress() {
       const compressedKB = (out.byteLength / 1024).toFixed(1);
       const saved = (((file.size - out.byteLength) / file.size) * 100).toFixed(1);
 
+      trackToolCompleted('pdf-compress');
       setResult({ blob, originalKB, compressedKB, saved: Math.max(0, saved) });
     } catch (e) {
+      trackToolError('pdf-compress', ERROR_REASON.PROCESSING_FAILED);
       setError('Compression failed: ' + (e.message || 'unknown error') + '. If this keeps happening, the PDF may be corrupt or password-protected.');
     }
     setProgress('');
@@ -50,6 +54,7 @@ export default function PDFCompress() {
     a.href = URL.createObjectURL(result.blob);
     a.download = 'compressed.pdf';
     a.click();
+    trackToolDownloaded('pdf-compress');
   };
 
   return (

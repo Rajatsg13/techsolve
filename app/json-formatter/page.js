@@ -6,6 +6,7 @@ import { ModeTabs } from '../components/tool-ui/Field';
 import { getToolContent } from '../content/tools';
 import { formatJson, minifyJson, validateJson } from '../lib/textTools';
 import { downloadText } from '../lib/download';
+import { trackToolStarted, trackToolCompleted } from '../lib/analytics';
 
 const content = getToolContent('json-formatter');
 const SAMPLE = '{"order":{"id":"SO-1042","customer":"Meera Rao","items":[{"sku":"A-19","qty":2,"price":450},{"sku":"B-07","qty":1,"price":1299}],"paid":true,"notes":null}}';
@@ -15,7 +16,15 @@ export default function JsonFormatter() {
   const [indent, setIndent] = useState('2');
   const [result, setResult] = useState(null);
 
-  const run = (fn) => setResult(fn());
+  // A result that is !ok here means the user's own text was invalid (bad JSON,
+  // a malformed escape). That is the tool working correctly and reporting it, so
+  // it is not a tool_error — the taxonomy reserves that for processing failures.
+  const run = (fn) => {
+    trackToolStarted('json-formatter');
+    const out = fn();
+    setResult(out);
+    if (out?.ok) trackToolCompleted('json-formatter');
+  };
   const indentValue = indent === 'tab' ? '\t' : Number(indent);
 
   return (

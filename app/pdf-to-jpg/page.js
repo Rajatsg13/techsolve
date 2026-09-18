@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const DPI_OPTIONS = [
   { label: 'Screen (72 DPI)', scale: 1 },
@@ -24,6 +25,7 @@ export default function PDFToJPG() {
 
   const convert = async () => {
     setLoading(true); setError(''); setPages([]);
+    trackToolStarted('pdf-to-jpg');
     try {
       const pdfjsLib = await import('pdfjs-dist');
       pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -49,25 +51,32 @@ export default function PDFToJPG() {
       }
 
       setPages(results);
+      trackToolCompleted('pdf-to-jpg');
       setProgress('');
     } catch (e) {
+      trackToolError('pdf-to-jpg', ERROR_REASON.PROCESSING_FAILED);
       setError('Conversion failed: ' + e.message);
     }
     setLoading(false);
   };
 
-  const download = (p) => {
+  // `track` is off when called from downloadAll, which reports the run once
+  // instead of once per page — a 40-page document would otherwise register 40
+  // downloads and swamp every other tool in the report. Matches PDF Split.
+  const download = (p, { track = true } = {}) => {
     const a = document.createElement('a');
     a.href = p.dataUrl;
     a.download = `page-${p.page}.jpg`;
     a.click();
+    if (track) trackToolDownloaded('pdf-to-jpg');
   };
 
   const downloadAll = async () => {
     for (const p of pages) {
-      download(p);
+      download(p, { track: false });
       await new Promise(r => setTimeout(r, 300));
     }
+    trackToolDownloaded('pdf-to-jpg');
   };
 
   return (

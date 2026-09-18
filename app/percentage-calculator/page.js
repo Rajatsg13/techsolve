@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { percentOf, whatPercent, applyPercent } from '../lib/calc';
 import { parseNum, formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('percentage-calculator');
 
@@ -55,6 +56,10 @@ export default function PercentageCalculator() {
       { label: 'Result', value: formatNum(result), strong: true },
     ];
   }
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('percentage-calculator', `${mode}|${a}|${b}|${direction}`, result !== null);
 
   const labels = {
     of: ['Percentage (%)', 'Of this number'],

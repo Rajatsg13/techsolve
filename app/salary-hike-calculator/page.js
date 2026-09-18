@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { salaryAfterHike, hikeBetween } from '../lib/calc';
 import { parseNum, formatINR, formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('salary-hike-calculator');
 
@@ -18,6 +19,10 @@ export default function SalaryHikeCalculator() {
   const c = parseNum(current), h = parseNum(hike), o = parseNum(offered);
   const byPercent = mode === 'percent' ? salaryAfterHike(c, h) : null;
   const byAmount = mode === 'amount' ? hikeBetween(c, o) : null;
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('salary-hike-calculator', `${mode}|${current}|${hike}|${offered}`, (byPercent !== null || byAmount !== null));
 
   return (
     <ToolShell

@@ -5,6 +5,7 @@ import TextToolShell, { ToolButton } from '../components/tool-ui/TextToolShell';
 import { ModeTabs, CheckField } from '../components/tool-ui/Field';
 import { getToolContent } from '../content/tools';
 import { encodeBase64, decodeBase64 } from '../lib/textTools';
+import { trackToolStarted, trackToolCompleted } from '../lib/analytics';
 
 const content = getToolContent('base64-encoder-decoder');
 
@@ -14,7 +15,15 @@ export default function Base64Tool() {
   const [urlSafe, setUrlSafe] = useState(false);
   const [result, setResult] = useState(null);
 
-  const run = () => setResult(mode === 'encode' ? encodeBase64(text, { urlSafe }) : decodeBase64(text));
+  // A result that is !ok here means the user's own text was invalid (bad JSON,
+  // a malformed escape). That is the tool working correctly and reporting it, so
+  // it is not a tool_error — the taxonomy reserves that for processing failures.
+  const run = () => {
+    trackToolStarted('base64-encoder-decoder');
+    const out = mode === 'encode' ? encodeBase64(text, { urlSafe }) : decodeBase64(text);
+    setResult(out);
+    if (out?.ok) trackToolCompleted('base64-encoder-decoder');
+  };
   const reset = (next) => { setMode(next); setResult(null); };
 
   const swap = () => {

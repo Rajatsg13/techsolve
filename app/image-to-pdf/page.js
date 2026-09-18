@@ -1,6 +1,7 @@
 'use client';
 import { useState, useCallback } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const MAX_TOTAL_MB = 100;
 
@@ -50,6 +51,7 @@ export default function ImageToPDF() {
     }
     setLoading(true);
     setError('');
+    trackToolStarted('image-to-pdf');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const pdfDoc = await PDFDocument.create();
@@ -68,10 +70,13 @@ export default function ImageToPDF() {
         page.drawImage(pdfImg, { x: 0, y: 0, width, height });
       }
       const pdfBytes = await pdfDoc.save();
+      trackToolCompleted('image-to-pdf');
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'converted.pdf'; a.click();
+      trackToolDownloaded('image-to-pdf');
     } catch (e) {
+      trackToolError('image-to-pdf', ERROR_REASON.PROCESSING_FAILED);
       setError('Conversion failed: ' + (e.message || 'unknown error'));
     }
     setLoading(false);

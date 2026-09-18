@@ -5,6 +5,7 @@ import TextToolShell, { ToolButton } from '../components/tool-ui/TextToolShell';
 import { ModeTabs } from '../components/tool-ui/Field';
 import { getToolContent } from '../content/tools';
 import { encodeUrl, decodeUrl, parseUrlParts } from '../lib/textTools';
+import { trackToolStarted, trackToolCompleted } from '../lib/analytics';
 
 const content = getToolContent('url-encoder-decoder');
 
@@ -14,7 +15,15 @@ export default function UrlTool() {
   const [scope, setScope] = useState('component');
   const [result, setResult] = useState(null);
 
-  const run = () => setResult(mode === 'encode' ? encodeUrl(text, { mode: scope }) : decodeUrl(text, { mode: scope }));
+  // A result that is !ok here means the user's own text was invalid (bad JSON,
+  // a malformed escape). That is the tool working correctly and reporting it, so
+  // it is not a tool_error — the taxonomy reserves that for processing failures.
+  const run = () => {
+    trackToolStarted('url-encoder-decoder');
+    const out = mode === 'encode' ? encodeUrl(text, { mode: scope }) : decodeUrl(text, { mode: scope });
+    setResult(out);
+    if (out?.ok) trackToolCompleted('url-encoder-decoder');
+  };
   const parts = result?.ok ? parseUrlParts(result.value) : null;
 
   return (

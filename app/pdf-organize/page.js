@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const fmtSize = (b) => b >= 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB';
 
@@ -22,6 +23,7 @@ export default function PDFOrganize() {
       setPages(Array.from({ length: n }, (_, i) => i));
       setFile(f);
     } catch (e) {
+      trackToolError('pdf-organize', ERROR_REASON.LOAD_FAILED);
       setError('Could not load PDF: ' + e.message);
     }
   };
@@ -32,6 +34,7 @@ export default function PDFOrganize() {
 
   const save = async () => {
     setLoading(true); setError('');
+    trackToolStarted('pdf-organize');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const bytes = await file.arrayBuffer();
@@ -40,11 +43,14 @@ export default function PDFOrganize() {
       const copied = await out.copyPages(src, pages);
       copied.forEach(p => out.addPage(p));
       const blob = new Blob([await out.save()], { type: 'application/pdf' });
+      trackToolCompleted('pdf-organize');
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'organized.pdf';
       a.click();
+      trackToolDownloaded('pdf-organize');
     } catch (e) {
+      trackToolError('pdf-organize', ERROR_REASON.PROCESSING_FAILED);
       setError('Failed: ' + e.message);
     }
     setLoading(false);

@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import CrossBrandCard from '../components/CrossBrandCard';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const POSITIONS = ['diagonal','center','top-left','top-right','bottom-left','bottom-right'];
 const fmtSize = (b) => b >= 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB';
@@ -30,6 +31,7 @@ export default function PDFWatermark() {
   const apply = async () => {
     if (!file || !text.trim()) return;
     setLoading(true); setError('');
+    trackToolStarted('pdf-watermark');
     try {
       const { PDFDocument, rgb, degrees } = await import('pdf-lib');
       const bytes = await file.arrayBuffer();
@@ -55,11 +57,14 @@ export default function PDFWatermark() {
         });
       }
       const blob = new Blob([await doc.save()], { type: 'application/pdf' });
+      trackToolCompleted('pdf-watermark');
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'watermarked.pdf';
       a.click();
+      trackToolDownloaded('pdf-watermark');
     } catch (e) {
+      trackToolError('pdf-watermark', ERROR_REASON.PROCESSING_FAILED);
       setError('Failed: ' + e.message);
     }
     setLoading(false);

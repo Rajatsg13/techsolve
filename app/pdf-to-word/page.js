@@ -8,6 +8,7 @@ import {
   extractPositionedItems, groupIntoLines, lineToText, tokenizeLine,
   splitTwinTables, tableRowsForSide, detectTableBlocks,
 } from '../lib/pdfTables';
+import { trackToolStarted, trackToolCompleted, trackToolDownloaded, trackToolError, ERROR_REASON } from '../lib/analytics';
 /* ── Helper: extract images from a PDF page ────────────────── */
 async function extractPageImages(page) {
   try {
@@ -100,6 +101,7 @@ export default function PDFToWord() {
     setLoading(true);
     setError('');
     setProgress('Reading PDF...');
+    trackToolStarted('pdf-to-word');
 
     try {
       /* 1. Load pdf.js */
@@ -206,10 +208,12 @@ export default function PDFToWord() {
         setProgress('Creating Word document...');
         const exactDoc = new dx.Document({ sections });
         const exactBlob = await dx.Packer.toBlob(exactDoc);
+        trackToolCompleted('pdf-to-word');
         const a = document.createElement('a');
         a.href = URL.createObjectURL(exactBlob);
         a.download = file.name.replace('.pdf', '.docx');
         a.click();
+        trackToolDownloaded('pdf-to-word');
         setProgress('Done!');
         setLoading(false);
         setProgress('');
@@ -440,13 +444,22 @@ export default function PDFToWord() {
       });
 
       const buffer = await dx.Packer.toBlob(doc);
+      trackToolCompleted('pdf-to-word');
       const a = document.createElement('a');
       a.href     = URL.createObjectURL(buffer);
       a.download = file.name.replace('.pdf', '.docx');
       a.click();
+      trackToolDownloaded('pdf-to-word');
       setProgress('Done!');
 
     } catch (e) {
+      // The engine, an encrypted file and a corrupt file are worth telling
+      // apart; the message itself is never sent.
+      const reason = /password-protected/i.test(e?.message || '') ? ERROR_REASON.PASSWORD_REQUIRED
+        : /does not appear to be a valid PDF/i.test(e?.message || '') ? ERROR_REASON.UNSUPPORTED_INPUT
+        : /PDF engine/i.test(e?.message || '') ? ERROR_REASON.LOAD_FAILED
+        : ERROR_REASON.PROCESSING_FAILED;
+      trackToolError('pdf-to-word', reason);
       setError(e.message || 'Conversion failed. Please try again with a different file.');
     }
     setLoading(false);

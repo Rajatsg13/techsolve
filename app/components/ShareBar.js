@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { trackShareClicked, toolSlugFromPath } from '../lib/analytics';
 
 function IconWrap({ className = 'w-4 h-4', children }) {
   return (
@@ -79,6 +80,7 @@ export default function ShareBar() {
   const nativeShare = async () => {
     setOpen(false);
     try {
+      trackShareClicked('native', toolSlugFromPath(pathname));
       await navigator.share({ title, url });
     } catch (_) { /* user cancelled — nothing to do */ }
   };
@@ -86,6 +88,7 @@ export default function ShareBar() {
   const copyLink = async () => {
     try {
       if (navigator.clipboard?.writeText) {
+        trackShareClicked('copy_link', toolSlugFromPath(pathname));
         await navigator.clipboard.writeText(url);
       } else {
         const ta = document.createElement('textarea');
@@ -143,7 +146,7 @@ export default function ShareBar() {
                   href={href(url, title)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
+                  onClick={() => { trackShareClicked(key, toolSlugFromPath(pathname)); setOpen(false); }}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-ink-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
                 >
                   <span className={color}>{icon}</span>

@@ -6,6 +6,7 @@ import { getToolContent } from '../content/tools';
 import { loadPageThumbnails, normaliseRotation } from '../lib/pdfPages';
 import { downloadBytes } from '../lib/download';
 import { withExtension } from '../lib/download';
+import { trackToolStarted, trackToolCompleted, trackToolError, ERROR_REASON } from '../lib/analytics';
 
 const content = getToolContent('pdf-rotate');
 const MAX_MB = 100;
@@ -30,6 +31,7 @@ export default function PdfRotate() {
       setFile(f);
       setProgress('');
     } catch (e) {
+      trackToolError('pdf-rotate', ERROR_REASON.LOAD_FAILED);
       setError(e?.message || 'That PDF could not be opened. It may be damaged or password protected.');
       setFile(null); setBytes(null);
     }
@@ -52,6 +54,7 @@ export default function PdfRotate() {
 
   const save = async () => {
     setBusy(true); setError('');
+    trackToolStarted('pdf-rotate');
     try {
       const { PDFDocument, degrees } = await import('pdf-lib');
       // Loading and re-saving the same document keeps every page object as it
@@ -65,8 +68,10 @@ export default function PdfRotate() {
         page.setRotation(degrees(normaliseRotation(current + extra)));
       });
       const out = await doc.save();
+      trackToolCompleted('pdf-rotate');   // downloadBytes emits tool_downloaded
       downloadBytes(out, withExtension(file.name.replace(/\.pdf$/i, '') + '-rotated', 'pdf'), 'application/pdf');
     } catch (e) {
+      trackToolError('pdf-rotate', ERROR_REASON.PROCESSING_FAILED);
       setError(e?.message || 'The rotated PDF could not be created.');
     }
     setBusy(false);

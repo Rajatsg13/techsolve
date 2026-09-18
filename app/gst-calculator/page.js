@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { gst } from '../lib/calc';
 import { parseNum, formatINR } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('gst-calculator');
 const RATES = [5, 12, 18, 28];
@@ -17,6 +18,10 @@ export default function GstCalculator() {
 
   const amt = parseNum(amount), rt = parseNum(rate);
   const r = gst(amt, rt, mode);
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('gst-calculator', `${amount}|${rate}|${mode}`, r !== null);
 
   return (
     <ToolShell

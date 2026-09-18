@@ -6,6 +6,7 @@ import { ResultPanel, ResultRows, FormulaNote, CalculatorLayout } from '../compo
 import { getToolContent } from '../content/tools';
 import { roi } from '../lib/calc';
 import { parseNum, formatINR, formatNum } from '../lib/format';
+import { useCalculatorAnalytics } from '../lib/useCalculatorAnalytics';
 
 const content = getToolContent('roi-calculator');
 
@@ -16,6 +17,10 @@ export default function RoiCalculator() {
 
   const i = parseNum(invested), f = parseNum(returned), y = parseNum(years);
   const r = roi(i, f, y);
+
+  // Fires tool_started on the first edit and tool_completed on the first
+  // valid result after it — never on the pre-filled state at page load.
+  useCalculatorAnalytics('roi-calculator', `${invested}|${returned}|${years}`, r !== null);
 
   return (
     <ToolShell
