@@ -194,6 +194,21 @@ test.describe('@analytics file tools', () => {
     expect(await named(page, 'tool_downloaded')).toHaveLength(1);
   });
 
+  test('Download All counts the run once, not once per page', async ({ page }) => {
+    test.setTimeout(120000);
+    await record(page);
+    await page.goto('/pdf-to-jpg/');
+    await page.locator('input[type="file"]').setInputFiles(fx('mixed-orientation.pdf'));
+    await page.getByRole('button', { name: /Convert to JPG/i }).click();
+    const all = page.getByRole('button', { name: /Download All/i });
+    await expect(all).toBeVisible({ timeout: 90000 });
+
+    await all.click();
+    // The fixture has 4 pages, so an untracked loop would report 4.
+    await page.waitForTimeout(2500);
+    expect(await named(page, 'tool_downloaded')).toHaveLength(1);
+  });
+
   test('generators emit the full flow', async ({ page }) => {
     await record(page);
     await page.goto('/rent-receipt-generator/');
